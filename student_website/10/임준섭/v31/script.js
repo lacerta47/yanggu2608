@@ -1018,6 +1018,7 @@ function createMovingPlatform(x, y, z, w, h, d, theme, range = 5.0, speed = 2.0)
         range: range,
         speed: speed
     });
+    return mesh;
 }
 
 function updateMovingPlatforms(time) {
@@ -1043,13 +1044,19 @@ function createWall(x, y, z, w, h, d, theme) {
     return mesh;
 }
 
-function createBoosterPad(x, y, z) {
+function createBoosterPad(x, y, z, parentMesh = null) {
     const geo = new THREE.BoxGeometry(4, 0.4, 4);
     const mat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.9, emissive: 0x0284c7 });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y + 1.1, z);
 
-    scene.add(mesh);
+    if (parentMesh) {
+        mesh.position.set(0, 1.1, 0);
+        parentMesh.add(mesh);
+    } else {
+        mesh.position.set(x, y + 1.1, z);
+        scene.add(mesh);
+    }
+
     boosterPads.push(mesh);
     return mesh;
 }
@@ -1134,20 +1141,21 @@ function loadStage(stage) {
             createCheckpointPlatform(currentX, currentY, currentZ, theme);
         } else {
             const platWidth = Math.max(3.5, 5.5 - stage * 0.04);
+            let currentPlat = null;
 
             if (i % 3 === 1 && i > 2) {
-                createMovingPlatform(currentX, currentY, currentZ, platWidth, 2, platWidth, theme, 4.5 + Math.random() * 2.5, 2.4);
+                currentPlat = createMovingPlatform(currentX, currentY, currentZ, platWidth, 2, platWidth, theme, 4.5 + Math.random() * 2.5, 2.4);
             } else {
-                createPlatform(currentX, currentY, currentZ, platWidth, 2, platWidth, theme);
+                currentPlat = createPlatform(currentX, currentY, currentZ, platWidth, 2, platWidth, theme);
             }
 
             if (isLastStepBeforeGoal || stage === 1 && i % 4 === 3) {
-                createBoosterPad(currentX, currentY, currentZ);
+                createBoosterPad(currentX, currentY, currentZ, currentPlat);
             } else if (i % 3 === 2) {
                 const wallSideX = currentX + (Math.random() > 0.5 ? 5.0 : -5.0);
                 createWall(wallSideX, currentY + 6, currentZ - 6, 1, 16, 18, theme);
             } else if (i % 4 === 2) {
-                createBoosterPad(currentX, currentY, currentZ);
+                createBoosterPad(currentX, currentY, currentZ, currentPlat);
             }
         }
 
@@ -1193,18 +1201,19 @@ function loadSpecialStage() {
         } else {
             const platW = 2.4 + Math.random() * 0.8;
             const platD = 2.4 + Math.random() * 0.8;
+            let currentPlat = null;
 
             if (i % 4 === 1) {
-                createMovingPlatform(currentX, currentY, currentZ, platW, 2, platD, theme, 7.5 + Math.random() * 2.0, 4.2);
+                currentPlat = createMovingPlatform(currentX, currentY, currentZ, platW, 2, platD, theme, 7.5 + Math.random() * 2.0, 4.2);
             } else {
-                createPlatform(currentX, currentY, currentZ, platW, 2, platD, theme);
+                currentPlat = createPlatform(currentX, currentY, currentZ, platW, 2, platD, theme);
             }
 
             if (i % 5 === 2) {
                 const wallX = currentX + (i % 2 === 0 ? 5.5 : -5.5);
                 createWall(wallX, currentY + 8, currentZ - 8, 1, 20, 26, theme);
             } else if (i % 6 === 4) {
-                createBoosterPad(currentX, currentY, currentZ);
+                createBoosterPad(currentX, currentY, currentZ, currentPlat);
             }
         }
 

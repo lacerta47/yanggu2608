@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>살인의 미스터리 (v15) - 20단계 랜덤 진범 & 추리 다채화 마스터</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Single+Day&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="appContainer">
+        <!-- 1단계: 타이틀 화면 -->
+        <section id="titleScreen" class="scene active">
+            <div class="bg-layer spooky-bg"></div>
+            <div class="fog-overlay"></div>
+            <div class="particle-container" id="spookyParticles"></div>
+            
+            <div class="title-content">
+                <span class="sub-badge">🩸 20단계 랜덤 진범 & 다채로운 알리바이 (v15)</span>
+                <h1 class="main-title">살인의 미스터리</h1>
+                <p class="tagline">랜덤 진범 지목 ➔ 4인 풍성한 대사 ➔ 20단계 연속 지문 감식 ➔ 마스터 종결!</p>
+                
+                <div class="game-rules-preview">
+                    <p>🎲 <b>랜덤 진범 위치:</b> 더 이상 첫 번째가 아닌, 4명 용의자 중 진짜 범인이 예측 불가하게 바뀝니다!</p>
+                    <p>💬 <b>다채로운 80명 대사:</b> 20개 레벨마다 80명의 용의자가 각기 다른 흥미진진한 대사를 진술합니다.</p>
+                    <p>🏆 <b>20단계 연속 수사:</b> 1레벨 산속부터 20레벨 최종 흑막까지 지문 감식으로 거침없이 달려보세요!</p>
+                </div>
+
+                <button id="startGameBtn" class="spooky-btn pulse" onclick="startGameFlow()">🕵️‍♂️ 20단계 랜덤 수사 개시하기</button>
+            </div>
+        </section>
+
+        <!-- 2단계: 오프닝 프롤로그 컷씬 화면 -->
+        <section id="cutsceneScreen" class="scene hidden">
+            <div class="bg-layer spooky-bg"></div>
+            <div class="dark-vignette"></div>
+
+            <div class="cutscene-card">
+                <div class="cutscene-header">
+                    <span class="step-tag" id="cutsceneStepTag">사건 브리핑 1 / 4</span>
+                    <button id="skipCutsceneBtn" class="skip-btn" onclick="skipCutsceneFlow()">⏩ 스킵</button>
+                </div>
+
+                <div class="cutscene-visual">
+                    <div class="character-portrait-box">
+                        <span class="portrait-emoji" id="cutsceneSpeakerEmoji">🌲</span>
+                        <span class="speaker-name" id="cutsceneSpeakerName">사건 브리핑</span>
+                    </div>
+                </div>
+
+                <div class="cutscene-dialogue-box">
+                    <p id="cutsceneText" class="typewriter"></p>
+                </div>
+
+                <div class="cutscene-footer">
+                    <button id="nextCutsceneBtn" class="spooky-btn" onclick="nextCutsceneFlow()">다음 브리핑 ➔</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3단계: 메인 수사 본부 화면 -->
+        <section id="investigationScreen" class="scene hidden">
+            <!-- 상단 HUD (레벨 진행도, 시간, 상태) -->
+            <header class="hud-header">
+                <div class="hud-item level-box">
+                    <span class="hud-icon" id="levelBadgeIcon">LEVEL 1 / 20</span>
+                    <span id="levelTitleText">레벨 1: 산속 나무판 사건</span>
+                </div>
+                <div class="hud-item time-box">
+                    <span class="hud-icon">⏰</span>
+                    <div class="time-display">
+                        <span class="time-label">현재 시각</span>
+                        <strong id="clockText">오후 01:00</strong>
+                    </div>
+                </div>
+                <div class="hud-item warning-box">
+                    <span class="hud-icon">⚠️</span>
+                    <span id="targetStatusText">제한 시각: 저녁 8시 전</span>
+                </div>
+            </header>
+
+            <!-- 레벨 진행바 -->
+            <div class="campaign-progress-wrapper">
+                <div class="campaign-progress-bar">
+                    <div id="levelProgressFill" class="level-progress-fill" style="width: 5%;"></div>
+                </div>
+                <span id="levelProgressText" class="level-progress-text">캠페인 진행률: 5% (1 / 20 레벨)</span>
+            </div>
+
+            <!-- 메인 수사 구역 -->
+            <main class="investigation-layout">
+                <!-- 좌측: 수사 장소 및 4인 용의자 선택 -->
+                <aside class="left-panel">
+                    <div class="panel-section">
+                        <h3>📍 현장 수사 장소 (-30분)</h3>
+                        <div class="location-list" id="locationList">
+                            <!-- 동적 생성 (4개 장소) -->
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <h3>👥 용의자 4인 심문 (-30분)</h3>
+                        <div class="suspect-list" id="suspectList">
+                            <!-- 동적 생성 (4명 용의자) -->
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- 우측: 수사 팀 일지 및 대화 노트 -->
+                <section class="right-panel">
+                    <div class="notebook-card">
+                        <div class="notebook-header">
+                            <h2>📜 20단계 특수수사팀 공식 노트</h2>
+                            <button id="openDeductionBtn" class="deduction-trigger-btn" onclick="openDeductionModal()">🧩 모순 추리 & 지문 스캔 ➔</button>
+                        </div>
+                        <div class="notebook-body" id="notebookBody">
+                            <div class="log-item default-log">
+                                🕵️‍♂️ "현장을 정밀 조사하고 용의자 4명의 진술 모순을 찾아 지문 대조를 진행하세요."
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </section>
+
+        <!-- 4단계: 알리바이 모순 추리 모달 -->
+        <div id="deductionModal" class="modal-overlay hidden">
+            <div class="deduction-card">
+                <div class="modal-header">
+                    <h2>🧩 4인 용의자 모순 추리 및 진범 지목</h2>
+                    <p>수집한 단서와 용의자를 각각 1개씩 선택하여 <b>지문 정밀 스캔</b>을 진행하세요!</p>
+                </div>
+
+                <div class="deduction-board">
+                    <!-- 좌측 단서 카드 -->
+                    <div class="board-column">
+                        <h3>🔎 현장 수집 단서</h3>
+                        <div class="selection-group" id="clueGroup">
+                            <!-- 동적 카드 -->
+                        </div>
+                    </div>
+
+                    <div class="versus-divider">⚡ 지문 대조 ⚡</div>
+
+                    <!-- 우측 용의자 알리바이 -->
+                    <div class="board-column">
+                        <h3>👥 용의자 4인 알리바이</h3>
+                        <div class="selection-group" id="suspectGroup">
+                            <!-- 동적 카드 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeDeductionBtn" class="spooky-btn secondary" onclick="closeDeductionModal()">수사로 돌아가기</button>
+                    <button id="submitDeductionBtn" class="spooky-btn danger" onclick="submitDeduction()">🔬 지문 정밀 스캔 시작 (-30분)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5단계: 지문 대조 정밀 스캐너 모달 -->
+        <div id="fingerprintModal" class="modal-overlay hidden">
+            <div class="scanner-card">
+                <div class="scanner-header">
+                    <h2>🔬 지문 정밀 대조 스캐너</h2>
+                    <p>증거물 지문과 지목된 용의자의 대조 지문을 정밀 분석 중입니다...</p>
+                </div>
+
+                <div class="scanner-visual">
+                    <div class="fp-box">
+                        <div class="fp-icon">🖐️</div>
+                        <span>[증거물 지문]</span>
+                    </div>
+                    <div class="scan-laser-line" id="scanLaser"></div>
+                    <div class="fp-box">
+                        <div class="fp-icon" id="targetFpIcon">👤</div>
+                        <span id="targetFpLabel">[용의자 지문]</span>
+                    </div>
+                </div>
+
+                <div class="scan-progress-bar">
+                    <div id="scanFill" class="scan-fill"></div>
+                </div>
+                <div id="scanMatchText" class="scan-match-text">지문 대조 분석 중... 0%</div>
+
+                <button id="proceedConfessionBtn" class="spooky-btn success hidden">🚨 지문 감식 완료! 진범 자백 듣기 ➔</button>
+            </div>
+        </div>
+
+        <!-- 6단계: 범인 자백 모달 -->
+        <div id="confessionModal" class="modal-overlay hidden">
+            <div class="confession-card">
+                <div class="confession-header">
+                    <span class="sweat-emoji">🚨</span>
+                    <h2>"진범 현장 체포 및 자백"</h2>
+                </div>
+                <div class="confession-body">
+                    <div class="suspect-portrait" id="confessionPortrait">🪚</div>
+                    <div class="speech-bubble">
+                        <p id="confessionText" class="typewriter"></p>
+                    </div>
+                </div>
+                <button id="proceedNextLevelOrEndingBtn" class="spooky-btn success">다음 레벨 수사로 직행 ➔</button>
+            </div>
+        </div>
+
+        <!-- 7단계: 해피 / 최종 20단계 마스터 진엔딩 화면 -->
+        <section id="happyEndingScreen" class="scene hidden">
+            <div class="ending-card happy-card">
+                <div class="ending-badge">🏆 20LEVEL MASTER TRUE ENDING</div>
+                <h2>🎉 20단계 대규모 사건 완전 완벽 소탕!</h2>
+                <p class="ending-story">
+                    예측 불가하게 숨어있던 20개 레벨의 진범 20명을 모두 정확한 추리와 지문 감식으로 체포했습니다!<br>
+                    경찰 특수수사팀이 거대 범죄 조직 전체를 전격 소탕하였고,<br>
+                    <b>@@씨는 안전하게 구출되었으며 20단계 미스터리 수사극이 완벽하게 끝났습니다!</b>
+                </p>
+                <div class="ending-stats">
+                    <span>⏱️ 캠페인 클리어: <strong>총 20개 레벨 완파!</strong></span>
+                    <span>⭐ 수사 등급: <strong>전설의 20단계 마스터 명탐정 (S+++급)</strong></span>
+                </div>
+                <button class="restartGameBtn spooky-btn" onclick="resetGame()">🔄 1레벨부터 다시 도전하기</button>
+            </div>
+        </section>
+
+        <!-- 8단계: 배드 엔딩 화면 -->
+        <section id="badEndingScreen" class="scene hidden">
+            <div class="bg-layer bad-bg"></div>
+            <div class="dark-vignette"></div>
+            
+            <div class="ending-card bad-card">
+                <div class="ending-badge danger-badge">💀 BAD ENDING</div>
+                <h2 id="badEndingTitle">어둠에 갇힌 시각...</h2>
+                <p class="ending-story" id="badEndingStory">
+                    제한 시간이 지나 짙은 어둠이 수사 현장을 덮쳤습니다...<br>
+                    <b>@@씨는 진범의 덫에 걸려 똑같이 비극적인 운명을 맞이하고 말았습니다.</b>
+                </p>
+                <div class="ending-stats danger-stats">
+                    <span id="badEndingReason">⚠️ 시간 초과 또는 지문 불일치</span>
+                </div>
+                <button class="restartGameBtn spooky-btn danger" onclick="resetGame()">🩸 1레벨부터 다시 도전하기</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
