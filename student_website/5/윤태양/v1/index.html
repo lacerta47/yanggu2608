@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신나는 블록깨기 게임</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 점수판 -->
+        <header class="header">
+            <h1 class="title">🎮 신나는 블록깨기</h1>
+            <div class="scoreboard">
+                <div class="score-item">점수: <span id="score">0</span>점</div>
+                <div class="score-item">남은 블록: <span id="block-count">0</span>개</div>
+            </div>
+        </header>
+
+        <!-- 게임 화면 (캔버스) -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <!-- 게임 결과 모달 (게임 오버 / 승리) -->
+            <div id="resultModal" class="modal hidden">
+                <div class="modal-content">
+                    <div id="modalIcon" class="modal-icon">🎉</div>
+                    <h2 id="modalTitle" class="modal-title">축하합니다!</h2>
+                    <p id="modalMessage" class="modal-message">모든 블록을 깨뜨렸어요!</p>
+                    <button id="restartBtn" class="restart-btn">다시 하기 🔄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 / 터치 조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="leftBtn" class="control-btn">◀️ 왼쪽</button>
+            <button id="rightBtn" class="control-btn">오른쪽 ▶️</button>
+        </div>
+
+        <!-- 설명글 -->
+        <footer class="footer">
+            <p>💡 키보드 <strong>왼쪽/오른쪽 화살표(← →)</strong> 키나 아래 버튼을 눌러 막대를 조작하세요!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

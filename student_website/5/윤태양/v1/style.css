@@ -1,0 +1,241 @@
+/* Google Fonts 불러오기 */
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+    --card-bg: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 255, 255, 0.15);
+    --text-color: #f8fafc;
+    --accent-color: #38bdf8;
+    --accent-hover: #0284c7;
+    --danger-color: #f43f5e;
+    --success-color: #10b981;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    user-select: none;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    overflow-x: hidden;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* 상단 영역 */
+.header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    padding: 1.2rem 1.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+.scoreboard {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.score-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-item span {
+    color: var(--accent-color);
+}
+
+/* 캔버스 감싸는 영역 */
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: 600px;
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 1.25rem;
+    border: 2px solid var(--card-border);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 결과 모달 (게임 오버 / 승리) */
+.modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2.5rem 2rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    max-width: 90%;
+    width: 360px;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-icon {
+    font-size: 3.5rem;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.modal-message {
+    font-size: 1rem;
+    color: #94a3b8;
+}
+
+.restart-btn {
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+    color: #ffffff;
+    border: none;
+    padding: 0.9rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 48px;
+    min-width: 150px;
+}
+
+.restart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+}
+
+.restart-btn:active {
+    transform: translateY(0);
+}
+
+/* 모바일 조작 버튼 */
+.mobile-controls {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.control-btn {
+    flex: 1;
+    max-width: 200px;
+    height: 56px;
+    min-height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-btn:active {
+    background: rgba(56, 189, 248, 0.3);
+    transform: scale(0.96);
+}
+
+/* 하단 설명 */
+.footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+/* 미디어 쿼리 (모바일 화면 대응) */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.4rem;
+    }
+    
+    .scoreboard {
+        gap: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .score-item {
+        padding: 0.4rem 0.8rem;
+    }
+}

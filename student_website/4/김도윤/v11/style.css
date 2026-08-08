@@ -1,0 +1,483 @@
+/* 픽셀 RPG v11 스타일시트 (BGM ON/OFF 버튼 강화) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: #080814;
+    color: #ffffff;
+    font-family: 'DungGeunMo', 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.game-container {
+    position: relative;
+    width: 960px;
+    height: 640px;
+    max-width: 100vw;
+    max-height: 100vh;
+    aspect-ratio: 3 / 2;
+    background: #000000;
+    border: 4px solid #3a3b5c;
+    border-radius: 8px;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.85), 0 0 18px rgba(88, 101, 242, 0.35);
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 보스전 상단 전용 HUD */
+.boss-hud {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 460px;
+    max-width: 90%;
+    background: rgba(20, 5, 5, 0.92);
+    border: 3px solid #ff2200;
+    border-radius: 8px;
+    padding: 8px 14px;
+    box-shadow: 0 0 22px rgba(255, 34, 0, 0.7), inset 0 0 10px rgba(255, 34, 0, 0.3);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: bossPulse 1.5s infinite alternate;
+}
+
+@keyframes bossPulse {
+    from { box-shadow: 0 0 15px rgba(255, 34, 0, 0.5); }
+    to { box-shadow: 0 0 28px rgba(255, 80, 0, 0.95); }
+}
+
+.boss-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.boss-badge {
+    background: #ff2200;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.boss-name {
+    color: #ff9900;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.boss-hp-bar {
+    position: relative;
+    width: 100%;
+    height: 16px;
+    background: #2a0505;
+    border: 2px solid #000;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.boss-hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ff6600, #ffcc00);
+    transition: width 0.15s ease-out;
+}
+
+/* 게임 UI 오버레이 */
+.game-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* 좌측 상단 패널 (퀘스트 + BGM 버튼) */
+.top-left-panel {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.quest-tracker {
+    background: rgba(12, 14, 28, 0.9);
+    border: 3px solid #ffcc00;
+    border-radius: 6px;
+    padding: 12px 16px;
+    min-width: 240px;
+    max-width: 320px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+}
+
+.quest-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ffcc00;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 8px;
+}
+
+.quest-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 1rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.quest-item {
+    color: #70e0ff;
+    line-height: 1.4;
+}
+
+.no-quest {
+    color: #aaaaaa;
+    font-size: 0.95rem;
+}
+
+/* BGM ON/OFF 음소거 버튼 스타일 */
+.bgm-toggle-btn {
+    align-self: flex-start;
+    padding: 8px 16px;
+    font-family: 'DungGeunMo', 'Noto Sans KR', sans-serif;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #00ffcc;
+    background: rgba(16, 24, 48, 0.9);
+    border: 2.5px solid #00ffcc;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
+    transition: background-color 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.bgm-toggle-btn:hover {
+    background: rgba(30, 48, 80, 0.95);
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 255, 204, 0.5);
+}
+
+.bgm-toggle-btn:active {
+    transform: scale(0.97);
+}
+
+.bgm-toggle-btn.muted {
+    color: #ff6666;
+    border-color: #ff4d4d;
+    background: rgba(40, 15, 20, 0.9);
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+}
+
+/* 우측 상단 플레이어 HUD (HP, EXP, Gold, ATK) */
+.player-hud {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(12, 14, 28, 0.9);
+    border: 3px solid #5865f2;
+    border-radius: 6px;
+    padding: 12px 16px;
+    width: 290px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.hud-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.05rem;
+}
+
+.hud-label {
+    color: #ffffff;
+}
+
+.highlight {
+    color: #ffcc00;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.gold-badge {
+    color: #ffd700;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* 게이지 바 공통 */
+.bar-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background: #1a1a2e;
+    border: 2px solid #000000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #000;
+    z-index: 2;
+}
+
+.bar-fill {
+    height: 100%;
+    transition: width 0.2s ease-out;
+}
+
+.hp-fill {
+    background: linear-gradient(180deg, #ff4d4d, #cc0000);
+}
+
+.exp-fill {
+    background: linear-gradient(180deg, #00e676, #008f39);
+}
+
+/* 하단 인벤토리 바 */
+.inventory-bar {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(12, 14, 28, 0.88);
+    border: 2px solid #8888bb;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    color: #ddddff;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.inv-title {
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+.controls-guide {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #aaaaaa;
+}
+
+/* NPC 말풍선 대화 오버레이 */
+.dialogue-overlay {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 720px;
+    z-index: 20;
+}
+
+.speech-bubble {
+    position: relative;
+    background: #1e1e38;
+    border: 4px solid #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+}
+
+.speech-content {
+    flex: 1;
+}
+
+.npc-header {
+    margin-bottom: 8px;
+}
+
+.npc-name {
+    font-size: 1.2rem;
+    color: #ffcc00;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.speech-content p {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: #ffffff;
+    text-shadow: 1px 1px 0 #000;
+    white-space: pre-line;
+}
+
+/* 대화 버튼 */
+.dialogue-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 140px;
+}
+
+.pixel-btn {
+    min-height: 48px;
+    padding: 8px 16px;
+    font-family: 'DungGeunMo', 'Noto Sans KR', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: #2b2c4d;
+    border: 3px solid #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #000000;
+    transition: transform 0.1s, background-color 0.1s;
+}
+
+.pixel-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #000000;
+}
+
+.pixel-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 #000000;
+}
+
+.btn-accept {
+    background: #1b8a3e;
+    border-color: #55ff88;
+}
+
+.btn-accept:hover {
+    background: #25a84e;
+}
+
+.btn-decline {
+    background: #a82323;
+    border-color: #ff6666;
+}
+
+.btn-decline:hover {
+    background: #c43131;
+}
+
+/* 화면 오버레이 */
+.screen-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 8, 20, 0.92);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+}
+
+.title-card {
+    text-align: center;
+    background: #14152b;
+    border: 4px solid #5865f2;
+    border-radius: 12px;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 0 35px rgba(88, 101, 242, 0.4);
+}
+
+.main-title {
+    font-size: 4rem;
+    color: #ffcc00;
+    text-shadow: 4px 4px 0 #000, 0 0 20px #ffcc00;
+    letter-spacing: 4px;
+}
+
+.sub-title {
+    font-size: 1.3rem;
+    color: #aaaaee;
+}
+
+.btn-start {
+    font-size: 1.4rem;
+    padding: 12px 32px;
+    background: #5865f2;
+    border-color: #99aab5;
+}
+
+.title-card.danger {
+    border-color: #ff4d4d;
+}
+
+.title-card.danger h1 {
+    font-size: 3.2rem;
+    color: #ff4d4d;
+}
+
+.title-card.success {
+    border-color: #ffcc00;
+    box-shadow: 0 0 45px rgba(255, 204, 0, 0.6);
+}
+
+.title-card.success h1 {
+    font-size: 3.2rem;
+    color: #ffcc00;
+    text-shadow: 3px 3px 0 #000, 0 0 25px #ff6600;
+}
+
+.final-stats {
+    font-size: 1.3rem;
+    color: #70e0ff;
+}

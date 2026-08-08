@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌋 화산시대 공룡 달리기 (v15 - 🔫 레이저 총 아이템 등장!)</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 상단 정보바 -->
+    <header class="game-header">
+      <h1 class="game-title">🌋 화산시대 공룡 달리기</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">🔫 총알</span>
+          <span id="bulletText" class="status-value">0발</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🚩 레벨</span>
+          <span id="levelText" class="status-value">1 / 10</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🏆 최고</span>
+          <span id="highScoreText" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">⭐ 점수</span>
+          <span id="scoreText" class="status-value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 캔버스 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <!-- 모바일 및 화면 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="btnDuck" class="duck-btn">🙇‍♂️ 숙이기 (▼ / S)</button>
+        <button id="btnShoot" class="shoot-btn">🔫 레이저 발사! (F / X)</button>
+        <button id="btnJump" class="jump-btn">🚀 점프! (Space / ▲)</button>
+      </div>
+    </main>
+
+    <!-- 조작 가이드 -->
+    <footer class="game-footer">
+      <p class="guide-text">
+        💡 <strong>조작법:</strong> 점프 <code>스페이스바 / ▲</code> | 숙이기 <code>아래 화살표(▼) / S</code> | 레이저 발사 <code>F키 / X키</code><br>
+        🔫 <strong>총 아이템:</strong> 🔫 총을 먹으면 레이저 빔으로 장애물을 파괴할 수 있어요!
+      </p>
+    </footer>
+
+    <!-- 시작 / 게임 오버 모달 -->
+    <div id="gameModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">🌋 화산시대 공룡 달리기</h2>
+        <p id="modalMessage" class="modal-message">🔫 레이저 총 아이템이 추가되었어요!\n총을 먹고 장애물을 팡팡 쏴서 파괴해보세요!</p>
+        <button id="modalBtn" class="action-btn">게임 시작하기!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

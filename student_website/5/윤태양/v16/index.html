@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>티라노 공룡 달리기 게임 v16 - 블랙 드래곤 조련</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 헤더 및 점수판 -->
+        <header class="header">
+            <div class="header-top">
+                <h1 class="title">🐉🖤🦖 티라노 공룡 달리기 v16</h1>
+                <button id="soundToggleBtn" class="sound-btn" title="배경음악 켜기/끄기">🔊 BGM 켜짐</button>
+            </div>
+            
+            <div class="scoreboard">
+                <div class="score-box">현재 점수: <span id="currentScore">0</span>점</div>
+                <div class="score-box high-score">최고 기록: <span id="highScore">0</span>점</div>
+                <div class="score-box shield-box">🛡️ 보호막: <span id="shieldCount">0</span>개</div>
+            </div>
+
+            <!-- 🐉🖤 검은 블랙 드래곤 HUD -->
+            <div id="dragonHud" class="power-hud dragon-hud hidden">
+                <span class="power-icon">🐉🔥</span>
+                <span class="power-text">블랙 드래곤 조련 비행 중! (검은 브레스 무한 사격!)</span>
+                <div class="power-timer-bg dragon-timer-bg">
+                    <div id="dragonTimerBar" class="dragon-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- 👑 1번: 거대 킹 공룡 HUD -->
+            <div id="giantHud" class="power-hud giant-hud hidden">
+                <span class="power-icon">👑</span>
+                <span class="power-text">거대 킹 공룡 모드! (장애물 쿵! 쿵! 짓밟기)</span>
+                <div class="power-timer-bg">
+                    <div id="giantTimerBar" class="giant-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- ⚡ 3번: 번개 폭풍 HUD -->
+            <div id="thunderHud" class="power-hud thunder-hud hidden">
+                <span class="power-icon">⚡</span>
+                <span class="power-text">찌릿찌릿 번개 폭풍! (장애물이 보석💎으로 변신)</span>
+                <div class="power-timer-bg">
+                    <div id="thunderTimerBar" class="thunder-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- 🕳️ 4번: 냠냠 블랙홀 HUD -->
+            <div id="blackHoleHud" class="power-hud blackhole-hud hidden">
+                <span class="power-icon">🕳️</span>
+                <span class="power-text">냠냠 블랙홀 흡수! (장애물을 사탕🍭으로 쏙쏙)</span>
+                <div class="power-timer-bg">
+                    <div id="blackHoleTimerBar" class="blackhole-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- 신의 손 HUD -->
+            <div id="godHandHud" class="power-hud godhand-hud hidden">
+                <span class="power-icon">🖐️✨</span>
+                <span class="power-text" id="godDimensionText">신의 손: 멀티 차원 연속 여행 (점수 5배!)</span>
+                <div class="power-timer-bg">
+                    <div id="godHandTimerBar" class="god-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- 기본 이차원 HUD -->
+            <div id="dimensionHud" class="power-hud dimension-hud hidden">
+                <span class="power-icon">🌀</span>
+                <span class="power-text">무적 이차원 세계 (점수 3배!)</span>
+                <div class="power-timer-bg">
+                    <div id="dimensionTimerBar" class="dim-timer-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 캔버스 영역 -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="300"></canvas>
+
+            <!-- 시작 안내 오버레이 -->
+            <div id="startOverlay" class="overlay">
+                <div class="start-box">
+                    <div class="dino-icon">🐉🖤 👑 ⚡ 🕳️ 🖐️✨ 🦖</div>
+                    <h2>스페이스바(Space) 또는 아무 곳이나 누르세요!</h2>
+                    <button id="startBtn" class="restart-btn" style="margin: 0.4rem 0;">게임 시작하기 🎮</button>
+                    <p>🌵 점프: <strong>Space / ↑</strong> | 🦅 숙이기: <strong>B / ↓</strong> | 🎵 음악: <strong>🔊 BGM 버튼</strong></p>
+                    <div class="item-guide">
+                        <span>🐉 블랙 드래곤 (조련 비행+브레스)</span>
+                        <span>👑 킹공룡</span>
+                        <span>⚡ 번개</span>
+                        <span>🕳️ 블랙홀</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 게임 결과 및 신기록 모달 -->
+            <div id="resultModal" class="modal hidden">
+                <div class="modal-content">
+                    <div id="modalIcon" class="modal-icon">💥</div>
+                    <h2 id="modalTitle" class="modal-title">게임 오버!</h2>
+                    <p id="modalMessage" class="modal-message">장애물에 부딪혔어요!</p>
+                    <div id="newRecordBadge" class="new-record-badge hidden">🎉 축하합니다! 신기록 달성! 🎉</div>
+                    <button id="restartBtn" class="restart-btn">다시 시작하기 (Space) 🔄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 터치조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="jumpBtn" class="control-btn jump">🦘 점프 (Space)</button>
+            <button id="slideBtn" class="control-btn slide">👇 숙이기 (B키)</button>
+        </div>
+
+        <!-- 키 및 설명 -->
+        <footer class="footer">
+            <p>💡 🐉🖤 **검은 블랙 드래곤**을 조련하여 하늘을 비행하며 다크 불꽃 브레스를 뿜어보세요!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌋 화산시대 공룡 달리기 (v16 - 3대 슈퍼 파워 아이템!)</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 상단 정보바 -->
+    <header class="game-header">
+      <h1 class="game-title">🌋 화산시대 공룡 달리기</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">✨ 능력</span>
+          <span id="powerText" class="status-value">일반</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🚩 레벨</span>
+          <span id="levelText" class="status-value">1 / 10</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🏆 최고</span>
+          <span id="highScoreText" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">⭐ 점수</span>
+          <span id="scoreText" class="status-value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 캔버스 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <!-- 모바일 및 화면 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="btnDuck" class="duck-btn">🙇‍♂️ 숙이기 (▼ / S)</button>
+        <button id="btnAction" class="action-btn-power">🔨 망치/날개 (F / X)</button>
+        <button id="btnJump" class="jump-btn">🚀 점프! (Space / ▲)</button>
+      </div>
+    </main>
+
+    <!-- 조작 가이드 -->
+    <footer class="game-footer">
+      <p class="guide-text">
+        💡 <strong>3대 슈퍼 파워 아이템 총출동:</strong><br>
+        🦅 <code>마법 날개 (하늘 날기)</code> | 🔨 <code>거대 망치 (바위 분쇄)</code> | 🦘 <code>슈퍼 스프링 (대왕 점프)</code>
+      </p>
+    </footer>
+
+    <!-- 시작 / 게임 오버 모달 -->
+    <div id="gameModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">🌋 화산시대 공룡 달리기</h2>
+        <p id="modalMessage" class="modal-message">총 대신 3가지 슈퍼 능력이 찾아왔어요!\n🪽 하늘 날기, 🔨 망치로 바위 깨기, 🦘 대왕 점프를 마음껏 즐겨보세요!</p>
+        <button id="modalBtn" class="action-btn">게임 시작하기!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

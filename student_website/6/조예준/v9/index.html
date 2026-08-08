@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌋 화산시대 공룡 달리기 (v9 - 통통 움직이는 아이템!)</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 상단 정보바 -->
+    <header class="game-header">
+      <h1 class="game-title">🌋 화산시대 공룡 달리기</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">🏆 최고 점수</span>
+          <span id="highScoreText" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">⭐ 점수</span>
+          <span id="scoreText" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🛡️ 보호막</span>
+          <span id="shieldText" class="status-value">OFF</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 캔버스 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <!-- 모바일 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="btnDuck" class="duck-btn">🙇‍♂️ 숙이기 (아래 화살표)</button>
+        <button id="btnJump" class="jump-btn">🚀 펄쩍 점프! (스페이스바)</button>
+      </div>
+    </main>
+
+    <!-- 조작 가이드 -->
+    <footer class="game-footer">
+      <p class="guide-text">
+        💡 <strong>조작법:</strong> 점프 <code>스페이스바 / ▲</code> | 숙이기 <code>아래 화살표(▼) / S</code><br>
+        🎁 <strong>움직이는 아이템:</strong> 🕊️ <code>하늘에서 펄럭이는 무적 새</code> | 🥚 <code>통통 튀며 도망치는 황금 알</code>
+      </p>
+    </footer>
+
+    <!-- 시작 / 게임 오버 모달 -->
+    <div id="gameModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">🌋 화산시대 공룡 달리기</h2>
+        <p id="modalMessage" class="modal-message">가만히 있던 아이템은 사라지고,\n하늘을 펄럭이며 날아가거나 땅에서 통통 튀며 도망치는 아이템이 등장해요!</p>
+        <button id="modalBtn" class="action-btn">게임 시작하기!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

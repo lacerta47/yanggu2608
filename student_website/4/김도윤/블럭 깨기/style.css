@@ -1,0 +1,241 @@
+/* 네온 우주 블록깨기 게임 스타일 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: #050515;
+    background-image: 
+        radial-gradient(circle at 50% 20%, #1a0b36 0%, #050515 80%),
+        url('../assets/images/space_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 10px;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 840px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 게임 헤더 */
+.game-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-title {
+    font-family: 'Orbitron', 'Noto Sans KR', sans-serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 900;
+    color: #00f3ff;
+    text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #b000ff;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.status-bar {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 15, 35, 0.75);
+    border: 2px solid #00f3ff;
+    border-radius: 12px;
+    padding: 10px 25px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-item .label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #b000ff;
+    text-shadow: 0 0 8px #b000ff;
+}
+
+.status-item .value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #ff007f;
+    text-shadow: 0 0 10px #ff007f;
+}
+
+/* 캔버스 및 오버레이 감싸기 */
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(176, 0, 255, 0.4), 0 0 10px rgba(0, 243, 255, 0.5);
+    border: 3px solid #b000ff;
+    background: rgba(5, 5, 20, 0.9);
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 오버레이 화면 (시작 / 게임오버 / 승리) */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 25, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.overlay-card {
+    background: rgba(20, 10, 45, 0.9);
+    border: 2px solid #ff007f;
+    box-shadow: 0 0 25px #ff007f, inset 0 0 15px rgba(255, 0, 127, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    max-width: 85%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.overlay-card h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    color: #ffe600;
+    text-shadow: 0 0 12px #ffe600;
+}
+
+.overlay-card h2.danger-text {
+    color: #ff0055;
+    text-shadow: 0 0 15px #ff0055;
+}
+
+.overlay-card h2.success-text {
+    color: #00ff66;
+    text-shadow: 0 0 15px #00ff66;
+}
+
+.overlay-card p {
+    font-size: 1.1rem;
+    color: #d8d8ff;
+    line-height: 1.5;
+}
+
+/* 빛나는 버튼 */
+.glow-btn {
+    min-width: 180px;
+    min-height: 52px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff007f, #b000ff);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #ff007f, 0 0 30px rgba(176, 0, 255, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 10px 24px;
+}
+
+.glow-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #ff007f, 0 0 45px #b000ff;
+}
+
+.glow-btn:active {
+    transform: scale(0.98);
+}
+
+/* 터치 조작 버튼 (모바일용) */
+.touch-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    gap: 20px;
+}
+
+.touch-btn {
+    flex: 1;
+    min-height: 56px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #00f3ff;
+    background: rgba(15, 20, 45, 0.8);
+    border: 2px solid #00f3ff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
+}
+
+.touch-btn:active {
+    background: rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 20px #00f3ff;
+}
+
+/* 반응형 스타일 조정 */
+@media (max-width: 768px) {
+    .status-bar {
+        padding: 8px 15px;
+    }
+    .status-item .label {
+        font-size: 0.95rem;
+    }
+    .status-item .value {
+        font-size: 1.2rem;
+    }
+    .glow-btn {
+        min-width: 150px;
+        min-height: 48px;
+        font-size: 1.05rem;
+    }
+}

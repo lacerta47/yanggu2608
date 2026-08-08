@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>티라노 공룡 달리기 게임 v7 - 이차원 세계</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 헤더 및 점수판 -->
+        <header class="header">
+            <h1 class="title">🌀🥚 티라노 공룡 달리기 v7</h1>
+            <div class="scoreboard">
+                <div class="score-box">현재 점수: <span id="currentScore">0</span>점</div>
+                <div class="score-box high-score">최고 기록: <span id="highScore">0</span>점</div>
+                <div class="score-box shield-box">🛡️ 보호막: <span id="shieldCount">0</span>개</div>
+            </div>
+            <!-- 이차원 세계 상태 표시 바 -->
+            <div id="dimensionHud" class="dimension-hud hidden">
+                <span class="dim-icon">🌀</span>
+                <span class="dim-text">이차원 네온 세계 (점수 3배 폭발!)</span>
+            </div>
+        </header>
+
+        <!-- 게임 캔버스 영역 -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="300"></canvas>
+
+            <!-- 시작 안내 오버레이 -->
+            <div id="startOverlay" class="overlay">
+                <div class="start-box">
+                    <div class="dino-icon">🥚 🌀 🦖 🛡️ 🥛</div>
+                    <h2>스페이스바(Space)를 누르면 시작합니다!</h2>
+                    <p>🌵 점프: <strong>Space / ↑</strong> | 🦅 익룡 숙이기: <strong>B / ↓</strong></p>
+                    <div class="item-guide">
+                        <span>🥚 황금알 (이차원 세계 3배 폭발!)</span>
+                        <span>🛡️ 보호막 (목숨 +1)</span>
+                        <span>🥛 무적 우유 (3, 2, 1 카운트!)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 게임 결과 및 신기록 모달 -->
+            <div id="resultModal" class="modal hidden">
+                <div class="modal-content">
+                    <div id="modalIcon" class="modal-icon">💥</div>
+                    <h2 id="modalTitle" class="modal-title">게임 오버!</h2>
+                    <p id="modalMessage" class="modal-message">장애물에 부딪혔어요!</p>
+                    <div id="newRecordBadge" class="new-record-badge hidden">🎉 축하합니다! 신기록 달성! 🎉</div>
+                    <button id="restartBtn" class="restart-btn">다시 시작하기 (Space) 🔄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 터치조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="jumpBtn" class="control-btn jump">🦘 점프 (Space)</button>
+            <button id="slideBtn" class="control-btn slide">👇 숙이기 (B키)</button>
+        </div>
+
+        <!-- 키 및 설명 -->
+        <footer class="footer">
+            <p>💡 🥚 황금알을 먹으면 신비로운 **네온 이차원 세계**로 이동해 점수를 3배로 획득해요!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

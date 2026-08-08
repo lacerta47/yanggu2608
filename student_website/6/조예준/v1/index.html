@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 우주 블록깨기 게임</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 (점수 및 목숨) -->
+    <header class="game-header">
+      <h1 class="game-title">🚀 우주 블록깨기</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">⭐ 점수</span>
+          <span id="scoreText" class="status-value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">❤️ 목숨</span>
+          <span id="livesText" class="status-value">3</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 캔버스 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <!-- 모바일 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="btnLeft" class="ctrl-btn">◀ 왼쪽</button>
+        <button id="btnLaunch" class="ctrl-btn launch-btn">🚀 공 발사</button>
+        <button id="btnRight" class="ctrl-btn">오른쪽 ▶</button>
+      </div>
+    </main>
+
+    <!-- 시작 / 게임 오버 / 승리 모달 팝업 -->
+    <div id="gameModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">🚀 우주 블록깨기</h2>
+        <p id="modalMessage" class="modal-message">방향키(◀ ▶)로 우주선을 움직이고, 스페이스바(또는 발사 버튼)로 공을 쏘세요!</p>
+        <button id="modalBtn" class="action-btn">게임을 시작해 볼까요?</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네온 우주 블록깨기 게임</title>
+    <!-- 구글 폰트 불러오기 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 게임 헤더 (점수 및 기회 표시) -->
+        <header class="game-header">
+            <h1 class="game-title">✨ 네온 우주 블록깨기 ✨</h1>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="label">점수</span>
+                    <span id="score" class="value">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">남은 기회</span>
+                    <span id="lives" class="value">❤️❤️❤️</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 캔버스 영역 -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <!-- 시작 화면 오버레이 -->
+            <div id="startOverlay" class="overlay active">
+                <div class="overlay-card">
+                    <h2>🚀 블록깨기 준비 완료!</h2>
+                    <p>방향키 ◀ ▶ 나 화면 아래 버튼으로 막대를 움직여 공을 튕겨내세요!</p>
+                    <button id="startButton" class="glow-btn">게임 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 게임 오버 화면 오버레이 -->
+            <div id="gameOverOverlay" class="overlay">
+                <div class="overlay-card">
+                    <h2 class="danger-text">💥 게임 오버!</h2>
+                    <p id="finalScoreText">최종 점수: 0점</p>
+                    <button id="restartButton" class="glow-btn">다시 도전하기</button>
+                </div>
+            </div>
+
+            <!-- 게임 승리 화면 오버레이 -->
+            <div id="victoryOverlay" class="overlay">
+                <div class="overlay-card">
+                    <h2 class="success-text">🎉 축하합니다! 승리!</h2>
+                    <p>우주의 모든 블록을 전부 깨뜨렸어요!</p>
+                    <button id="victoryRestartButton" class="glow-btn">한 번 더 하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 터치 조작 버튼 -->
+        <div class="touch-controls">
+            <button id="btnLeft" class="touch-btn">◀</button>
+            <button id="btnRight" class="touch-btn">▶</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

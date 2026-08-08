@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌋 화산시대 공룡 달리기 (v20 - 📳 레벨업 화면 쉐이크 연출!)</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 상단 정보바 -->
+    <header class="game-header">
+      <h1 class="game-title">🌋 화산시대 공룡 달리기</h1>
+      <div class="status-bar">
+        <button id="btnBgmToggle" class="bgm-toggle-btn">🎵 BGM : ON</button>
+        <div class="status-item">
+          <span class="status-label">🔥 피버</span>
+          <span id="feverText" class="status-value">READY</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">✨ 능력</span>
+          <span id="powerText" class="status-value">일반</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">🚩 레벨</span>
+          <span id="levelText" class="status-value">1 / 10</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">⭐ 점수</span>
+          <span id="scoreText" class="status-value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 캔버스 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <!-- 피버 타임 게이지바 -->
+      <div class="fever-bar-container">
+        <div id="feverBarFill" class="fever-bar-fill"></div>
+        <span class="fever-bar-label">🌟 FEVER GAUGE</span>
+      </div>
+
+      <!-- 모바일 및 화면 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="btnDuck" class="duck-btn">🙇‍♂️ 숙이기 (▼ / S)</button>
+        <button id="btnAction" class="action-btn-power">🔨 망치/스프링 (F / X)</button>
+        <button id="btnJump" class="jump-btn">🚀 점프! (Space / ▲)</button>
+      </div>
+    </main>
+
+    <!-- 조작 가이드 -->
+    <footer class="game-footer">
+      <p class="guide-text">
+        📳 <strong>스릴 만점 쉐이크:</strong> 속도가 빨라지고 레벨이 오를 때마다 화면이 쿵쿵 흔들려요!
+      </p>
+    </footer>
+
+    <!-- 시작 / 게임 오버 모달 -->
+    <div id="gameModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">🌋 화산시대 공룡 달리기</h2>
+        <p id="modalMessage" class="modal-message">📳 레벨이 오르고 속도가 빨라질 때마다 화면이 쿵쾅쿵쾅 흔들려요!\n박진감 넘치는 화산 달리기를 시작해보세요!</p>
+        <button id="modalBtn" class="action-btn">게임 시작하기!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

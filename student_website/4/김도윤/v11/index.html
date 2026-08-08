@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>픽셀 RPG 모험 - BGM ON/OFF 음소거 기능 (v11)</title>
+    <!-- 구글 폰트 (픽셀/레트로 폰트 및 가독성 폰트) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameContainer" class="game-container">
+        <!-- 캔버스 게임 화면 -->
+        <canvas id="rpgCanvas" width="960" height="640"></canvas>
+
+        <!-- 보스전 전용 상단 대형 체력바 -->
+        <div id="bossHud" class="boss-hud hidden">
+            <div class="boss-info">
+                <span class="boss-badge">🔥 FINAL BOSS</span>
+                <span class="boss-name">드래곤 (체력: <span id="bossHpText">1000 / 1000</span>)</span>
+            </div>
+            <div class="boss-hp-bar">
+                <div id="bossHpFill" class="boss-hp-fill" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- 게임 UI (체력, 레벨, 퀘스트, 골드) -->
+        <div id="gameUI" class="game-ui hidden">
+            <!-- 좌측 상단 패널 (퀘스트 + BGM ON/OFF 스위치) -->
+            <div class="top-left-panel">
+                <div class="quest-tracker">
+                    <div class="quest-title">&gt;퀘스트</div>
+                    <div id="questList" class="quest-list">
+                        <div class="no-quest">- 진행 중인 퀘스트가 없습니다.</div>
+                    </div>
+                </div>
+                <!-- BGM ON/OFF 음소거 토글 버튼 -->
+                <button id="btnBgmToggle" class="bgm-toggle-btn" title="클릭하거나 M키를 눌러 BGM을 끄고 켤 수 있습니다.">🔊 BGM ON (M키)</button>
+            </div>
+
+            <!-- 우측 상단 플레이어 정보 (체력바, 경험치바, 골드) -->
+            <div class="player-hud">
+                <div class="hud-row">
+                    <span class="hud-label">레벨 <span id="playerLevel" class="highlight">1</span></span>
+                    <span class="hud-label">공격력 <span id="playerAtk" class="highlight">10</span></span>
+                    <span class="gold-badge">💰 <span id="playerGold">0</span> G</span>
+                </div>
+                <!-- 체력바 -->
+                <div class="bar-container hp-bar-container">
+                    <span class="bar-text">체력 <span id="hpText">100 / 100</span></span>
+                    <div id="hpFill" class="bar-fill hp-fill" style="width: 100%;"></div>
+                </div>
+                <!-- 경험치바 -->
+                <div class="bar-container exp-bar-container">
+                    <span class="bar-text">경험치 <span id="expText">0 / 50</span></span>
+                    <div id="expFill" class="bar-fill exp-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- 하단 인벤토리 전리품 요약 -->
+            <div id="inventoryBar" class="inventory-bar">
+                <span class="inv-title">🎒 가방:</span>
+                <span id="invItems" class="inv-items">비어있음</span>
+            </div>
+
+            <!-- 미니 조작 가이드 -->
+            <div class="controls-guide">
+                [W,A,S,D] 이동 | [좌클릭] 공격 | [우클릭] 대화 | [M] BGM ON/OFF
+            </div>
+        </div>
+
+        <!-- NPC 말풍선 / 퀘스트 창 -->
+        <div id="dialogueOverlay" class="dialogue-overlay hidden">
+            <div class="speech-bubble">
+                <div class="npc-header">
+                    <span id="npcName" class="npc-name">NPC 주민</span>
+                </div>
+                <div class="speech-content">
+                    <p id="npcText">퀘스트 내용이 들어갑니다.</p>
+                </div>
+                <!-- 우측 버튼 (위: 맞겨줘 / 아래: 다음에) -->
+                <div class="dialogue-buttons">
+                    <button id="btnAccept" class="pixel-btn btn-accept">맞겨줘</button>
+                    <button id="btnDecline" class="pixel-btn btn-decline">다음에</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 시작 화면 오버레이 -->
+        <div id="startScreen" class="screen-overlay active">
+            <div class="title-card">
+                <h1 class="main-title">RPG</h1>
+                <p class="sub-title">⚔️ 픽셀 모험: BGM ON/OFF 음소거 조절 기능 (v11) ⚔️</p>
+                <button id="btnStartGame" class="pixel-btn btn-start">게임시작</button>
+            </div>
+        </div>
+
+        <!-- 게임 오버 화면 -->
+        <div id="gameOverScreen" class="screen-overlay hidden">
+            <div class="title-card danger">
+                <h1>💀 게임 오버</h1>
+                <p>체력이 모두 소진되었습니다...</p>
+                <button id="btnRestart" class="pixel-btn btn-start">마을에서 다시 시작</button>
+            </div>
+        </div>
+
+        <!-- 게임 승리 (드래곤 토벌) 화면 -->
+        <div id="victoryScreen" class="screen-overlay hidden">
+            <div class="title-card success">
+                <h1>🐉 DRAGON SLAYER!</h1>
+                <p>전설의 보스 드래곤을 처치하고 세상을 구했습니다!</p>
+                <p class="final-stats" id="finalStatsText">최종 골드: 0G | 레벨: LV.1 | 공격력: 10</p>
+                <button id="btnVictoryRestart" class="pixel-btn btn-start">새로운 모험 시작</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
