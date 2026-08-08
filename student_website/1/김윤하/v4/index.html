@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>귀여운 바다 오드아이 고양이 달리기</title>
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🎀 슈퍼 귀여운 픽셀 고양이 달리기 🐱🌊</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 공룡게임 스타일 상태 및 점수 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">HI-SCORE</span>
+        <span id="highScoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SCORE</span>
+        <span id="scoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SPEED</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 (픽셀 아트) -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🐱 오드아이 고양이의 바다 달리기</h2>
+          <p class="desc">
+            더 귀여워진 오드아이 고양이와 예쁜 바닷속 친구들이 기다려요!<br>
+            <strong>스페이스바(Space)</strong>를 눌러 점프하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🦖 <strong>공룡 게임 방식</strong>: 오래 달릴수록 거리 점수가 더 올라가요!</li>
+              <li>⭐ <strong>아기자기 모래사장</strong>: 불가사리, 조약돌, 예쁜 꼬마 조개가 흩뿌려져 있어요!</li>
+              <li>🐠 <strong>디테일해진 친구들</strong>: 귀여운 해파리와 니모 물고기, 예쁜 산호초를 피하세요!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ RUN GAME (SPACE)</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 GAME OVER!</h2>
+          <p id="resultMessage">아쉽게 부딪혔지만 오드아이 고양이는 다시 달릴 준비가 되었어요!</p>
+          <div class="final-score-box">
+            DISTANCE SCORE: <span id="finalScore">00000</span>
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 AGAIN (SPACEBAR)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 JUMP (SPACEBAR)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

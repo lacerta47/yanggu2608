@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>우주 초록 공룡 달리기 & 슬라이딩 (v3)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 상단 대시보드 -->
+    <header class="game-header">
+      <h1 class="title">🚀 SPACE DINO RUNNER v3 🚀</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="label">점수:</span>
+          <span id="scoreText" class="value">00000</span>
+        </div>
+        <div class="status-item">
+          <span class="label">최고 점수:</span>
+          <span id="highScoreText" class="value">00000</span>
+        </div>
+        <div class="status-item">
+          <span class="label">현재 속도:</span>
+          <span id="speedText" class="value">1.0x</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 캔버스 게임 화면 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+      <!-- 모달 레이어 (게임 오버) -->
+      <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2 class="modal-title">💀 GAME OVER</h2>
+          <p class="modal-message">우주 장애물에 부딪혔어요!</p>
+          <p class="final-score">최종 점수: <span id="finalScore">0</span>점</p>
+          <button id="restartBtn" class="arcade-btn">🎮 다시 도전하기 (Space)</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 조작 안내 -->
+    <footer class="game-controls-info">
+      <p class="control-tip">⌨️ 조작 방법: [Space/↑] 점프 | [↓ 아래 방향키] 엎드리기 슬라이딩!</p>
+      
+      <!-- 모바일 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="mobileJumpBtn" class="mobile-btn jump-btn">🦘 점프 (↑)</button>
+        <button id="mobileSlideBtn" class="mobile-btn slide-btn">🛹 슬라이딩 (↓)</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

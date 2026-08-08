@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백룸 3D 공포 생존 게임 - v7 (생생한 3차원 효과음 시스템)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- 3D 게이밍 캔버스 -->
+        <canvas id="bgCanvas"></canvas>
+
+        <!-- 조준점 (Crosshair) -->
+        <div id="crosshair" class="crosshair">+</div>
+
+        <!-- FPS 및 레벨 표시기 -->
+        <div class="fps-counter" id="fpsDisplay">⚡ 60 FPS | 📍 레벨 1 백룸</div>
+
+        <!-- 미니맵 (Fog of War + 열쇠/밸브 마커 표시) -->
+        <div class="minimap-container">
+            <canvas id="minimapCanvas" width="130" height="130"></canvas>
+            <div class="minimap-label">🧭 미니맵 (🔊 입체 효과음 적용됨)</div>
+        </div>
+
+        <!-- 열쇠 및 밸브 미션 HUD -->
+        <div id="missionTracker" class="mission-tracker">
+            <span id="missionText">🔑 백룸 열쇠 찾기 (0/1)</span>
+        </div>
+
+        <!-- 아이템 상호작용 안내 팝업 -->
+        <div id="interactionPrompt" class="interaction-prompt">
+            <span id="promptText">[E] 상호작용</span>
+        </div>
+
+        <!-- 은신 및 숨참기 리듬 미니게임 UI -->
+        <div id="rhythmGameUI" class="rhythm-ui hidden">
+            <div class="rhythm-title">💓 박테리아 괴물이 근처에 있습니다! 숨을 참으세요!</div>
+            <div class="rhythm-bar-container">
+                <div class="rhythm-target-zone"></div>
+                <div id="rhythmPointer" class="rhythm-pointer"></div>
+            </div>
+            <div class="rhythm-hint">[Space] 포인터가 하얀 영역에 올 때 누르세요!</div>
+        </div>
+
+        <!-- 상단 시계 및 정보 -->
+        <div class="top-bar">
+            <div class="time-display">
+                <span>⏰ 경과 시간</span>
+                <span id="clockText">00:00</span>
+            </div>
+            <div id="statusMessage" class="status-msg">🔊 형광등 지직거리는 소리와 걸음 소리가 들어간 사운드 엔진이 탑재되었습니다!</div>
+        </div>
+
+        <!-- 하단 생존 수치 UI (HUD) -->
+        <div class="hud-container">
+            <div class="stat-bar-group">
+                <div class="stat-item">
+                    <span class="stat-icon">💚 체력</span>
+                    <div class="bar-bg"><div id="healthBar" class="bar-fill health" style="width: 100%;"></div></div>
+                    <span id="healthVal" class="stat-val">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⚡ 기력</span>
+                    <div class="bar-bg"><div id="staminaBar" class="bar-fill stamina" style="width: 100%;"></div></div>
+                    <span id="staminaVal" class="stat-val">100</span>
+                </div>
+            </div>
+            <div class="stat-bar-group">
+                <div class="stat-item">
+                    <span class="stat-icon">🍔 배고픔</span>
+                    <div class="bar-bg"><div id="hungerBar" class="bar-fill hunger" style="width: 100%;"></div></div>
+                    <span id="hungerVal" class="stat-val">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">💧 목마름</span>
+                    <div class="bar-bg"><div id="thirstBar" class="bar-fill thirst" style="width: 100%;"></div></div>
+                    <span id="thirstVal" class="stat-val">100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로딩 화면 -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="loading-box">
+                <h2>🏊‍♂️ 레벨 2: 풀룸(Poolrooms) 수영장으로 이동 중...</h2>
+                <div class="loading-bar-bg">
+                    <div id="loadingProgress" class="loading-bar-fill"></div>
+                </div>
+                <p>💦 첨벙거리는 수영장 물 소리가 시작됩니다!</p>
+            </div>
+        </div>
+
+        <!-- 캠코더 오버레이 -->
+        <div id="camcorderOverlay" class="camcorder-overlay hidden">
+            <div class="rec-indicator">● REC</div>
+            <div class="battery-indicator">🔋 100%</div>
+            <div class="camcorder-timestamp" id="camTimestamp">2026-08-07 11:02:00</div>
+            <div class="viewfinder-grid"></div>
+        </div>
+
+        <!-- 위험 붉은 화면 연출 -->
+        <div id="hurtVignette" class="vignette"></div>
+
+        <!-- 조작법 안내 창 -->
+        <div class="controls-guide">
+            <div><strong>[W,A,S,D]</strong> 이동 (레벨1 발소리 / 레벨2 물첨벙 소리)</div>
+            <div><strong>[Shift]</strong> 달리기</div>
+            <div><strong>[E]</strong> 아이템 줍기 / 숨기</div>
+            <div><strong>[Space]</strong> 숨참기 타이밍</div>
+            <div><strong>[F]</strong> 손전등 켜기</div>
+            <div><strong>[Q]</strong> 캠코더 보기</div>
+        </div>
+
+        <!-- 시작 / 게임 오버 / 승리 오버레이 -->
+        <div id="startOverlay" class="overlay active">
+            <div class="overlay-box">
+                <h1>👻 백룸 3D v7 (생생한 리얼 사운드)</h1>
+                <p><strong>[사운드 연출 시스템]</strong><br>⚡ 레벨 1 형광등 지직거리는 전기 소리<br>👣 레벨 1 카펫 걷기/뛰기 벅벅 발소리<br>💦 레벨 2 수영장 첨벙첨벙 물 걷기 효과음이 추가되었습니다!</p>
+                <div id="checkpointNotice" class="overlay-info hidden">
+                    <p>🚩 <strong>체크포인트 보관됨</strong>: 레벨 2 수영장에서 바로 시작할 수 있습니다!</p>
+                </div>
+                <div class="btn-group">
+                    <button id="startBtn" class="main-btn">게임 시작하기 🚀</button>
+                    <button id="checkpointStartBtn" class="main-btn secondary hidden">🚩 레벨 2 체크포인트 시작</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="endOverlay" class="overlay hidden">
+            <div class="overlay-box">
+                <h1 id="endTitle">💥 게임 오버</h1>
+                <p id="endMessage">미로 속에서 기력을 잃고 쓰러졌습니다...</p>
+                <div class="btn-group">
+                    <button id="restartBtn" class="main-btn">처음부터 도전 🔄</button>
+                    <button id="checkpointRestartBtn" class="main-btn secondary hidden">🚩 레벨 2에서 재시작</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

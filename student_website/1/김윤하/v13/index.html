@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오드아이 고양이 30단계 하늘 점프맵</title>
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>☁️ 고양이의 30단계 하늘 점프맵 🐱⭐</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 진행도 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">PROGRESS</span>
+        <span id="progressDisplay" class="value">1 / 30</span>
+      </div>
+      <div class="status-item">
+        <span class="label">RETRY COUNT</span>
+        <span id="deathDisplay" class="value">0회</span>
+      </div>
+      <div class="status-item">
+        <span class="label">TIMER</span>
+        <span id="timerDisplay" class="value">0.0초</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="480"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>☁️ 30단계 하늘 점프맵 도전에 오신 것을 환영해요!</h2>
+          <p class="desc">
+            귀여운 흰색 오드아이 고양이와 함께 30개의 높이가 다른 구름 블록을 넘어가세요!<br>
+            <strong>빨간색 킬 파트(🚨)</strong>를 밟으면 위험하니 조심조심 점프하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>◀ ▶ <strong>방향키</strong>: 앞으로 / 뒤로 달리기</li>
+              <li>🦘 <strong>스페이스바 (Spacebar)</strong>: 높이 점프하기!</li>
+              <li>🚨 <strong>빨간색 킬 파트</strong>: 밟으면 부딪혀서 다시 시작해요!</li>
+              <li>🏆 <strong>30번째 블록</strong>: 승리의 깃발을 향해 도전하세요!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ START JUMP MAP (SPACE)</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 승리 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 킬 파트에 부딪혔어요!</h2>
+          <p id="resultMessage">빨간색 킬 파트를 조심해서 뛰어넘어보세요!</p>
+          <div class="final-score-box">
+            최종 도달: <span id="finalStage">0</span> / 30 블록
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 다시 도전하기 (SPACEBAR)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnLeft" class="ctrl-btn">◀ 왼쪽</button>
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 점프 (Space)</button>
+      <button id="btnRight" class="ctrl-btn">오른쪽 ▶</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

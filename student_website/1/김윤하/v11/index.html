@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오드아이 고양이 달리기 v11</title>
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🐬 귀여운 돌고래 & 모래사장 오드아이 고양이 v11 🐱💨</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 점수 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">HI-SCORE</span>
+        <span id="highScoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SCORE</span>
+        <span id="scoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SPEED</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🐬 귀여운 돌고래와 고품질 모래사장!</h2>
+          <p class="desc">
+            평범하고 아기자기해진 돌고래가 떠다녀요!<br>
+            돌고래에 부딪히면 죽게 되니 오직 <strong>아래 방향키(▼) 슬라이딩</strong>으로 피하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🦘 <strong>점프</strong>: <strong>스페이스바 (Spacebar)</strong></li>
+              <li>💨 <strong>슬라이딩</strong>: <strong>아래 방향키 (▼ ArrowDown)</strong> (돌고래 전용!)</li>
+              <li>🐢 <strong>자연스러운 거북이</strong>: 파닥파닥 우아하게 헤엄치는 아기 거북이!</li>
+              <li>🦀 <strong>디테일한 모래사장</strong>: 기어가보는 꼬마 게, 불가사리, 금모래 알갱이!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ START GAME (SPACE)</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 GAME OVER!</h2>
+          <p id="resultMessage">돌고래에 닿았어요! 점프하지 말고 아래 방향키(▼) 슬라이딩으로 피하세요!</p>
+          <div class="final-score-box">
+            DISTANCE SCORE: <span id="finalScore">00000</span>
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 AGAIN (SPACEBAR)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 점프 (Space)</button>
+      <button id="btnSlide" class="ctrl-btn slide-btn">💨 슬라이딩 (▼)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

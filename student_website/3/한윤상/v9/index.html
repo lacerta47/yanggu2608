@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백룸 3D 공포 생존 게임 - v9 (레벨 3 배선시설 & 30초 탈출문 & 엔딩 크레딧)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- 3D 게이밍 캔버스 -->
+        <canvas id="bgCanvas"></canvas>
+
+        <!-- 조준점 (Crosshair) -->
+        <div id="crosshair" class="crosshair">+</div>
+
+        <!-- FPS 및 레벨 표시기 -->
+        <div class="fps-counter" id="fpsDisplay">⚡ 60 FPS | 📍 레벨 1 백룸</div>
+
+        <!-- 미니맵 (Fog of War + 마커 표시) -->
+        <div class="minimap-container">
+            <canvas id="minimapCanvas" width="130" height="130"></canvas>
+            <div class="minimap-label">🧭 미니맵 (⚡배선상자 표시)</div>
+        </div>
+
+        <!-- 미션 트래커 HUD -->
+        <div id="missionTracker" class="mission-tracker">
+            <span id="missionText">🔑 백룸 열쇠 찾기 (0/1)</span>
+        </div>
+
+        <!-- 30초 탈출문 개방 카운트다운 HUD -->
+        <div id="gateCountdownHUD" class="gate-countdown-hud hidden">
+            <div class="countdown-title">⏳ 탈출문이 천천히 열리는 중...</div>
+            <div id="countdownTimerText" class="countdown-timer">30초</div>
+            <div class="countdown-sub">열릴 때까지 몬스터를 피해 생존하세요!</div>
+        </div>
+
+        <!-- 아이템 상호작용 안내 팝업 -->
+        <div id="interactionPrompt" class="interaction-prompt">
+            <span id="promptText">[E] 상호작용</span>
+        </div>
+
+        <!-- 은신 및 숨참기 리듬 미니게임 UI -->
+        <div id="rhythmGameUI" class="rhythm-ui hidden">
+            <div class="rhythm-title">💓 박테리아 괴물이 근처에 있습니다! 숨을 참으세요!</div>
+            <div class="rhythm-bar-container">
+                <div class="rhythm-target-zone"></div>
+                <div id="rhythmPointer" class="rhythm-pointer"></div>
+            </div>
+            <div class="rhythm-hint">[Space] 포인터가 하얀 영역에 올 때 누르세요!</div>
+        </div>
+
+        <!-- 상단 시계 및 정보 -->
+        <div class="top-bar">
+            <div class="time-display">
+                <span>⏰ 경과 시간</span>
+                <span id="clockText">00:00</span>
+            </div>
+            <div id="statusMessage" class="status-msg">⚡ 3개의 발광하는 배선상자를 고치고 탈출문을 여세요!</div>
+        </div>
+
+        <!-- 하단 생존 수치 UI (HUD) -->
+        <div class="hud-container">
+            <div class="stat-bar-group">
+                <div class="stat-item">
+                    <span class="stat-icon">💚 체력</span>
+                    <div class="bar-bg"><div id="healthBar" class="bar-fill health" style="width: 100%;"></div></div>
+                    <span id="healthVal" class="stat-val">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⚡ 기력</span>
+                    <div class="bar-bg"><div id="staminaBar" class="bar-fill stamina" style="width: 100%;"></div></div>
+                    <span id="staminaVal" class="stat-val">100</span>
+                </div>
+            </div>
+            <div class="stat-bar-group">
+                <div class="stat-item">
+                    <span class="stat-icon">🍔 배고픔</span>
+                    <div class="bar-bg"><div id="hungerBar" class="bar-fill hunger" style="width: 100%;"></div></div>
+                    <span id="hungerVal" class="stat-val">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">💧 목마름</span>
+                    <div class="bar-bg"><div id="thirstBar" class="bar-fill thirst" style="width: 100%;"></div></div>
+                    <span id="thirstVal" class="stat-val">100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로딩 화면 -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="loading-box">
+                <h2 id="loadingTitle">⚙️ 레벨 3: 배선 시설(Electrical Station)로 이동 중...</h2>
+                <div class="loading-bar-bg">
+                    <div id="loadingProgress" class="loading-bar-fill"></div>
+                </div>
+                <p id="loadingSubtext">🚩 3레벨 체크포인트가 보관되었습니다!</p>
+            </div>
+        </div>
+
+        <!-- 캠코더 오버레이 -->
+        <div id="camcorderOverlay" class="camcorder-overlay hidden">
+            <div class="rec-indicator">● REC</div>
+            <div class="battery-indicator">🔋 100%</div>
+            <div class="camcorder-timestamp" id="camTimestamp">2026-08-07 11:19:00</div>
+            <div class="viewfinder-grid"></div>
+        </div>
+
+        <!-- 위험 붉은 화면 연출 -->
+        <div id="hurtVignette" class="vignette"></div>
+
+        <!-- 조작법 안내 창 -->
+        <div class="controls-guide">
+            <div><strong>[W,A,S,D]</strong> 이동</div>
+            <div><strong>[Shift]</strong> 달리기</div>
+            <div><strong>[E]</strong> ⚡배선 고치기 / 아이템 먹기</div>
+            <div><strong>[Space]</strong> 숨참기 타이밍</div>
+            <div><strong>[F]</strong> 손전등 켜기</div>
+            <div><strong>[Q]</strong> 캠코더 보기</div>
+        </div>
+
+        <!-- 시작 / 게임 오버 오버레이 -->
+        <div id="startOverlay" class="overlay active">
+            <div class="overlay-box">
+                <h1>👻 백룸 3D v9 (배선시설 & 30초 탈출 & 엔딩)</h1>
+                <p>⚙️ <strong>레벨 3 배선 시설 출시!</strong><br>발광하는 3개의 배선을 고치면 탈출문이 30초 동안 천천히 열립니다.<br>30초 후 문에 진입하면 <strong>엔딩 크레딧</strong>이 나옵니다!</p>
+                <div id="checkpointNotice" class="overlay-info hidden">
+                    <p id="checkpointNoticeText">🚩 <strong>체크포인트 보관됨</strong></p>
+                </div>
+                <div class="btn-group">
+                    <button id="startBtn" class="main-btn">레벨 1부터 시작 🚀</button>
+                    <button id="checkpointStartLvl2Btn" class="main-btn secondary hidden">🚩 레벨 2 시작</button>
+                    <button id="checkpointStartLvl3Btn" class="main-btn secondary hidden">🚩 레벨 3 시작</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="endOverlay" class="overlay hidden">
+            <div class="overlay-box">
+                <h1 id="endTitle">💥 게임 오버</h1>
+                <p id="endMessage">미로 속에서 기력을 잃고 쓰러졌습니다...</p>
+                <div class="btn-group">
+                    <button id="restartBtn" class="main-btn">레벨 1 재도전 🔄</button>
+                    <button id="checkpointRestartLvl2Btn" class="main-btn secondary hidden">🚩 레벨 2 재시작</button>
+                    <button id="checkpointRestartLvl3Btn" class="main-btn secondary hidden">🚩 레벨 3 재시작</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎉 최종 엔딩 크레딧 화면 -->
+        <div id="endingCreditsOverlay" class="ending-overlay hidden">
+            <div class="credits-card">
+                <div class="ending-icon">🎉 🏆 🗝️</div>
+                <h1>플레이 해주셔서 감사합니다!</h1>
+                <p class="ending-subtitle">백룸 미로와 수영장, 배선 시설을 모두 완벽하게 탈출하셨습니다!</p>
+
+                <div class="credits-divider"></div>
+
+                <div class="credits-list">
+                    <div class="credit-row">
+                        <span class="credit-label">👑 게임 개발자</span>
+                        <span class="credit-value">나 (USER)</span>
+                    </div>
+                    <div class="credit-row">
+                        <span class="credit-label">🛠️ 제작</span>
+                        <span class="credit-value">나 (USER)</span>
+                    </div>
+                    <div class="credit-row">
+                        <span class="credit-label">💡 기획</span>
+                        <span class="credit-value">나 (USER)</span>
+                    </div>
+                    <div class="credit-row">
+                        <span class="credit-label">🤖 AI 도우미</span>
+                        <span class="credit-value">GEMINI.md</span>
+                    </div>
+                </div>
+
+                <div class="credits-divider"></div>
+
+                <div class="btn-group">
+                    <button id="creditsRestartBtn" class="main-btn">처음부터 다시하기 🔄</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+/* 폰트 및 테마 변수 */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Noto+Sans+KR:wght@500;700;900&display=swap');
+
+:root {
+  --font-arcade: 'Orbitron', 'Noto Sans KR', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #030511;
+  color: #ffffff;
+  font-family: var(--font-arcade);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-x: hidden;
+  transition: background 0.8s ease, color 0.8s ease;
+}
+
+/* ===================================================
+   🎨 10단계별 선명하고 독특한 테마 색상 팔레트
+   =================================================== */
+
+/* Stage 1: 🌱 EASY (네온 에메랄드 그린) */
+body.theme-1 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(57, 255, 20, 0.18), transparent 60%),
+    linear-gradient(to bottom, #020f05 0%, #08240f 100%);
+}
+body.theme-1 .game-header { border-color: #39ff14; box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+body.theme-1 .title { text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14; }
+body.theme-1 .canvas-wrapper { border-color: #39ff14; box-shadow: 0 0 20px rgba(57, 255, 20, 0.4); }
+body.theme-1 .level-val { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
+
+/* Stage 2: ⚡ NORMAL (일렉트릭 시안) */
+body.theme-2 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(0, 243, 255, 0.22), transparent 60%),
+    linear-gradient(to bottom, #01141a 0%, #032b38 100%);
+}
+body.theme-2 .game-header { border-color: #00f3ff; box-shadow: 0 0 18px rgba(0, 243, 255, 0.45); }
+body.theme-2 .title { text-shadow: 0 0 10px #00f3ff, 0 0 22px #00f3ff; }
+body.theme-2 .canvas-wrapper { border-color: #00f3ff; box-shadow: 0 0 22px rgba(0, 243, 255, 0.5); }
+body.theme-2 .level-val { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; }
+
+/* Stage 3: 🔥 HARD (선셋 오렌지) */
+body.theme-3 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 102, 0, 0.25), transparent 60%),
+    linear-gradient(to bottom, #1a0a00 0%, #3d1700 100%);
+}
+body.theme-3 .game-header { border-color: #ff6600; box-shadow: 0 0 20px rgba(255, 102, 0, 0.5); }
+body.theme-3 .title { text-shadow: 0 0 10px #ff6600, 0 0 25px #ff6600; }
+body.theme-3 .canvas-wrapper { border-color: #ff6600; box-shadow: 0 0 25px rgba(255, 102, 0, 0.55); }
+body.theme-3 .level-val { color: #ff6600; text-shadow: 0 0 12px #ff6600; }
+
+/* Stage 4: 🎆 ULTRA (마젠타 핫핑크) */
+body.theme-4 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 0, 127, 0.28), transparent 60%),
+    linear-gradient(to bottom, #1f0010 0%, #420022 100%);
+}
+body.theme-4 .game-header { border-color: #ff007f; box-shadow: 0 0 22px rgba(255, 0, 127, 0.55); }
+body.theme-4 .title { text-shadow: 0 0 10px #ff007f, 0 0 25px #ff007f; }
+body.theme-4 .canvas-wrapper { border-color: #ff007f; box-shadow: 0 0 25px rgba(255, 0, 127, 0.6); }
+body.theme-4 .level-val { color: #ff007f; text-shadow: 0 0 12px #ff007f; }
+
+/* Stage 5: 🌌 HYPERSPACE (코스믹 바이올렛 퍼플) */
+body.theme-5 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(157, 78, 221, 0.35), transparent 65%),
+    linear-gradient(to bottom, #120024 0%, #2a0052 100%);
+}
+body.theme-5 .game-header { border-color: #9d4edd; box-shadow: 0 0 25px rgba(157, 78, 221, 0.6); }
+body.theme-5 .title { text-shadow: 0 0 10px #9d4edd, 0 0 30px #9d4edd; }
+body.theme-5 .canvas-wrapper { border-color: #9d4edd; box-shadow: 0 0 30px rgba(157, 78, 221, 0.7); }
+body.theme-5 .level-val { color: #9d4edd; text-shadow: 0 0 15px #9d4edd; }
+
+/* Stage 6: 🪐 PLANETARY (엠버 옐로우 골드) */
+body.theme-6 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 230, 0, 0.3), transparent 60%),
+    linear-gradient(to bottom, #1c1900 0%, #3e3800 100%);
+}
+body.theme-6 .game-header { border-color: #ffe600; box-shadow: 0 0 25px rgba(255, 230, 0, 0.6); }
+body.theme-6 .title { color: #ffe600; text-shadow: 0 0 10px #ffe600, 0 0 28px #ffe600; }
+body.theme-6 .canvas-wrapper { border-color: #ffe600; box-shadow: 0 0 30px rgba(255, 230, 0, 0.65); }
+body.theme-6 .level-val { color: #ffe600; text-shadow: 0 0 15px #ffe600; }
+
+/* Stage 7: 💎 DIAMOND (아이스 블루 다이아몬드) */
+body.theme-7 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(72, 202, 228, 0.35), transparent 60%),
+    linear-gradient(to bottom, #001220 0%, #002e52 100%);
+}
+body.theme-7 .game-header { border-color: #48cae4; box-shadow: 0 0 28px rgba(72, 202, 228, 0.65); }
+body.theme-7 .title { color: #e0f7fa; text-shadow: 0 0 10px #48cae4, 0 0 30px #48cae4; }
+body.theme-7 .canvas-wrapper { border-color: #48cae4; box-shadow: 0 0 32px rgba(72, 202, 228, 0.7); }
+body.theme-7 .level-val { color: #48cae4; text-shadow: 0 0 15px #48cae4; }
+
+/* Stage 8: 🌋 SUPERNOVA (크림슨 플레임 레드) */
+body.theme-8 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 0, 51, 0.4), transparent 65%),
+    linear-gradient(to bottom, #240008 0%, #520013 100%);
+}
+body.theme-8 .game-header { border-color: #ff0033; box-shadow: 0 0 30px rgba(255, 0, 51, 0.7); }
+body.theme-8 .title { color: #ff3355; text-shadow: 0 0 12px #ff0033, 0 0 32px #ff0033; }
+body.theme-8 .canvas-wrapper { border-color: #ff0033; box-shadow: 0 0 35px rgba(255, 0, 51, 0.8); }
+body.theme-8 .level-val { color: #ff0033; text-shadow: 0 0 18px #ff0033; }
+
+/* Stage 9: 👑 GOD MODE (로얄 골드 & 레드 블랙홀) */
+body.theme-9 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 215, 0, 0.45), transparent 65%),
+    radial-gradient(circle at 80% 80%, rgba(255, 0, 85, 0.35), transparent 50%),
+    linear-gradient(to bottom, #241c00 0%, #4f3d00 100%);
+}
+body.theme-9 .game-header { border-color: #ffd700; box-shadow: 0 0 35px rgba(255, 215, 0, 0.8); }
+body.theme-9 .title { color: #ffd700; text-shadow: 0 0 12px #ffd700, 0 0 35px #ff0055; animation: pulseGlow 1s infinite alternate; }
+body.theme-9 .canvas-wrapper { border-color: #ffd700; box-shadow: 0 0 40px rgba(255, 215, 0, 0.85); }
+body.theme-9 .level-val { color: #ffd700; text-shadow: 0 0 20px #ffd700, 0 0 30px #ff0055; }
+
+/* Stage 10: ♾️ INFINITY OVERLORD (무지개 영롱 프리즘 차원) */
+body.theme-10 {
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(255, 0, 255, 0.45), transparent 70%),
+    radial-gradient(circle at 20% 80%, rgba(0, 243, 255, 0.4), transparent 60%),
+    linear-gradient(to bottom, #170024 0%, #380052 100%);
+}
+body.theme-10 .game-header { border-color: #fff; box-shadow: 0 0 40px #ff00ff, 0 0 20px #00f3ff; }
+body.theme-10 .title { 
+  background: linear-gradient(90deg, #ff007f, #ffe600, #39ff14, #00f3ff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  animation: pulseGlow 0.6s infinite alternate;
+}
+body.theme-10 .canvas-wrapper { border-color: #fff; box-shadow: 0 0 45px rgba(255, 0, 255, 0.8), inset 0 0 30px rgba(0, 243, 255, 0.6); }
+body.theme-10 .level-val { color: #fff; text-shadow: 0 0 10px #fff, 0 0 25px #ff00ff, 0 0 40px #00f3ff; animation: pulseGlow 0.6s infinite alternate; }
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+.game-container {
+  width: 100%;
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 상단 헤더 */
+.game-header {
+  width: 100%;
+  background: rgba(15, 20, 40, 0.88);
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.5s ease;
+}
+
+.title {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 650px;
+  font-size: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-item .label {
+  color: #8a9bb8;
+}
+
+.status-item .value {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* 캔버스 래퍼 */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 2 / 1;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 모달 레이어 */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 5, 17, 0.88);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: rgba(15, 20, 45, 0.95);
+  border: 3px solid #ff007f;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 0 30px #ff007f;
+  max-width: 90%;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-title {
+  font-size: 2.2rem;
+  color: #ff007f;
+  text-shadow: 0 0 15px #ff007f;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+.final-score {
+  font-size: 1.3rem;
+  color: #ffe600;
+}
+
+.arcade-btn {
+  background: linear-gradient(135deg, #39ff14, #00b33c);
+  color: #000;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.1rem;
+  font-family: var(--font-arcade);
+  font-weight: 800;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 180px;
+}
+
+.arcade-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.9);
+}
+
+.arcade-btn:active {
+  transform: translateY(1px);
+}
+
+/* 하단 알림 및 모바일 터치 버튼 */
+.game-controls-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.control-tip {
+  font-size: 0.95rem;
+  color: #ffd700;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+  text-align: center;
+}
+
+.mobile-controls {
+  display: none;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.mobile-btn {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: var(--font-arcade);
+  border-radius: 12px;
+  width: 48%;
+  max-width: 180px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.jump-btn {
+  background: rgba(57, 255, 20, 0.2);
+  border: 2px solid #39ff14;
+  color: #39ff14;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+}
+
+.jump-btn:active {
+  background: rgba(57, 255, 20, 0.5);
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.8);
+}
+
+.slide-btn {
+  background: rgba(255, 153, 0, 0.2);
+  border: 2px solid #ff9900;
+  color: #ff9900;
+  box-shadow: 0 0 15px rgba(255, 153, 0, 0.3);
+}
+
+.slide-btn:active {
+  background: rgba(255, 153, 0, 0.5);
+  box-shadow: 0 0 25px rgba(255, 153, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .mobile-controls {
+    display: flex;
+  }
+
+  .control-tip {
+    font-size: 0.85rem;
+  }
+}

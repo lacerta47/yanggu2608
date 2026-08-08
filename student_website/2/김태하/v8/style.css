@@ -1,0 +1,335 @@
+/* 폰트 및 테마 변수 */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Noto+Sans+KR:wght@500;700;900&display=swap');
+
+:root {
+  --bg-color: #030511;
+  --panel-bg: rgba(15, 20, 40, 0.85);
+  --neon-green: #39ff14;
+  --neon-cyan: #00f3ff;
+  --neon-pink: #ff007f;
+  --neon-yellow: #ffe600;
+  --neon-orange: #ff9900;
+  --neon-purple: #b5179e;
+  --neon-red: #ff0055;
+  --text-color: #ffffff;
+  --font-arcade: 'Orbitron', 'Noto Sans KR', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(57, 255, 20, 0.12), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(0, 243, 255, 0.1), transparent 50%),
+    linear-gradient(to bottom, #02030a 0%, #0a0e26 100%);
+  color: var(--text-color);
+  font-family: var(--font-arcade);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-x: hidden;
+  transition: background 1s ease;
+}
+
+/* 최종단계 하이퍼스페이스 우주 모드 (분위기 전환!) */
+body.hyperspace-mode {
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(181, 23, 158, 0.35), transparent 70%),
+    radial-gradient(circle at 20% 80%, rgba(0, 243, 255, 0.25), transparent 60%),
+    linear-gradient(to bottom, #080014 0%, #1a0033 100%);
+}
+
+.game-container {
+  width: 100%;
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 상단 헤더 */
+.game-header {
+  width: 100%;
+  background: var(--panel-bg);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.5s ease;
+}
+
+.game-header.hyperspace-header {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 25px var(--neon-purple), inset 0 0 15px var(--neon-purple);
+  background: rgba(35, 10, 50, 0.9);
+}
+
+.title {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 
+    0 0 5px #fff,
+    0 0 10px var(--neon-cyan),
+    0 0 20px var(--neon-cyan);
+  letter-spacing: 2px;
+  text-align: center;
+  transition: all 0.5s ease;
+}
+
+.title.hyperspace-title {
+  color: #fff;
+  text-shadow: 
+    0 0 5px #fff,
+    0 0 10px var(--neon-purple),
+    0 0 25px var(--neon-purple),
+    0 0 40px var(--neon-pink);
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 650px;
+  font-size: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-item .label {
+  color: #8a9bb8;
+}
+
+.status-item .value {
+  color: var(--neon-green);
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-shadow: 0 0 8px var(--neon-green);
+}
+
+.level-easy {
+  color: var(--neon-green) !important;
+  text-shadow: 0 0 8px var(--neon-green) !important;
+}
+
+.level-normal {
+  color: var(--neon-cyan) !important;
+  text-shadow: 0 0 8px var(--neon-cyan) !important;
+}
+
+.level-hard {
+  color: var(--neon-orange) !important;
+  text-shadow: 0 0 8px var(--neon-orange) !important;
+}
+
+.level-extreme {
+  color: var(--neon-purple) !important;
+  text-shadow: 0 0 15px var(--neon-purple), 0 0 25px var(--neon-pink) !important;
+  animation: hyperPulse 1.2s infinite alternate;
+}
+
+@keyframes hyperPulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+
+/* 캔버스 래퍼 */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 2 / 1;
+  background: #000;
+  border: 3px solid var(--neon-cyan);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.canvas-wrapper.hyperspace-canvas {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 35px rgba(181, 23, 158, 0.7), inset 0 0 25px rgba(0, 243, 255, 0.4);
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 모달 레이어 */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 5, 17, 0.88);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: rgba(15, 20, 45, 0.95);
+  border: 3px solid var(--neon-pink);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 0 30px var(--neon-pink);
+  max-width: 90%;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-title {
+  font-size: 2.2rem;
+  color: var(--neon-pink);
+  text-shadow: 0 0 15px var(--neon-pink);
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+.final-score {
+  font-size: 1.3rem;
+  color: var(--neon-yellow);
+}
+
+.arcade-btn {
+  background: linear-gradient(135deg, var(--neon-green), #00b33c);
+  color: #000;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.1rem;
+  font-family: var(--font-arcade);
+  font-weight: 800;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 180px;
+}
+
+.arcade-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.9);
+}
+
+.arcade-btn:active {
+  transform: translateY(1px);
+}
+
+/* 하단 알림 및 모바일 터치 버튼 */
+.game-controls-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.control-tip {
+  font-size: 0.95rem;
+  color: #8a9bb8;
+  text-align: center;
+}
+
+.mobile-controls {
+  display: none;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.mobile-btn {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: var(--font-arcade);
+  border-radius: 12px;
+  width: 48%;
+  max-width: 180px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.jump-btn {
+  background: rgba(57, 255, 20, 0.2);
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+}
+
+.jump-btn:active {
+  background: rgba(57, 255, 20, 0.5);
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.8);
+}
+
+.slide-btn {
+  background: rgba(255, 153, 0, 0.2);
+  border: 2px solid var(--neon-orange);
+  color: var(--neon-orange);
+  box-shadow: 0 0 15px rgba(255, 153, 0, 0.3);
+}
+
+.slide-btn:active {
+  background: rgba(255, 153, 0, 0.5);
+  box-shadow: 0 0 25px rgba(255, 153, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .mobile-controls {
+    display: flex;
+  }
+
+  .control-tip {
+    font-size: 0.85rem;
+  }
+}

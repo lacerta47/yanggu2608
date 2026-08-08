@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네온 오락실 블럭깨기 (v1)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 게임 상단 정보 바 -->
+    <header class="game-header">
+      <h1 class="title">⚡ NEON BRICK BREAKER ⚡</h1>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="label">점수:</span>
+          <span id="scoreText" class="value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="label">남은 블록:</span>
+          <span id="bricksText" class="value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 캔버스 게임 영역 -->
+    <main class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+      <!-- 모달 레이어 (게임 오버 / 승리) -->
+      <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2 id="modalTitle" class="modal-title">게임 오버</h2>
+          <p id="modalMessage" class="modal-message">공을 놓쳤어요!</p>
+          <p class="final-score">최종 점수: <span id="finalScore">0</span>점</p>
+          <button id="restartBtn" class="arcade-btn">🎮 다시 시작하기</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 게임 시작 안내 및 터치 패널 -->
+    <footer class="game-controls-info">
+      <p class="control-tip">⌨️ 조작 방법: 키보드 좌/우 방향키 (← / →)</p>
+      
+      <!-- 모바일 조작 버튼 -->
+      <div class="mobile-controls">
+        <button id="touchLeftBtn" class="mobile-btn" aria-label="왼쪽 이동">◀</button>
+        <button id="touchRightBtn" class="mobile-btn" aria-label="오른쪽 이동">▶</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

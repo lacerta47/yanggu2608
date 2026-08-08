@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>픽셀 바다 오드아이 고양이 달리기</title>
+  <!-- Google Retro Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>👾 픽셀 오드아이 고양이 달리기 🐱🌊</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 레트로 픽셀 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">SCORE</span>
+        <span id="scoreDisplay" class="value">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SPEED</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+      <div class="status-item">
+        <span class="label">CLEARED</span>
+        <span id="clearedDisplay" class="value">0</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 (픽셀 아트 렌더링) -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>👾 픽셀 바다 오드아이 고양이</h2>
+          <p class="desc">
+            레트로 픽셀 바닷속을 헤엄치는 물고기들과 함께 달려요!<br>
+            <strong>스페이스바(Space)</strong>를 눌러 점프하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🐟 바닷속을 노니는 알록달록 픽셀 물고기 구경하기!</li>
+              <li>🐚 장애물이 더 자주 다가와요! 뛰어넘을 때마다 <strong>+3점</strong>!</li>
+              <li>🐾 더 자연스럽게 퐁당퐁당 달리는 고양이 관찰하기!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ START GAME</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 GAME OVER!</h2>
+          <p id="resultMessage">장애물에 부딪혔어요! 스페이스바를 눌러 바로 다시 도전하세요!</p>
+          <div class="final-score-box">
+            FINAL SCORE: <span id="finalScore">0</span>
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 RESTART (SPACE)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 JUMP (SPACEBAR)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

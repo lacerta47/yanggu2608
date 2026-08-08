@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오드아이 고양이 달리기 & 그물 장애물 v12</title>
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🕸️ 새로운 슬라이딩 장애물 '그물' 등장! v12 🐱💨</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 점수 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">HI-SCORE</span>
+        <span id="highScoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SCORE</span>
+        <span id="scoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SPEED</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🕸️ 바다 그물 장애물이 추가되었어요!</h2>
+          <p class="desc">
+            돌고래뿐만 아니라 <strong>바다 그물</strong>도 오직 <strong>슬라이딩</strong>으로만 피할 수 있어요!<br>
+            그물에 걸리지 않도록 <strong>아래 방향키(▼)</strong>를 눌러 재빠르게 미끄러지세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🦘 <strong>점프 (Spacebar)</strong>: 조개, 미역, 산호초를 뛰어넘기!</li>
+              <li>💨 <strong>슬라이딩 (▼ ArrowDown)</strong>: 🐬 돌고래 & 🕸️ 그물 아래로 쏙 통과!</li>
+              <li>🕸️ <strong>그물 주의</strong>: 서서 가거나 점프하면 그물에 걸려 게임 오버!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ START GAME (SPACE)</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 GAME OVER!</h2>
+          <p id="resultMessage">그물이나 장애물에 걸렸어요! 돌고래와 그물은 아래 방향키(▼) 슬라이딩으로 피하세요!</p>
+          <div class="final-score-box">
+            DISTANCE SCORE: <span id="finalScore">00000</span>
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 AGAIN (SPACEBAR)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 점프 (Space)</button>
+      <button id="btnSlide" class="ctrl-btn slide-btn">💨 슬라이딩 (▼)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

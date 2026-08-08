@@ -1,0 +1,280 @@
+/* 폰트 및 테마 변수 */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Noto+Sans+KR:wght@500;700;900&display=swap');
+
+:root {
+  --bg-color: #0d0208;
+  --panel-bg: rgba(35, 10, 20, 0.88);
+  --neon-red: #ff0055;
+  --neon-orange: #ff5500;
+  --neon-green: #39ff14;
+  --neon-cyan: #00f3ff;
+  --neon-yellow: #ffe600;
+  --text-color: #ffffff;
+  --font-arcade: 'Orbitron', 'Noto Sans KR', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(255, 0, 85, 0.18), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(255, 85, 0, 0.15), transparent 50%),
+    linear-gradient(to bottom, #080105 0%, #1a0510 100%);
+  color: var(--text-color);
+  font-family: var(--font-arcade);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 상단 헤더 */
+.game-header {
+  width: 100%;
+  background: var(--panel-bg);
+  border: 2px solid var(--neon-red);
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.4), inset 0 0 10px rgba(255, 0, 85, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.title {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 
+    0 0 5px #fff,
+    0 0 10px var(--neon-red),
+    0 0 20px var(--neon-red);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 650px;
+  font-size: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-item .label {
+  color: #c88a9b;
+}
+
+.status-item .value {
+  color: var(--neon-yellow);
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-shadow: 0 0 8px var(--neon-yellow);
+}
+
+#speedText {
+  color: var(--neon-red);
+  text-shadow: 0 0 10px var(--neon-red);
+}
+
+/* 캔버스 래퍼 */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 2 / 1;
+  background: #000;
+  border: 3px solid var(--neon-red);
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.5), inset 0 0 15px rgba(255, 0, 85, 0.3);
+  overflow: hidden;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 모달 레이어 */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 2, 8, 0.9);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: rgba(35, 10, 25, 0.95);
+  border: 3px solid var(--neon-red);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 0 35px var(--neon-red);
+  max-width: 90%;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-title {
+  font-size: 2.2rem;
+  color: var(--neon-red);
+  text-shadow: 0 0 15px var(--neon-red);
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+.final-score {
+  font-size: 1.3rem;
+  color: var(--neon-yellow);
+}
+
+.arcade-btn {
+  background: linear-gradient(135deg, var(--neon-red), var(--neon-orange));
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.1rem;
+  font-family: var(--font-arcade);
+  font-weight: 800;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.7);
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 180px;
+}
+
+.arcade-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 0, 85, 1);
+}
+
+.arcade-btn:active {
+  transform: translateY(1px);
+}
+
+/* 하단 알림 및 모바일 터치 버튼 */
+.game-controls-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.control-tip {
+  font-size: 0.95rem;
+  color: #ff809b;
+  text-align: center;
+}
+
+.mobile-controls {
+  display: none;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.mobile-btn {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: var(--font-arcade);
+  border-radius: 12px;
+  width: 48%;
+  max-width: 180px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.jump-btn {
+  background: rgba(57, 255, 20, 0.2);
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+}
+
+.jump-btn:active {
+  background: rgba(57, 255, 20, 0.5);
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.8);
+}
+
+.slide-btn {
+  background: rgba(255, 85, 0, 0.25);
+  border: 2px solid var(--neon-orange);
+  color: var(--neon-orange);
+  box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
+}
+
+.slide-btn:active {
+  background: rgba(255, 85, 0, 0.5);
+  box-shadow: 0 0 25px rgba(255, 85, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .mobile-controls {
+    display: flex;
+  }
+
+  .control-tip {
+    font-size: 0.85rem;
+  }
+}

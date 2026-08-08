@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바다 속 오드아이 고양이 달리기</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🐱 바다 속 오드아이 고양이 달리기</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 스코어 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">현재 점수</span>
+        <span id="scoreDisplay" class="value">0점</span>
+      </div>
+      <div class="status-item">
+        <span class="label">달리기 속도</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+      <div class="status-item">
+        <span class="label">넘은 장애물</span>
+        <span id="clearedDisplay" class="value">0개</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 영역 (바다 & 모래사장 배경) -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 초기 스타트 오버레이 화면 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🌊 오드아이 고양이의 바다 모험</h2>
+          <p class="desc">
+            귀여운 흰색 오드아이 고양이가 바닷가 모래사장을 달려요!<br>
+            장애물이 다가오면 <strong>스페이스바(Space)</strong>를 눌러 점프하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🐚 <strong>조개, 미역, 산호초</strong>를 점프로 넘어야 해요!</li>
+              <li>⭐ 장애물을 넘을 때마다 <strong>+3점</strong> 획득!</li>
+              <li>⚡ 달릴수록 속도가 점점 더 빨라집니다!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">🎮 게임 시작하기</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 쿵! 장애물에 부딪혔어요!</h2>
+          <p id="resultMessage">아쉽게도 부딪혔지만 오드아이 고양이는 다시 달릴 준비가 되었어요!</p>
+          <div class="final-score-box">
+            🏆 최종 점수: <span id="finalScore">0</span>점
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🚀 다시 도전하기 (스페이스바)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 및 터치 사용자용 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 점프하기 (Space)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

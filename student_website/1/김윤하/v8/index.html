@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>밝은 바다 오드아이 고양이 달리기 v8</title>
+  <!-- Google Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DungGeunMo&family=Jua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🌊 밝은 바다 오드아이 고양이 달리기 🐱💨</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 점수 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">HI-SCORE</span>
+        <span id="highScoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SCORE</span>
+        <span id="scoreDisplay" class="value">00000</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SPEED</span>
+        <span id="speedDisplay" class="value">1.0x</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+      <!-- 시작 안내 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🌊 화사한 밝은 바다 속으로!</h2>
+          <p class="desc">
+            속도가 빠르게 오르며 더욱 박진감 넘쳐요!<br>
+            위로 다니는 돌고래와 부딪히면 게임 오버되니 <strong>아래 방향키(▼)</strong>로 슬라이딩하세요!
+          </p>
+          <div class="info-box">
+            <ul>
+              <li>🦘 <strong>점프</strong>: <strong>스페이스바 (Spacebar)</strong></li>
+              <li>💨 <strong>슬라이딩</strong>: <strong>아래 방향키 (▼ ArrowDown)</strong></li>
+              <li>🐬 <strong>돌고래 충돌 주의</strong>: 돌고래에 닿으면 즉시 게임 오버!</li>
+              <li>⚡ <strong>빠른 속도감</strong>: 달릴수록 속도가 스릴 있게 빨라집니다!</li>
+            </ul>
+          </div>
+          <button id="startGameBtn" class="btn primary-btn">▶ START GAME (SPACE)</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 재시작 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">💥 GAME OVER!</h2>
+          <p id="resultMessage">장애물이나 돌고래에 부딪혔어요! 스페이스바를 눌러 바로 다시 시작해보세요!</p>
+          <div class="final-score-box">
+            DISTANCE SCORE: <span id="finalScore">00000</span>
+          </div>
+          <button id="restartBtn" class="btn primary-btn">🔄 AGAIN (SPACEBAR)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 -->
+    <div class="mobile-controls">
+      <button id="btnJump" class="ctrl-btn jump-btn">🦘 점프 (Space)</button>
+      <button id="btnSlide" class="ctrl-btn slide-btn">💨 슬라이딩 (▼)</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

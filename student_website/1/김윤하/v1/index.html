@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신나는 파스텔 블록 깨기</title>
+  <!-- 폰트 불러오기 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1>🧩 파스텔 블록 깨기</h1>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="음향 설정">🔊 소리 켜짐</button>
+    </header>
+
+    <!-- 스코어 및 상태 표시줄 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="label">점수</span>
+        <span id="scoreDisplay" class="value">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">남은 블록</span>
+        <span id="blocksDisplay" class="value">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">기회</span>
+        <span id="livesDisplay" class="value">❤️❤️❤️</span>
+      </div>
+    </div>
+
+    <!-- 게임 캔버스 영역 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="550"></canvas>
+      
+      <!-- 게임 시작 안내 / 일시정지 오버레이 -->
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-card">
+          <h2>🎮 블록 깨기 준비!</h2>
+          <p>키보드 <strong>왼쪽(◀) / 오른쪽(▶) 방향키</strong>로 바를 움직이세요.</p>
+          <p>모바일은 화면 아래 버튼이나 드래그로 조작할 수 있어요!</p>
+          <button id="startGameBtn" class="btn primary-btn">게임 시작하기</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 / 승리 팝업 -->
+      <div id="resultModal" class="overlay hidden">
+        <div class="overlay-card">
+          <h2 id="resultTitle">게임 오버!</h2>
+          <p id="resultMessage">아쉽게도 공을 놓쳤어요. 다시 도전해볼까요?</p>
+          <div class="final-score-box">
+            최종 점수: <span id="finalScore">0</span>점
+          </div>
+          <button id="restartBtn" class="btn primary-btn">다시 도전하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 컨트롤러 (모바일 및 터치 사용자용) -->
+    <div class="mobile-controls">
+      <button id="btnLeft" class="ctrl-btn">◀ 왼쪽</button>
+      <button id="btnLaunch" class="ctrl-btn launch-btn">🚀 공 발사</button>
+      <button id="btnRight" class="ctrl-btn">오른쪽 ▶</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
