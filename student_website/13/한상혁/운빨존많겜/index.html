@@ -964,10 +964,14 @@
         if (p.destroyed) projectiles.splice(i, 1);
       }
 
-      // Update Particles
+      // Update Particles (plain objects — inline physics, no .update method)
       for (let i = particles.length - 1; i >= 0; i--) {
         const pt = particles[i];
-        pt.update(dt);
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.vx *= 0.9;
+        pt.vy *= 0.9;
+        pt.alpha -= dt * 1.8;
         if (pt.alpha <= 0) particles.splice(i, 1);
       }
 
@@ -981,7 +985,7 @@
     }
 
     function spawnMonster() {
-      const isBoss = (wave % 5 === 0 && waveTimer > 15);
+      const isBoss = (wave % 10 === 0 && waveTimer > 15);
       const hpMultiplier = Math.pow(1.15, wave - 1);
       const baseHp = isBoss ? 5000 * hpMultiplier : 800 * hpMultiplier;
       const speed = isBoss ? 45 : 75 + Math.min(wave * 2, 45);
