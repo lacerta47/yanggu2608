@@ -1032,7 +1032,7 @@ function loadLevel4() {
         books.push({ mesh: bookGroup, isCollected: false, pos: bookGroup.position });
     }
 
-    // 📄 1개의 힌트 종이 스폰 ("컴퓨터 암호: 준섭 게이")
+    // 📄 1개의 힌트 종이 스폰 ("컴퓨터 암호: 1234")
     const hPos = availableBookPositions.length > 0 ?
         availableBookPositions.splice(Math.floor(Math.random() * availableBookPositions.length), 1)[0] :
         { x: 10 * ROOM_SIZE, z: 10 * ROOM_SIZE };
@@ -1346,7 +1346,7 @@ function handleInteract() {
 
         if (hintPaper && !hintPaper.isFound && player.position.distanceTo(hintPaper.pos) < 2.2) {
             hintPaper.isFound = true;
-            if (statusMessage) statusMessage.textContent = '📄 힌트 종이 획득: 컴퓨터 암호는 [준섭 게이] 입니다!';
+            if (statusMessage) statusMessage.textContent = '📄 힌트 종이 획득: 컴퓨터 암호는 [1234] 입니다!';
             playClickSound(850);
             return;
         }
@@ -1420,7 +1420,7 @@ function submitComputerPassword() {
     if (!computerPassInput) return;
     const inputVal = computerPassInput.value.trim();
 
-    if (inputVal === '준섭 게이') {
+    if (inputVal === '1234') {
         if (terminalMsg) {
             terminalMsg.className = 'terminal-msg success';
             terminalMsg.textContent = '✅ AUTHENTICATION SUCCESSFUL! FALLING TO REALITY...';
