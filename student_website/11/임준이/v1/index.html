@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우주 블록깨기 게임 - v1</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for retro/space font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbit&family=Gowun+Dodum&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 게임 정보 (점수, 목숨) -->
+        <header class="game-header">
+            <h1 class="game-title">🚀 우주 블록깨기</h1>
+            <div class="stats-board">
+                <div class="stat-item">
+                    <span class="stat-label">⭐ 점수</span>
+                    <span id="scoreText" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">❤️ 기회</span>
+                    <span id="livesText" class="stat-value">3</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🧱 남은 블록</span>
+                    <span id="bricksText" class="stat-value">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 화면 (캔버스) -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="550"></canvas>
+            
+            <!-- 오버레이 화면 (시작 / 게임오버 / 승리) -->
+            <div id="overlayScreen" class="overlay">
+                <div class="overlay-content">
+                    <h2 id="overlayTitle">🚀 준비되셨나요?</h2>
+                    <p id="overlayMessage">좌우 방향키나 버튼으로 이동하여 모든 우주 블록을 깨뜨리세요!</p>
+                    <button id="startButton" class="glow-btn">게임 시작하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 / 터치 조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="btnLeft" class="touch-btn">◀ 왼쪽</button>
+            <button id="btnRight" class="touch-btn">오른쪽 ▶</button>
+        </div>
+
+        <!-- 조작 방법 안내 -->
+        <footer class="game-instructions">
+            <p>⌨️ <strong>조작 방법:</strong> 키보드 왼쪽(←) / 오른쪽(→) 방향키 또는 화면 하단 버튼</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

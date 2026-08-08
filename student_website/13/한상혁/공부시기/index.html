@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💥 초호화 왕볼 부수기 게임 (Super Mega Ball Crusher)</title>
+  <meta name="description" content="좌우로 움직이며 위로 작살과 레이저를 쏴서 거대한 왕볼을 쪼개고 터뜨리는 짜릿한 팡팡 아케이드 액션 게임!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-wrapper">
+    <!-- Main Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Top HUD -->
+    <header class="hud-bar">
+      <div class="hud-left">
+        <a href="../index.html" class="nav-btn">⬅ 메인 메뉴</a>
+        <div class="stage-tag">
+          <span class="st-badge" id="hud-stage-badge">STAGE 1</span>
+          <span class="st-name" id="hud-stage-name">초록 들판 왕볼 소탕전</span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <!-- Weapon & Item Status -->
+        <div class="item-status-pill">
+          <span class="w-icon" id="hud-weapon-icon">🔱</span>
+          <span class="w-name" id="hud-weapon-name">기본 작살</span>
+          <div class="time-stop-gauge hidden" id="time-stop-gauge">
+            <span class="ts-label">⏱️ 타임스톱</span>
+            <div class="ts-bar"><div class="ts-fill" id="ts-fill" style="width: 100%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="stat-pill">
+          <span class="stat-label">❤️ 생명력</span>
+          <span class="stat-value red" id="hud-lives">❤️❤️❤️</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">현재 점수</span>
+          <span class="stat-value gold" id="hud-score">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">남은 왕볼</span>
+          <span class="stat-value cyan" id="hud-balls">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Floating Combo Display -->
+    <div class="combo-banner" id="combo-banner">
+      <div class="combo-num" id="combo-num">0</div>
+      <div class="combo-text">COMBO POP! 💥</div>
+    </div>
+
+    <!-- Mobile Touch Control Overlay -->
+    <div class="touch-controls" id="touch-controls">
+      <div class="touch-dpad">
+        <button class="t-btn" id="t-left">◀ 좌로 이동</button>
+        <button class="t-btn" id="t-right">우로 이동 ▶</button>
+      </div>
+      <div class="touch-actions">
+        <button class="t-btn action-jump" id="t-jump">⬆ 20단 점프</button>
+        <button class="t-btn action-shoot" id="t-shoot">🔥 작살 발사!</button>
+      </div>
+    </div>
+
+    <!-- Bottom Key Guide -->
+    <footer class="footer-guide">
+      <div class="guide-item"><span class="k-key">← → / A D</span> 좌우 이동 & 대시</div>
+      <div class="guide-item"><span class="k-key">Space / 클릭</span> 🔱 작살 & 레이저 발사</div>
+      <div class="guide-item"><span class="k-key">↑ / W</span> 👑 20단 연속 공중 점프</div>
+      <div class="guide-item"><span class="k-key">R</span> 즉시 재시작</div>
+    </footer>
+
+    <!-- Start / Stage Modal -->
+    <div id="start-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="m-hero">💥 ⚽ 🔱 ⚡</div>
+        <h1 class="m-title">초호화 왕볼 부수기 (Mega Ball Crusher)</h1>
+        <p class="m-desc">
+          화면을 통통 튀어다니는 거대한 왕볼을 작살로 쪼개고 터뜨려 모든 볼을 격파하세요!
+        </p>
+
+        <!-- Weapon Guide Cards -->
+        <div class="guide-cards-grid">
+          <div class="g-card">
+            <span class="g-icon">🔱</span>
+            <h4>작살 & 레이저</h4>
+            <p>천장까지 닿는 작살을 쏴서 대형볼을 중형, 소형으로 분열!</p>
+          </div>
+          <div class="g-card">
+            <span class="g-icon">⏱️</span>
+            <h4>타임 스톱 시계</h4>
+            <p>일정 시간 모든 볼을 공중에 얼려 안전하게 난사!</p>
+          </div>
+          <div class="g-card">
+            <span class="g-icon">💣</span>
+            <h4>메가 폭탄 & 기관총</h4>
+            <p>화면 전체 볼을 동시에 폭발시키거나 고속 연사!</p>
+          </div>
+          <div class="g-card">
+            <span class="g-icon">👑</span>
+            <h4>20단 공중제비 점프</h4>
+            <p>위험할 땐 ↑ 키로 공중 20단 점프로 볼을 뛰어넘기!</p>
+          </div>
+        </div>
+
+        <!-- Stage Selector -->
+        <div class="stage-select-row">
+          <div class="st-card active" data-stage="1">
+            <div class="st-icon c-green">🌿</div>
+            <div class="st-text">
+              <span class="diff easy">EASY</span>
+              <h3>스테이지 1: 초록 들판</h3>
+              <p>기본 왕볼 분열 입문전</p>
+            </div>
+          </div>
+
+          <div class="st-card" data-stage="2">
+            <div class="st-icon c-blue">🏙️</div>
+            <div class="st-text">
+              <span class="diff normal">NORMAL</span>
+              <h3>스테이지 2: 네온 시티</h3>
+              <p>화염볼 & 번개볼 멀티 러시</p>
+            </div>
+          </div>
+
+          <div class="st-card" data-stage="3">
+            <div class="st-icon c-red">👑</div>
+            <div class="st-text">
+              <span class="diff hard">HARD</span>
+              <h3>스테이지 3: 킹볼 보스전</h3>
+              <p>초대형 골든 킹볼 & 16분열 폭풍</p>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-start-game" class="play-btn-large">🚀 왕볼 부수기 시작! (Space / Enter)</button>
+      </div>
+    </div>
+
+    <!-- Victory / Clear Modal -->
+    <div id="clear-modal" class="modal-overlay hidden">
+      <div class="modal-card victory-card">
+        <div class="trophy-anim">🏆 💥 🌟 🎉</div>
+        <h2 class="vic-title" id="vic-title">STAGE CLEAR!</h2>
+        <p class="vic-sub" id="vic-sub">모든 왕볼을 완벽하게 부수고 소탕했습니다!</p>
+
+        <div class="vic-stats-grid">
+          <div class="v-card">
+            <span class="v-label">최종 획득 점수</span>
+            <span class="v-val gold" id="res-score">0 점</span>
+          </div>
+          <div class="v-card">
+            <span class="v-label">최대 콤보 팝</span>
+            <span class="v-val cyan" id="res-combo">0 COMBO</span>
+          </div>
+          <div class="v-card">
+            <span class="v-label">파괴한 볼 개수</span>
+            <span class="v-val" id="res-balls">0 개</span>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button id="btn-retry" class="act-btn primary">🔄 다시 도전하기 (R)</button>
+          <button id="btn-next-stage" class="act-btn secondary">다음 스테이지 ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

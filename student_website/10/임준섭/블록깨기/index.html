@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블록깨기 게임 - v1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🧱 블록깨기 게임</h1>
+            <div class="score-board">
+                <span>점수: <strong id="scoreDisplay">0</strong></span>
+            </div>
+        </header>
+
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="480" height="400"></canvas>
+            <div id="overlayScreen" class="overlay">
+                <h2 id="overlayTitle">게임 시작!</h2>
+                <p id="overlayMessage">방향키(←, →)를 눌러 바를 움직이세요.</p>
+                <button id="startBtn" class="action-btn">시작하기</button>
+            </div>
+        </div>
+
+        <div class="controls-guide">
+            <p>⌨️ 키보드 <strong>←</strong> / <strong>→</strong> 방향키 또는 아래 버튼으로 바를 조작하세요!</p>
+            <div class="mobile-controls">
+                <button id="leftTouchBtn" class="touch-btn">⬅️ 왼쪽</button>
+                <button id="rightTouchBtn" class="touch-btn">오른쪽 ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

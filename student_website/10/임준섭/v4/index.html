@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under the Red Sky - Poki Edition v4</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top HUD Bar -->
+    <div id="hudContainer">
+        <div class="hud-item brand">
+            <span class="dot"></span> 🔴 UNDER THE RED SKY
+        </div>
+        <div class="hud-item">
+            🚩 스테이지: <strong id="stageNum">1</strong> / 3
+        </div>
+        <div class="hud-item">
+            ⏱️ 시간: <strong id="timerDisplay">00:00.0</strong>
+        </div>
+    </div>
+
+    <!-- Controls Guide Banner -->
+    <div id="controlsBanner">
+        <span>🏃 <strong>Shift:</strong> 대시 달리기</span>
+        <span>🛷 <strong>C / Ctrl:</strong> 슬라이딩</span>
+        <span>🦘 <strong>Space:</strong> 점프 / 벽 타기</span>
+        <span>🔄 <strong>R:</strong> 체크포인트 부활</span>
+    </div>
+
+    <!-- Gameplay Status Badges -->
+    <div id="badgeContainer">
+        <div id="wallBadge" class="action-badge hidden">🧗 벽 타기 중!</div>
+        <div id="slideBadge" class="action-badge hidden">🛷 슬라이딩 중!</div>
+        <div id="checkpointBadge" class="action-badge success hidden">🚩 체크포인트 저장!</div>
+    </div>
+
+    <!-- Center Crosshair for 1st-Person Perspective -->
+    <div id="crosshair">+</div>
+
+    <!-- Stage Complete & Victory Overlay Modal -->
+    <div id="victoryOverlay" class="overlay hidden">
+        <div class="modal-card">
+            <h1 id="victoryTitle">🎉 스테이지 클리어!</h1>
+            <p id="victoryMessage">축하합니다! 코스를 무사히 완주하셨습니다.</p>
+            <div class="time-record">
+                최종 기록: <strong id="finalTimeDisplay">00:00.0</strong>
+            </div>
+            <div class="modal-buttons">
+                <button id="nextStageBtn" class="primary-btn">다음 스테이지 ▶</button>
+                <button id="restartGameBtn" class="secondary-btn">처음부터 다시 하기 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries: Three.js & PointerLockControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

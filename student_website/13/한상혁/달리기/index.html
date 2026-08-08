@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏃 초광속 졸라맨 달리기 게임 (방향키 조작 & 무한 질주)</title>
+  <meta name="description" content="방향키(↑, ↓, ←, →)로 조작하는 짜릿한 초광속 졸라맨 달리기 무한 러너 게임!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-container">
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Top HUD Overlay -->
+    <header class="hud-header">
+      <div class="hud-left">
+        <a href="../index.html" class="nav-btn">⬅ 메인 메뉴</a>
+        <div class="hud-badge">🏃 초광속 달리기</div>
+      </div>
+
+      <div class="hud-center">
+        <!-- Life Hearts -->
+        <div class="lives-container" id="lives-box">
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+        </div>
+        <!-- Booster Gauge -->
+        <div class="booster-gauge-wrap" title="부스터 게이지 (코인 획득 시 충전)">
+          <span class="booster-icon">⚡</span>
+          <div class="booster-track">
+            <div class="booster-fill" id="booster-bar" style="width: 0%;"></div>
+          </div>
+          <span class="booster-text" id="booster-text">0%</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="score-card">
+          <span class="score-label">달린 거리</span>
+          <span class="score-val" id="hud-distance">0 m</span>
+        </div>
+        <div class="score-card">
+          <span class="score-label">획득 점수</span>
+          <span class="score-val gold" id="hud-score">0 점</span>
+        </div>
+        <div class="score-card">
+          <span class="score-label">획득 코인</span>
+          <span class="score-val coin" id="hud-coins">🪙 0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Active Power-up Indicator -->
+    <div class="buff-indicators" id="buff-container"></div>
+
+    <!-- On-screen Mobile Controls (방향키 터치 패드) -->
+    <div class="touch-controls" id="touch-controls">
+      <div class="touch-dpad">
+        <button class="t-btn t-left" id="t-left">◀</button>
+        <button class="t-btn t-right" id="t-right">▶</button>
+      </div>
+      <div class="touch-actions">
+        <button class="t-btn t-slide" id="t-down">⬇ 슬라이딩</button>
+        <button class="t-btn t-jump" id="t-up">⬆ 2단 점프</button>
+      </div>
+    </div>
+
+    <!-- Key Guide Bar at Bottom -->
+    <footer class="key-guide">
+      <div class="guide-item"><span class="key-badge">⬆ / Space / W</span> 20단 연속 공중제비 점프</div>
+      <div class="guide-item"><span class="key-badge">⬇ / S</span> 슬라이딩 (낮은 장애물 회피)</div>
+      <div class="guide-item"><span class="key-badge">⬅ / A</span> 뒤로 감속</div>
+      <div class="guide-item"><span class="key-badge">➡️ / D</span> 초광속 질주</div>
+      <div class="guide-item"><span class="key-badge">F / Shift</span> ⚡ 슈퍼 부스터 발동</div>
+    </footer>
+
+    <!-- Start / Ready Screen Overlay -->
+    <div id="start-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-hero-icon">🏃 💨 ⚡ 👑</div>
+        <h1 class="modal-title">초광속 졸라맨 20단 공중제비 달리기</h1>
+        <p class="modal-desc">
+          방향키로 졸라맨을 조작하여 20단 연속 공중제비와 슬라이딩으로 장애물을 피하고 무한 질주하세요!
+        </p>
+
+        <div class="controls-guide-grid">
+          <div class="c-item">
+            <span class="c-key">⬆ 방향키 (최대 20연타)</span>
+            <span class="c-desc">20단 연속 공중제비 텀블링 점프!</span>
+          </div>
+          <div class="c-item">
+            <span class="c-key">⬇ 방향키</span>
+            <span class="c-desc">바닥 슬라이딩 (미사일·레이저 회피)</span>
+          </div>
+          <div class="c-item">
+            <span class="c-key">⬅ ➡ 방향키</span>
+            <span class="c-desc">좌우 속도 조절 & 감속/가속</span>
+          </div>
+          <div class="c-item">
+            <span class="c-key">⚡ F키 / 부스터</span>
+            <span class="c-desc">무적 돌진 (모든 장애물 분쇄)</span>
+          </div>
+        </div>
+
+        <div class="item-guide-row">
+          <span class="i-badge">🪙 코인 (+100점)</span>
+          <span class="i-badge">💎 다이아 (+500점)</span>
+          <span class="i-badge">🧲 자석 (자동 흡수)</span>
+          <span class="i-badge">🛡️ 쉴드 (방어막)</span>
+          <span class="i-badge">❤️ 하트 (체력 회복)</span>
+        </div>
+
+        <button id="btn-start" class="primary-btn">🚀 달리기 시작하기 (Space / Enter)</button>
+      </div>
+    </div>
+
+    <!-- Game Over Screen Modal -->
+    <div id="gameover-modal" class="modal-overlay hidden">
+      <div class="modal-card gameover-card">
+        <div class="modal-hero-icon">💥 😵 🏆</div>
+        <h2 class="modal-title gameover-title">게임 오버!</h2>
+        <p class="modal-desc" id="gameover-reason">장애물과 충돌하여 달리기를 멈췄습니다!</p>
+
+        <div class="result-stats-grid">
+          <div class="r-box">
+            <span class="r-label">최종 달린 거리</span>
+            <span class="r-val" id="res-distance">0 m</span>
+          </div>
+          <div class="r-box">
+            <span class="r-label">최종 획득 점수</span>
+            <span class="r-val gold" id="res-score">0 점</span>
+          </div>
+          <div class="r-box">
+            <span class="r-label">수집한 코인</span>
+            <span class="r-val coin" id="res-coins">🪙 0 개</span>
+          </div>
+          <div class="r-box">
+            <span class="r-label">최고 기록 (BEST)</span>
+            <span class="r-val best" id="res-best">0 m</span>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button id="btn-restart" class="primary-btn">🔄 다시 달리기 (Space / R)</button>
+          <a href="../index.html" class="secondary-btn">🏠 메인 메뉴로</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under the Red Sky - High Quality Ultimate v8</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Home Lobby Screen Overlay -->
+    <div id="homeOverlay" class="overlay">
+        <div class="lobby-card">
+            <div class="logo-badge">🔴 3D PARKOUR MASTER</div>
+            <h1>Under the Red Sky</h1>
+            <p class="subtitle">시원한 자동 달리기와 20개의 화려한 테마 파쿠르 세계!</p>
+            
+            <div class="lobby-buttons">
+                <button id="startGameHomeBtn" class="lobby-btn primary">🚀 20단계 파쿠르 시작</button>
+                <button id="specialStageHomeBtn" class="lobby-btn special">⭐ 스페셜 무지개 코스</button>
+                <button id="closetHomeBtn" class="lobby-btn secondary">👕 캐릭터 드레스룸 (한정판)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Closet Drawer Modal -->
+    <div id="closetOverlay" class="overlay hidden">
+        <div class="modal-card closet-card">
+            <h2>👕 캐릭터 드레스룸</h2>
+            <p>파쿠르 코스에서 착용할 멋진 슈트를 선택하세요.</p>
+            
+            <div class="character-grid">
+                <!-- Basic Character Card -->
+                <div id="cardBasic" class="char-card selected">
+                    <div class="char-icon">🟦</div>
+                    <h3>기본 블루 슈트</h3>
+                    <span class="char-status">기본 제공</span>
+                    <button id="equipBasicBtn" class="equip-btn active">장착 중</button>
+                </div>
+
+                <!-- Special Limited Character Card -->
+                <div id="cardRainbow" class="char-card locked">
+                    <div class="char-icon">⭐</div>
+                    <h3>한정판 레인보우 히어로</h3>
+                    <span id="rainbowStatusTag" class="char-status locked-tag">🔒 스페셜 코스 완주 시 해금</span>
+                    <button id="equipRainbowBtn" class="equip-btn" disabled>잠김 🔒</button>
+                </div>
+            </div>
+
+            <button id="closeClosetBtn" class="secondary-btn margin-top">닫기 ✖</button>
+        </div>
+    </div>
+
+    <!-- Top In-Game HUD Bar -->
+    <div id="hudContainer">
+        <button id="homeNavBtn" class="hud-nav-btn">🏠 홈으로</button>
+        <div class="hud-item">
+            🎨 테마: <strong id="themeNameDisplay">☀️ 맑은 낮 하늘</strong>
+        </div>
+        <div class="hud-item">
+            🚩 스테이지: <strong id="stageNum">1</strong> / 20
+        </div>
+        <div class="hud-item">
+            ⏱️ 시간: <strong id="timerDisplay">00:00.0</strong>
+        </div>
+        <button id="specialStageHudBtn" class="special-hud-btn">⭐ 스페셜 코스</button>
+    </div>
+
+    <!-- Controls Guide Banner -->
+    <div id="controlsBanner">
+        <span>⚡ <strong>자동 달리기:</strong> ON</span>
+        <span>🚀 <strong>점프대:</strong> 고속 부스터</span>
+        <span>🛷 <strong>C / Ctrl:</strong> 슬라이딩</span>
+        <span>🦘 <strong>Space:</strong> 점프 / 벽 타기</span>
+        <span>🔄 <strong>R:</strong> 리스폰 부활</span>
+    </div>
+
+    <!-- Gameplay Status Badges -->
+    <div id="badgeContainer">
+        <div id="wallBadge" class="action-badge hidden">🧗 벽 타기 중!</div>
+        <div id="slideBadge" class="action-badge hidden">🛷 슬라이딩 중!</div>
+        <div id="boosterBadge" class="action-badge boost hidden">🚀 슈퍼 점프 부스터!</div>
+        <div id="checkpointBadge" class="action-badge success hidden">🚩 리스폰 발판 저장!</div>
+    </div>
+
+    <!-- Center Crosshair for 1st-Person Perspective -->
+    <div id="crosshair">+</div>
+
+    <!-- Stage Complete & Victory Overlay Modal -->
+    <div id="victoryOverlay" class="overlay hidden">
+        <div class="modal-card">
+            <h1 id="victoryTitle">🎉 스테이지 클리어!</h1>
+            <p id="victoryMessage">축하합니다! 코스를 무사히 완주하셨습니다.</p>
+            
+            <!-- Unlock Notification Banner (Hidden by default) -->
+            <div id="unlockNoticeBanner" class="unlock-banner hidden">
+                🎉 ⭐ 특별 한정판 '레인보우 히어로' 캐릭터가 해금되었습니다!
+            </div>
+
+            <div class="time-record">
+                최종 기록: <strong id="finalTimeDisplay">00:00.0</strong>
+            </div>
+            <div class="modal-buttons">
+                <button id="nextStageBtn" class="primary-btn">다음 스테이지 ▶</button>
+                <button id="restartGameBtn" class="secondary-btn">처음부터 다시 하기 🔄</button>
+                <button id="returnHomeBtn" class="secondary-btn">홈으로 이동 🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries: Three.js & PointerLockControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

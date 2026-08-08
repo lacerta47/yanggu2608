@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>말랑말랑 과일 쌓기 - v2</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        
+        <!-- 1. 홈 화면 (Home Screen) -->
+        <div id="homeScreen" class="screen active">
+            <div class="home-card">
+                <div class="title-badge">🍓 퐁당퐁당</div>
+                <h1 class="main-title">말랑말랑 과일 쌓기</h1>
+                <p class="sub-title">똑같은 과일을 모아 더 커다란 과일로 합성해요!</p>
+                <div class="glass-preview-box">
+                    <span class="preview-emoji">🍒 🫐 🍓 🍇 🍉</span>
+                </div>
+                <button id="homeStartBtn" class="btn primary-btn">시작하기 🚀</button>
+            </div>
+        </div>
+
+        <!-- 2. 스테이지 선택 화면 (Stage Select Screen) -->
+        <div id="stageSelectScreen" class="screen">
+            <div class="card">
+                <h2>단계 선택하기 🎯</h2>
+                <p>도전하고 싶은 단계를 골라보세요!</p>
+
+                <div class="stage-buttons">
+                    <button class="stage-btn" data-stage="1">
+                        <span class="stage-num">1단계</span>
+                        <span class="stage-desc">🍒 앵두 ~ 라즈베리 (4종)</span>
+                        <span class="stage-goal">목표: 라즈베리 만들기!</span>
+                    </button>
+                    <button class="stage-btn" data-stage="2">
+                        <span class="stage-num">2단계</span>
+                        <span class="stage-desc">🍒 앵두 ~ 매실 (8종)</span>
+                        <span class="stage-goal">목표: 매실 만들기!</span>
+                    </button>
+                    <button class="stage-btn" data-stage="3">
+                        <span class="stage-num">3단계</span>
+                        <span class="stage-desc">🍒 앵두 ~ 수박 (13종)</span>
+                        <span class="stage-goal">목표: 최고 커다란 수박 만들기!</span>
+                    </button>
+                </div>
+
+                <button id="backToHomeBtn" class="btn secondary-btn">홈으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 3. 스테이지 게임 진행 화면 (Game Screen) -->
+        <div id="gamePlayScreen" class="screen">
+            <!-- 상단 헤더 정보 -->
+            <header class="game-header">
+                <div class="header-left">
+                    <span id="currentStageText" class="badge">1단계</span>
+                    <span id="targetFruitText" class="target-badge">목표: 라즈베리 🍓</span>
+                </div>
+                <div class="header-right">
+                    <div class="stat-box">
+                        <span class="stat-label">⏱️ 시간</span>
+                        <span id="timerText" class="stat-value">60초</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">⭐ 점수</span>
+                        <span id="scoreText" class="stat-value">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 다음 과일 미리보기 -->
+            <div class="next-fruit-bar">
+                <span>다음에 떨어질 과일:</span>
+                <span id="nextFruitDisplay" class="next-fruit-icon">🍒</span>
+            </div>
+
+            <!-- 유리컵 게임 화면 (Canvas) -->
+            <div class="glass-cup-wrapper">
+                <canvas id="gameCanvas" width="440" height="600"></canvas>
+            </div>
+
+            <!-- 모바일 / 방향키 조작 버튼 -->
+            <div class="mobile-arrow-controls">
+                <div class="arrow-row">
+                    <button id="btnUp" class="arrow-btn">▲ (빠른낙하)</button>
+                </div>
+                <div class="arrow-row">
+                    <button id="btnLeft" class="arrow-btn">◀ 왼쪽</button>
+                    <button id="btnDown" class="arrow-btn">▼ 떨어뜨리기</button>
+                    <button id="btnRight" class="arrow-btn">오른쪽 ▶</button>
+                </div>
+            </div>
+
+            <footer class="controls-guide">
+                <p>⌨️ <strong>방향키:</strong> 왼쪽(←) / 오른쪽(→) 이동 | 아래(↓) 낙하 | 위(↑) 즉시 낙하</p>
+            </footer>
+        </div>
+
+        <!-- 4. 결과 / 클리어 / 실패 모달 (Result Screen) -->
+        <div id="resultModal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div id="resultIcon" class="result-icon">🎉</div>
+                <h2 id="resultTitle">성공을 축하해요!</h2>
+                <p id="resultMessage">단계 목표를 달성했습니다!</p>
+                <div id="drumRollArea" class="drum-roll-text hidden">두구두구두구두구... 🥁</div>
+                <div class="modal-score-box">
+                    <span>최종 점수:</span>
+                    <strong id="finalScoreText">0점</strong>
+                </div>
+
+                <div class="modal-btn-group">
+                    <button id="retryBtn" class="btn secondary-btn">다시 도전</button>
+                    <button id="nextStageBtn" class="btn primary-btn">다음 단계로 🚀</button>
+                    <button id="homeBtn" class="btn tertiary-btn">홈으로</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

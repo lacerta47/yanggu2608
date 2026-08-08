@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공방의 계절 (v8) - 무한 다채로운 주문 & 발밑 그림자 실사 사람</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Three.js 3D 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="appContainer">
+        <!-- 1단계: 메인 타이틀 화면 -->
+        <section id="titleScreen" class="scene active">
+            <div class="bg-layer" style="background-image: url('../assets/images/workshop_bg.jpg');"></div>
+            <div class="overlay-glow"></div>
+            <div class="particle-container" id="titleParticles"></div>
+            
+            <div class="title-content">
+                <span class="sub-title">✨ v8 : 매일 새로운 다채로운 주문 & 발밑 그림자 실사 사람</span>
+                <h1 class="main-title">공방의 계절</h1>
+                <p class="tagline">차잔, 접시, 꽃병, 수프그릇... 매일 새로워지는 도자기와 발밑 그림자 위 실사 사람</p>
+                <button id="startGameBtn" class="cozy-btn pulse">✨ 다채로운 공방 입장하기</button>
+            </div>
+        </section>
+
+        <!-- 2단계: 3D 공방 탐색 화면 (발밑 그림자 위 실사 사람) -->
+        <section id="workshopScreen" class="scene hidden">
+            <!-- 상단 HUD -->
+            <header class="hud-header">
+                <div class="hud-item">
+                    <span class="hud-icon">🌙</span>
+                    <span id="dayText">1일 차 (새벽녘)</span>
+                </div>
+                <div class="hud-title">《다채로운 실사 3D 도예 공방》</div>
+                <div class="hud-item">
+                    <span class="hud-icon">💜</span>
+                    <span id="warmthText">온기 0개</span>
+                </div>
+            </header>
+
+            <!-- 3D 캔버스 컨테이너 -->
+            <div class="canvas-container" id="canvasContainer">
+                <div class="controls-guide">
+                    <p>⌨️ <b>WASD</b> 또는 <b>방향키</b>로 그림자 위 장인 이동 | <b>새로운 손님</b>에게 걸어가 <b>[E]</b> 키로 주문 받기</p>
+                </div>
+
+                <!-- 터치 모바일 컨트롤러 -->
+                <div class="dpad-container">
+                    <button class="dpad-btn up" data-key="w">▲</button>
+                    <div class="dpad-row">
+                        <button class="dpad-btn left" data-key="a">◀</button>
+                        <button class="dpad-btn right" data-key="d">▶</button>
+                    </div>
+                    <button class="dpad-btn down" data-key="s">▼</button>
+                </div>
+            </div>
+
+            <!-- 상호작용 프롬프트 팝업 -->
+            <div id="interactPrompt" class="interact-prompt hidden">
+                <span id="promptText">손님과 대화하기 [E]</span>
+            </div>
+        </section>
+
+        <!-- 손님 주문 대화 팝업 -->
+        <div id="dialogueModal" class="modal-overlay hidden">
+            <div class="dialogue-card">
+                <div class="npc-avatar-box">
+                    <img id="dialogueNpcImg" src="../assets/images/real_grandma.jpg" alt="오늘의 손님 실사 이미지" class="real-photo-avatar">
+                </div>
+                <div class="dialogue-body">
+                    <h3 id="npcName">달님 할머니 👵</h3>
+                    <p id="npcDialogue" class="typewriter"></p>
+                    <div class="order-box">
+                        <span class="order-label">오늘의 새로운 주문:</span>
+                        <strong id="orderItemName">따스한 차잔</strong>
+                    </div>
+                </div>
+                <button id="acceptOrderBtn" class="cozy-btn">물레로 도자기 빚기 ➔</button>
+            </div>
+        </div>
+
+        <!-- 3단계-1: 물레 미니게임 모달 -->
+        <div id="wheelModal" class="modal-overlay hidden">
+            <div class="minigame-card">
+                <div class="minigame-header">
+                    <h2>🏺 물레 빚기 (신규 도자기 실루엣)</h2>
+                    <p>마우스 드래그로 흙을 조율하여 새로운 도자기 모양을 정성스럽게 빚어보세요!</p>
+                </div>
+
+                <div class="wheel-canvas-wrapper">
+                    <canvas id="wheelCanvas" width="400" height="350"></canvas>
+                </div>
+
+                <div class="minigame-status">
+                    <div class="accuracy-meter">
+                        <span>모양 일치도:</span>
+                        <div class="meter-bar"><div id="accuracyFill" class="meter-fill" style="width: 0%;"></div></div>
+                        <span id="accuracyText">0%</span>
+                    </div>
+                </div>
+
+                <div class="minigame-actions">
+                    <button id="resetWheelBtn" class="cozy-btn secondary">흙 다시 다듬기</button>
+                    <button id="finishWheelBtn" class="cozy-btn">가마로 이동하기 🔥</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3단계-2: 가마 굽기 미니게임 모달 -->
+        <div id="kilnModal" class="modal-overlay hidden">
+            <div class="minigame-card">
+                <div class="minigame-header">
+                    <h2>🔥 붉은 적돌 가마 굽기</h2>
+                    <p>[스페이스바]나 [불 피우기] 버튼을 눌러 적정 가마 온도를 유지하세요!</p>
+                </div>
+
+                <div class="kiln-visual">
+                    <div class="kiln-fire" id="kilnFire">🔥</div>
+                    <div class="kiln-timer-text">남은 시간: <span id="kilnTimer">7</span>초</div>
+                </div>
+
+                <div class="temp-gauge-wrapper">
+                    <div class="temp-target-zone"></div>
+                    <div id="tempNeedle" class="temp-needle" style="bottom: 0%;"></div>
+                </div>
+                <div class="temp-label">가마 내부 온도</div>
+
+                <div class="minigame-actions">
+                    <button id="heatKilnBtn" class="cozy-btn fire-btn">🔥 불 피우기 (스페이스바)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4단계-1: 도자기 완성 결과창 -->
+        <div id="resultModal" class="modal-overlay hidden">
+            <div class="result-card">
+                <div class="sparkle-effect">✨</div>
+                <h2>🎉 명품 도자기 완성!</h2>
+
+                <div class="pottery-preview">
+                    <canvas id="resultPotteryCanvas" width="180" height="180"></canvas>
+                </div>
+
+                <div class="letter-box">
+                    <div class="letter-stamp">💌 손님의 감동 편지</div>
+                    <p id="letterContent" class="letter-text"></p>
+                </div>
+
+                <div class="reward-box">
+                    <span>획득한 보상: </span>
+                    <strong id="rewardText">💜 온기 +50개</strong>
+                </div>
+
+                <button id="closeResultBtn" class="cozy-btn">감사한 마음 담기 ➔</button>
+            </div>
+        </div>
+
+        <!-- 4단계-2: 하루 마감 일기장 -->
+        <section id="diaryScreen" class="scene hidden">
+            <div class="diary-paper">
+                <div class="diary-header">
+                    <span class="diary-date" id="diaryDate">1일 차 밤 - 새벽녘의 기록</span>
+                    <h2 class="diary-title">공방 일기장</h2>
+                </div>
+
+                <div class="diary-content">
+                    <div class="stat-row">
+                        <div class="stat-card">
+                            <span class="stat-icon">🏺</span>
+                            <span class="stat-num" id="statPotteryCount">1개</span>
+                            <span class="stat-desc">빚은 도자기</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">🌸</span>
+                            <span class="stat-num" id="statCustomerCount">1명</span>
+                            <span class="stat-desc">다녀간 손님</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">💜</span>
+                            <span class="stat-num" id="statTotalWarmth">50개</span>
+                            <span class="stat-desc">모인 온기</span>
+                        </div>
+                    </div>
+
+                    <div class="monologue-box">
+                        <p id="monologueText" class="monologue"></p>
+                    </div>
+                </div>
+
+                <div class="diary-footer">
+                    <button id="nextDayBtn" class="cozy-btn sleep-btn">🌙 불 끄고 잠들기 (새로운 주문으로)</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

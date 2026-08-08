@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔺 지오메트리 대시 (Geometry Dash Korea) - 리듬 플랫포머</title>
+  <meta name="description" content="스페이스바 / 마우스 클릭으로 비트에 맞춰 점프하고 비행하는 정통 지오메트리 대시 리듬 게임!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&family=Pusab&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="gd-container">
+    <!-- Game Render Canvas -->
+    <canvas id="gd-canvas"></canvas>
+
+    <!-- Top HUD Progress Bar -->
+    <header class="gd-hud">
+      <div class="hud-left">
+        <a href="../index.html" class="nav-btn">⬅ 메인 메뉴</a>
+        <div class="stage-info">
+          <span class="stage-badge" id="hud-stage-badge">Stage 1</span>
+          <span class="stage-title" id="hud-stage-name">스테레오 매드니스 (Stereo Madness)</span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <!-- Progress Bar (0% ~ 100%) -->
+        <div class="progress-container">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="gd-prog-fill" style="width: 0%;"></div>
+          </div>
+          <span class="progress-text" id="gd-prog-text">0%</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <!-- Practice Mode / Speed Selector -->
+        <button class="gd-btn" id="btn-practice-toggle" title="연습 모드 (체크포인트 생성)">
+          <span id="practice-icon">💎</span> <span id="practice-text">일반 모드</span>
+        </button>
+        <button class="gd-btn" id="btn-speed-toggle" title="배속 변경">
+          ⚡ 1.0x
+        </button>
+        <div class="attempt-card">
+          <span class="att-label">도전 횟수</span>
+          <span class="att-val" id="hud-attempts">1</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Practice Mode Checkpoint Overlay Buttons (Visible in Practice Mode) -->
+    <div class="practice-controls hidden" id="practice-controls">
+      <button class="p-btn add" id="btn-add-cp" title="체크포인트 생성 (Z키)">➕ 체크포인트 생성 (Z)</button>
+      <button class="p-btn remove" id="btn-del-cp" title="체크포인트 삭제 (X키)">❌ 이전 체크포인트 삭제 (X)</button>
+    </div>
+
+    <!-- Bottom Key Guide -->
+    <footer class="gd-footer">
+      <div class="f-guide"><span class="k-badge">Space / ↑ / 클릭</span> 20단 연속 공중 점프 & 비행 부양</div>
+      <div class="f-guide"><span class="k-badge">Z</span> 체크포인트 생성 (연습)</div>
+      <div class="f-guide"><span class="k-badge">X</span> 체크포인트 제거</div>
+      <div class="f-guide"><span class="k-badge">R</span> 즉시 재도전</div>
+      <div class="f-guide"><span class="k-badge">ESC / P</span> 일시 정지</div>
+    </footer>
+
+    <!-- Stage Select Modal -->
+    <div id="stage-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="m-icon">🔺 🚀 ⚡ 👑</div>
+        <h1 class="m-title">지오메트리 대시 20단 점프 에디션</h1>
+        <p class="m-desc">스페이스바나 마우스 클릭으로 20단 연속 공중 점프를 연타하며 가시를 돌파하고 100% 클리어하세요!</p>
+
+        <!-- Icon Customization Bar -->
+        <div class="cube-custom-zone">
+          <span class="c-title">큐브 아이콘 커스텀:</span>
+          <div class="cube-palette" id="cube-palette">
+            <!-- Rendered in script.js -->
+          </div>
+        </div>
+
+        <!-- Speed Selector -->
+        <div class="speed-row">
+          <span class="c-title">게임 속도 설정:</span>
+          <button class="spd-btn" data-spd="0.5">🐢 0.5x (슬로우 연습)</button>
+          <button class="spd-btn active" data-spd="1.0">1.0x (표준)</button>
+          <button class="spd-btn" data-spd="1.5">⚡ 1.5x (패스트)</button>
+          <button class="spd-btn" data-spd="2.0">🔥 2.0x (초광속)</button>
+        </div>
+
+        <!-- Stage Cards -->
+        <div class="stage-list">
+          <div class="stage-card active" data-stage="1">
+            <div class="stage-icon s-easy">🔺</div>
+            <div class="stage-meta">
+              <span class="diff-badge easy">EASY ★ 1성</span>
+              <h3>스테레오 매드니스 (Stereo Madness)</h3>
+              <p>기본 큐브 점프 & 기초 3단 가시와 점프 패드 입문 스테이지</p>
+            </div>
+            <div class="stage-record" id="rec-stage-1">0%</div>
+          </div>
+
+          <div class="stage-card" data-stage="2">
+            <div class="stage-icon s-normal">🚀</div>
+            <div class="stage-meta">
+              <span class="diff-badge normal">NORMAL ★ 3성</span>
+              <h3>백 온 트랙 (Back On Track)</h3>
+              <p>공중 점프 링(Jump Ring) 터치 & 로켓 비행선(Ship) 모드 입문</p>
+            </div>
+            <div class="stage-record" id="rec-stage-2">0%</div>
+          </div>
+
+          <div class="stage-card" data-stage="3">
+            <div class="stage-icon s-hard">⚡</div>
+            <div class="stage-meta">
+              <span class="diff-badge hard">HARD ★ 6성</span>
+              <h3>클러터펑크 & 점퍼 (Clutterfunk)</h3>
+              <p>중력 반전 포털 & 45도 초고속 웨이브(Wave) 모드 극한의 난이도</p>
+            </div>
+            <div class="stage-record" id="rec-stage-3">0%</div>
+          </div>
+        </div>
+
+        <button id="btn-start-stage" class="start-btn-large">🚀 스테이지 시작 (Space / Enter)</button>
+      </div>
+    </div>
+
+    <!-- Stage Clear Victory Modal -->
+    <div id="clear-modal" class="modal-overlay hidden">
+      <div class="modal-card clear-card">
+        <div class="clear-trophy">🏆 🎉 🌟</div>
+        <h2 class="clear-heading">LEVEL COMPLETE! 100%</h2>
+        <p class="clear-subtext">축하합니다! 완벽한 리듬 감각으로 스테이지를 완주했습니다.</p>
+
+        <div class="clear-stats-row">
+          <div class="c-stat">
+            <span class="c-label">총 도전 횟수</span>
+            <span class="c-val" id="res-attempts">1 회</span>
+          </div>
+          <div class="c-stat">
+            <span class="c-label">소요 점프 횟수</span>
+            <span class="c-val gold" id="res-jumps">0 회</span>
+          </div>
+          <div class="c-stat">
+            <span class="c-label">클리어 등급</span>
+            <span class="c-val" style="color: #38bdf8;">ALL STARS ★</span>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button id="btn-retry-stage" class="act-btn primary">🔄 다시 도전 (R)</button>
+          <button id="btn-select-stage" class="act-btn secondary">🎵 스테이지 선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

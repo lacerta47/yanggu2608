@@ -1,0 +1,274 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    overflow: hidden;
+    background-color: #05020a;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Top HUD Container */
+#hudContainer {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.hud-item {
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.6rem 1.1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hud-item.brand {
+    color: #38bdf8;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.hud-item.brand .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #38bdf8;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #38bdf8;
+}
+
+.hud-item strong {
+    color: #facc15;
+}
+
+.special-hud-btn {
+    pointer-events: auto;
+    background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6);
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 44px;
+}
+
+.special-hud-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.7);
+}
+
+/* Bottom Controls Banner */
+#controlsBanner {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f1f5f9;
+    padding: 0.6rem 1.5rem;
+    border-radius: 9999px;
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    z-index: 10;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+#controlsBanner strong {
+    color: #38bdf8;
+}
+
+/* Action Badges */
+#badgeContainer {
+    position: absolute;
+    top: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.action-badge {
+    background: rgba(2, 132, 199, 0.9);
+    color: #ffffff;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(2, 132, 199, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.action-badge.boost {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
+}
+
+.action-badge.success {
+    background: rgba(34, 197, 94, 0.9);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.7);
+}
+
+.action-badge.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Crosshair */
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.6rem;
+    font-weight: 300;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Overlay & Modals */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.modal-card {
+    background: rgba(30, 41, 59, 0.95);
+    border: 2px solid rgba(56, 189, 248, 0.4);
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-card h1 {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+}
+
+.modal-card p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.time-record {
+    background: rgba(15, 23, 42, 0.8);
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    margin-bottom: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.time-record strong {
+    color: #facc15;
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.primary-btn, .secondary-btn {
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    min-height: 48px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #38bdf8, #0284c7);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+}
+
+.secondary-btn {
+    background: rgba(51, 65, 85, 0.8);
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.secondary-btn:hover {
+    background: rgba(71, 85, 105, 1);
+}
+
+@media (max-width: 768px) {
+    #hudContainer {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .hud-item, .special-hud-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.78rem;
+    }
+
+    #controlsBanner {
+        font-size: 0.75rem;
+        padding: 0.4rem 1rem;
+        gap: 0.75rem;
+    }
+}

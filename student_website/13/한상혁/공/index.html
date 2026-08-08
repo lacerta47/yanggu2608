@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>알록달록 블록 깨기 게임</title>
+  <meta name="description" content="신나고 재미있는 블록깨기 게임! 공을 튕겨 모든 블록을 깨뜨리고 최고 점수에 도전하세요.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 영역 -->
+    <header class="game-header">
+      <h1 class="game-title">🧱 알록달록 블록 깨기</h1>
+      <div class="scoreboard">
+        <div class="score-box">
+          <span class="score-label">점수</span>
+          <span id="score" class="score-value">0</span>
+        </div>
+        <div class="score-box">
+          <span class="score-label">남은 블록</span>
+          <span id="remainingBricks" class="score-value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 화면 영역 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <!-- 오버레이 화면들 -->
+      <!-- 시작 화면 -->
+      <div id="startModal" class="modal-overlay">
+        <div class="modal-content">
+          <h2>🧱 블록 깨기 게임</h2>
+          <p>공을 튕겨 화면 위의 모든 블록을 깨뜨려 보세요!</p>
+          <button id="startButton" class="btn btn-primary" type="button">게임 시작하기 🚀</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 화면 -->
+      <div id="gameOverModal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2>게임 오버! 😭</h2>
+          <p>공이 아래로 떨어졌어요.</p>
+          <div class="final-score-box">
+            최종 점수: <span id="finalScoreGameOver">0</span>점
+          </div>
+          <button id="restartButtonGameOver" class="btn btn-danger" type="button">다시 도전하기 🔄</button>
+        </div>
+      </div>
+
+      <!-- 승리 화면 -->
+      <div id="victoryModal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2>축하합니다! 승리했어요! 🎉</h2>
+          <p>모든 블록을 깨뜨렸어요. 대단해요!</p>
+          <div class="final-score-box">
+            최종 점수: <span id="finalScoreVictory">0</span>점
+          </div>
+          <button id="restartButtonVictory" class="btn btn-success" type="button">다시 하기 🔄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 조작 방법 안내 -->
+    <footer class="game-footer">
+      <p class="controls-guide">
+        💡 <strong>조작 방법:</strong> 키보드 <code>←</code>, <code>→</code> 화살표 키 또는 마우스/터치 드래그로 바를 좌우로 움직이세요!
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

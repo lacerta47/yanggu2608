@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한상혁의 재미있는 미니 게임 모음집</title>
+  <meta name="description" content="블록깨기 게임과 8x8 사과 먹기 뱀 게임을 즐길 수 있는 미니게임 천국!">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #064e3b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f43f5e, #fbbf24, #34d399, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: #94a3b8;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .game-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .game-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-info {
+      text-align: left;
+    }
+
+    .game-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .v1-badge { background: #3b82f6; color: #fff; }
+    .v2-badge { background: #10b981; color: #fff; }
+    .v3-badge { background: #ef4444; color: #fff; }
+
+    .game-card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .game-card p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .play-btn {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+
+    .game-card:hover .play-btn {
+      background: #3b82f6;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <h1>🎮 재미있는 미니 게임 모음집</h1>
+    <p class="subtitle">플레이하고 싶은 게임을 아래에서 선택하세요!</p>
+
+    <div class="game-grid">
+      <!-- v9 초호화 운빨존많겜 (Super Lucky Defense) -->
+      <a href="v9/index.html" class="game-card" style="border-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 30px rgba(244, 63, 94, 0.45);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #f43f5e, #facc15, #a855f7); color: #fff; font-weight: 900;">v9 BEST 운빨존많겜! 🎲</span>
+          <h2>🎲 초호화 운빨존많겜 (Super Lucky Defense)</h2>
+          <p>운빨 영웅 소환(일반~신화), 동일 등급 무작위 합성, 히든 신화 조합법, 잭팟 50/50 도박으로 50웨이브를 정복하세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #f43f5e, #a855f7); color: #fff; font-weight: 900;">게임하기 ▶</div>
+      </a>
+
+      <!-- v8 초호화 브롤스타즈 배틀 아레나 -->
+      <a href="v8/index.html" class="game-card" style="border-color: rgba(250, 204, 21, 0.85); box-shadow: 0 0 25px rgba(250, 204, 21, 0.35);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #facc15, #f43f5e, #38bdf8); color: #000; font-weight: 900;">v8 NEW 브롤스타즈! 🌟</span>
+          <h2>🌟 초호화 브롤스타즈 배틀 아레나 (Brawl Stars Korea)</h2>
+          <p>쉘리, 콜트, 엘 프리모를 선택하여 젬 그랩 3vs3 보석 쟁탈전과 솔로 쇼다운 배틀로얄에서 슈퍼 궁극기를 발동하세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #facc15, #f59e0b); color: #000; font-weight: 900;">게임하기 ▶</div>
+      </a>
+
+      <!-- v7 초호화 네온 테트리스 마스터 -->
+      <a href="v7/index.html" class="game-card" style="border-color: rgba(6, 182, 212, 0.8); box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #06b6d4, #3b82f6, #a855f7); color: #fff;">v7 NEW 테트리스! 🧩</span>
+          <h2>🧩 초호화 네온 테트리스 마스터 (Super Neon Tetris)</h2>
+          <p>정통 7종 테트로미노를 회전하고 홀드하며 4줄 테트리스 소거와 코로베이니키 EDM BGM을 즐기세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #fff; font-weight: 900;">게임하기 ▶</div>
+      </a>
+
+      <!-- v6 초호화 왕볼 부수기 게임 (Super Pang) -->
+      <a href="v6/index.html" class="game-card" style="border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #ef4444, #f97316, #fbbf24); color: #fff;">v6 NEW 왕볼 부수기! 💥</span>
+          <h2>💥 초호화 왕볼 부수기 슈팅 액션 (Mega Ball Crusher)</h2>
+          <p>스페이스바로 작살과 레이저를 쏴서 튀어오르는 거대한 왕볼을 쪼개고 터뜨리며 20단 점프로 질주하세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; font-weight: 900;">게임하기 ▶</div>
+      </a>
+
+      <!-- v5 지오메트리 대시 리듬 플랫포머 -->
+      <a href="v5/index.html" class="game-card" style="border-color: rgba(56, 189, 248, 0.7); box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #38bdf8, #fbbf24, #ef4444); color: #fff;">v5 NEW 20단 점프 지오메트리 대시! 🔺</span>
+          <h2>🔺 지오메트리 대시 20단 점프 에디션 (Geometry Dash)</h2>
+          <p>스페이스바 / 클릭으로 20단 연속 공중 점프를 연타하며 가시를 뛰어넘고, 로켓 비행선과 중력 반전 포털을 돌파하세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #38bdf8, #fbbf24); color: #000; font-weight: 900;">게임하기 ▶</div>
+      </a>
+
+      <!-- v4 초광속 졸라맨 20단 공중제비 무한 달리기 게임 -->
+      <a href="v4/index.html" class="game-card" style="border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);">
+        <div class="game-info">
+          <span class="game-badge" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff;">v4 NEW 20단 공중제비 달리기! 🏃</span>
+          <h2>🏃 초광속 졸라맨 20단 공중제비 달리기 (방향키 조작)</h2>
+          <p>방향키(↑ 20연타 점프, ↓ 슬라이딩, ←, →)로 20단 연속 공중제비 텀블링과 슈퍼 부스터를 발동해 무한 질주하세요!</p>
+        </div>
+        <div class="play-btn" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff;">게임하기 ▶</div>
+      </a>
+
+      <!-- v3 중국 베이징 초광속 폭탄 게임 -->
+      <a href="v3/index.html" class="game-card" style="border-color: rgba(239, 68, 68, 0.5);">
+        <div class="game-info">
+          <span class="game-badge v3-badge">v3 NEW 중국 베이징 폭탄 & 졸라맨 12전사!</span>
+          <h2>🇨🇳 중국 베이징 초광속 폭탄 게임 (0.000...001초)</h2>
+          <p>마우스 클릭 즉시 베이징 CBD 마천루에 0.000...001초 초광속 폭발 & 졸라맨 12전사 출격!</p>
+        </div>
+        <div class="play-btn" style="background: #ef4444; color: #fff;">게임하기 ▶</div>
+      </a>
+
+      <!-- v2 사과 먹기 뱀 게임 -->
+      <a href="v2/index.html" class="game-card">
+        <div class="game-info">
+          <span class="game-badge v2-badge">v2 버젼</span>
+          <h2>🐍 사과 먹기 뱀 게임 (8x8)</h2>
+          <p>8x8 초록판에서 사과를 먹으며 64칸을 가득 채우세요!</p>
+        </div>
+        <div class="play-btn">게임하기 ▶</div>
+      </a>
+
+      <!-- v1 블록깨기 게임 -->
+      <a href="v1/index.html" class="game-card">
+        <div class="game-info">
+          <span class="game-badge v1-badge">v1 버젼</span>
+          <h2>🧱 알록달록 블록 깨기</h2>
+          <p>바를 조작해 공을 튕기고 모든 블록을 깨뜨리세요!</p>
+        </div>
+        <div class="play-btn">게임하기 ▶</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

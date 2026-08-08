@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신나는 블록깨기 게임!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 게임 정보 (점수, 목숨) -->
+        <header class="game-header">
+            <div class="info-card">
+                <span class="info-label">⭐ 점수</span>
+                <span id="score" class="info-value">0</span>
+            </div>
+            <h1 class="game-title">신나는 블록깨기</h1>
+            <div class="info-card">
+                <span class="info-label">❤️ 목숨</span>
+                <span id="lives" class="info-value">3</span>
+            </div>
+        </header>
+
+        <!-- 게임 화면 (캔버스) -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+            <!-- 시작 화면 오버레이 -->
+            <div id="startScreen" class="overlay">
+                <div class="modal-card">
+                    <div class="icon">🎮</div>
+                    <h2>블록깨기 게임</h2>
+                    <p class="guide-text">키보드 방향키 <b>[←] [→]</b>를 눌러서 아래 바를 움직이세요!</p>
+                    <p class="sub-text">공이 떨어지지 않게 튕겨서 블록을 모두 깨뜨려보아요!</p>
+                    <button id="startBtn" class="btn btn-primary">게임 시작하기!</button>
+                </div>
+            </div>
+
+            <!-- 게임 오버 오버레이 -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <div class="modal-card game-over-card">
+                    <div class="icon">💔</div>
+                    <h2>아쉽네요! 게임 오버</h2>
+                    <p class="final-score-text">최종 점수: <span id="finalScore">0</span>점</p>
+                    <button id="restartBtn" class="btn btn-danger">다시 도전하기!</button>
+                </div>
+            </div>
+
+            <!-- 승리 오버레이 -->
+            <div id="victoryScreen" class="overlay hidden">
+                <div class="modal-card victory-card">
+                    <div class="icon">🏆</div>
+                    <h2>축하합니다! 성공!</h2>
+                    <p class="victory-text">모든 블록을 다 깨뜨렸어요!</p>
+                    <p class="final-score-text">최종 점수: <span id="victoryScore">0</span>점</p>
+                    <button id="playAgainBtn" class="btn btn-success">한 번 더 하기!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="leftBtn" class="touch-btn">◀ 왼쪽</button>
+            <button id="rightBtn" class="touch-btn">오른쪽 ▶</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

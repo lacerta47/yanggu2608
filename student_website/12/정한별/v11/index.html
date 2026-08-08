@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>살인의 미스터리 (v11) - 산속의 비밀과 진범 추리</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Single+Day&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="appContainer">
+        <!-- 1단계: 타이틀 화면 -->
+        <section id="titleScreen" class="scene active">
+            <div class="bg-layer spooky-bg"></div>
+            <div class="fog-overlay"></div>
+            <div class="particle-container" id="spookyParticles"></div>
+            
+            <div class="title-content">
+                <span class="sub-badge">🩸 으스스한 산속 미스터리 수사극 (v11)</span>
+                <h1 class="main-title">살인의 미스터리</h1>
+                <p class="tagline">아이가 사라진 그 산... 저녁 8시가 되기 전에 진짜 범인을 찾아 @@씨를 구하세요!</p>
+                
+                <div class="game-rules-preview">
+                    <p>⏰ <b>시간 제한:</b> 행동할 때마다 30분 소요 (오후 1:00 ➔ 저녁 8:00 전 범인 체포)</p>
+                    <p>🩸 <b>배드 엔딩:</b> 저녁 8시가 넘거나 엉뚱한 사람을 지목하면 @@씨가 위험해집니다!</p>
+                </div>
+
+                <button id="startGameBtn" class="spooky-btn pulse">🕵️‍♂️ 수사 개시하기</button>
+            </div>
+        </section>
+
+        <!-- 2단계: 메인 수사 본부 화면 -->
+        <section id="investigationScreen" class="scene hidden">
+            <!-- 상단 HUD (시간 & 상태) -->
+            <header class="hud-header">
+                <div class="hud-item time-box">
+                    <span class="hud-icon">⏰</span>
+                    <div class="time-display">
+                        <span class="time-label">현재 시각</span>
+                        <strong id="clockText">오후 01:00</strong>
+                    </div>
+                </div>
+                <div class="hud-title">《산속 범죄 수사 본부》</div>
+                <div class="hud-item warning-box">
+                    <span class="hud-icon">⚠️</span>
+                    <span id="targetStatus">목표: 저녁 8시 전 진범 자백 유도</span>
+                </div>
+            </header>
+
+            <!-- 메인 수사 구역 -->
+            <main class="investigation-layout">
+                <!-- 좌측: 수사 장소 및 용의자 선택 -->
+                <aside class="left-panel">
+                    <div class="panel-section">
+                        <h3>📍 사건 현장 조사 (-30분)</h3>
+                        <div class="location-list">
+                            <button class="action-card-btn" data-action="search" data-target="mountain">
+                                <span class="card-icon">🌲</span>
+                                <div class="card-info">
+                                    <strong>아이가 사라진 산 입구</strong>
+                                    <small>발자국과 꺾어진 풀숲 조사</small>
+                                </div>
+                            </button>
+                            <button class="action-card-btn" data-action="search" data-target="board">
+                                <span class="card-icon">🪵</span>
+                                <div class="card-info">
+                                    <strong>지문이 안 나온 나무판 (경고장)</strong>
+                                    <small>결정적 증거물 정밀 감식</small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <h3>👥 용의자 심문 (-30분)</h3>
+                        <div class="suspect-list">
+                            <button class="action-card-btn" data-action="interrogate" data-target="carpenter">
+                                <span class="card-icon">🪚</span>
+                                <div class="card-info">
+                                    <strong>가구점 사장 박씨</strong>
+                                    <small>"오후 2시에 삼나무 의자 만듦"</small>
+                                </div>
+                            </button>
+                            <button class="action-card-btn" data-action="interrogate" data-target="herbalist">
+                                <span class="card-icon">🌿</span>
+                                <div class="card-info">
+                                    <strong>약초꾼 이씨</strong>
+                                    <small>"오후 2시에 산 중턱 약초 채집"</small>
+                                </div>
+                            </button>
+                            <button class="action-card-btn" data-action="interrogate" data-target="hunter">
+                                <span class="card-icon">🏹</span>
+                                <div class="card-info">
+                                    <strong>사냥꾼 최씨</strong>
+                                    <small>"오후 2시에 오두막에서 총 정비"</small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- 우측: 대화 및 수사 기록 노트 -->
+                <section class="right-panel">
+                    <div class="notebook-card">
+                        <div class="notebook-header">
+                            <h2>📜 수사 기록 및 단서 노트</h2>
+                            <button id="openDeductionBtn" class="deduction-trigger-btn">🧩 알리바이 모순 추리하기 ➔</button>
+                        </div>
+                        <div class="notebook-body" id="notebookBody">
+                            <div class="log-item default-log">
+                                🕵️‍♂️ "오후 1시 수사 개시. 장소를 수사하거나 용의자를 심문하여 모순을 찾아내세요."
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </section>
+
+        <!-- 3단계: 알리바이 모순 추리 모달 -->
+        <div id="deductionModal" class="modal-overlay hidden">
+            <div class="deduction-card">
+                <div class="modal-header">
+                    <h2>🧩 알리바이 모순 추리 및 진범 지목</h2>
+                    <p>수집한 단서와 용의자의 진술을 각각 1개씩 선택하여 <b>모순</b>을 연결하세요!</p>
+                </div>
+
+                <div class="deduction-board">
+                    <!-- 좌측 단서 카드 -->
+                    <div class="board-column">
+                        <h3>🔎 발견된 결정적 단서</h3>
+                        <div class="selection-group" id="clueGroup">
+                            <div class="select-item" data-clue="wooden_board">
+                                <img src="../assets/images/wooden_board_clue.jpg" alt="나무판 경고장" class="clue-thumb">
+                                <div class="select-text">
+                                    <strong>지문이 안 나온 나무판(경고장)</strong>
+                                    <p>장갑을 껴 지문이 없으나, 산속에서 안 자라는 희귀 삼나무 톱질 흔적 발견!</p>
+                                </div>
+                            </div>
+                            <div class="select-item" data-clue="footprint">
+                                <span class="clue-emoji">👟</span>
+                                <div class="select-text">
+                                    <strong>진흙밭 270mm 발자국</strong>
+                                    <p>비 온 뒤 산길에 남아있는 커다란 등산화 자국</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="versus-divider">⚡ 모순 연결 ⚡</div>
+
+                    <!-- 우측 용의자 알리바이 -->
+                    <div class="board-column">
+                        <h3>👥 용의자 알리바이 진술</h3>
+                        <div class="selection-group" id="suspectGroup">
+                            <div class="select-item" data-suspect="carpenter">
+                                <span class="suspect-emoji">🪚</span>
+                                <div class="select-text">
+                                    <strong>가구점 사장 박씨</strong>
+                                    <p>"오후 2시에 장갑 끼고 삼나무판 깎았소. 산엔 절대 안 갔소!"</p>
+                                </div>
+                            </div>
+                            <div class="select-item" data-suspect="herbalist">
+                                <span class="suspect-emoji">🌿</span>
+                                <div class="select-text">
+                                    <strong>약초꾼 이씨</strong>
+                                    <p>"오후 2시엔 산 중턱에서 칙뿌리를 파내고 있었습니다."</p>
+                                </div>
+                            </div>
+                            <div class="select-item" data-suspect="hunter">
+                                <span class="suspect-emoji">🏹</span>
+                                <div class="select-text">
+                                    <strong>사냥꾼 최씨</strong>
+                                    <p>"오후 2시엔 엽총 기름칠을 하며 오두막에 묵었습니다."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeDeductionBtn" class="spooky-btn secondary">수사로 돌아가기</button>
+                    <button id="submitDeductionBtn" class="spooky-btn danger">⚡ 모순 지목 및 추론하기 (-30분)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4단계: 범인 당황 및 자백 모달 -->
+        <div id="confessionModal" class="modal-overlay hidden">
+            <div class="confession-card">
+                <div class="confession-header">
+                    <span class="sweat-emoji">💦</span>
+                    <h2>"뭐, 뭐라고...?! 말도 안 돼!"</h2>
+                </div>
+                <div class="confession-body">
+                    <div class="suspect-portrait">🪚</div>
+                    <div class="speech-bubble">
+                        <p id="confessionText" class="typewriter"></p>
+                    </div>
+                </div>
+                <button id="proceedToHappyEndingBtn" class="spooky-btn success">진범 체포 및 사건 종결 ➔</button>
+            </div>
+        </div>
+
+        <!-- 5단계: 해피 / 진엔딩 화면 -->
+        <section id="happyEndingScreen" class="scene hidden">
+            <div class="ending-card happy-card">
+                <div class="ending-badge">🏆 HAPPY / TRUE ENDING</div>
+                <h2>🎉 명탐정의 완벽한 사건 해결!</h2>
+                <p class="ending-story">
+                    플레이어의 날카로운 추리로 지문 없는 나무판과 가구점 박씨의 진술 모순을 밝혀냈습니다!<br>
+                    박씨는 범행을 자백하였고, 경찰에 전격 체포되었습니다.<br>
+                    <b>@@씨는 무사히 구출되었으며, 산속의 어두운 비밀이 마침내 세상에 드러났습니다.</b>
+                </p>
+                <div class="ending-stats">
+                    <span>⏱️ 사건 해결 시각: <strong id="clearTimeText">오후 03:30</strong></span>
+                    <span>⭐ 추리 등급: <strong>명탐정 (S급)</strong></span>
+                </div>
+                <button class="restartGameBtn spooky-btn">🔄 게임 다시 시작하기</button>
+            </div>
+        </section>
+
+        <!-- 6단계: 배드 엔딩 화면 -->
+        <section id="badEndingScreen" class="scene hidden">
+            <div class="bg-layer bad-bg"></div>
+            <div class="dark-vignette"></div>
+            
+            <div class="ending-card bad-card">
+                <div class="ending-badge danger-badge">💀 BAD ENDING</div>
+                <h2 id="badEndingTitle">저녁 8시... 어둠에 갇힌 산속</h2>
+                <p class="ending-story" id="badEndingStory">
+                    시계 바늘이 저녁 8시를 가리키며 산속에 짙은 어둠과 안개가 들이찼습니다.<br>
+                    아이가 사라졌던 바로 그 으스스한 산속에서...<br>
+                    <b>@@씨는 진범의 덫에 걸려 똑같이 비극적인 운명을 맞이하고 말았습니다.</b>
+                </p>
+                <div class="ending-stats danger-stats">
+                    <span id="badEndingReason">⚠️ 시간 초과 (저녁 8시 도착)</span>
+                </div>
+                <button class="restartGameBtn spooky-btn danger">🩸 다시 도전하기</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- 외부 오디오 및 스크립트 -->
+    <script src="script.js"></script>
+</body>
+</html>

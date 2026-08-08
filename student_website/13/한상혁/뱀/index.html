@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사과 먹기 뱀 게임 (8x8)</title>
+  <meta name="description" content="초록색 8x8 격자판에서 파란색 뱀을 조작해 사과를 먹고 맵을 가득 채우는 재미있는 뱀 게임!">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 헤더 및 점수판 -->
+    <header class="game-header">
+      <h1 class="game-title">🐍 사과 먹기 뱀 게임</h1>
+      <div class="scoreboard">
+        <div class="score-box">
+          <span class="score-label">먹은 사과</span>
+          <span id="appleCount" class="score-value">0개</span>
+        </div>
+        <div class="score-box">
+          <span class="score-label">뱀 길이</span>
+          <span id="snakeLength" class="score-value">5 / 64칸</span>
+        </div>
+        <div class="score-box">
+          <span class="score-label">이동 속도</span>
+          <span id="speedLevel" class="score-value">1단계</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 게임 캔버스 영역 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="512" height="512"></canvas>
+
+      <!-- 오버레이 모달 -->
+      <!-- 시작 화면 -->
+      <div id="startModal" class="modal-overlay">
+        <div class="modal-content">
+          <h2>🐍 사과 먹기 뱀 게임</h2>
+          <p>8x8 초록색 판에서 사과를 먹고 뱀을 키워보세요!<br>사과를 먹을수록 뱀이 길어지고 점점 더 빨라집니다.</p>
+          <button id="startButton" class="btn btn-primary" type="button">게임 시작하기 🚀</button>
+        </div>
+      </div>
+
+      <!-- 게임 오버 화면 -->
+      <div id="gameOverModal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2>게임 오버! 😭</h2>
+          <p id="gameOverReason">벽에 머리가 부딪혔어요!</p>
+          <div class="final-score-box">
+            최종 뱀 길이: <span id="finalLengthGameOver">5</span>칸
+          </div>
+          <button id="restartButtonGameOver" class="btn btn-danger" type="button">다시 도전하기 🔄</button>
+        </div>
+      </div>
+
+      <!-- 게임 클리어 화면 -->
+      <div id="victoryModal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2>게임 클리어! 🎉🏆</h2>
+          <p>대단해요! 8x8 판 64칸을 모두 파란색 뱀으로 가득 채웠어요!</p>
+          <div class="final-score-box">
+            최종 사과 개수: <span id="finalApplesVictory">59</span>개
+          </div>
+          <button id="restartButtonVictory" class="btn btn-success" type="button">다시 하기 🔄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일/터치용 화면 방향키 -->
+    <div class="mobile-controls">
+      <div class="dpad-row">
+        <button id="btnUp" class="dpad-btn" type="button" aria-label="위쪽">⬆️</button>
+      </div>
+      <div class="dpad-row">
+        <button id="btnLeft" class="dpad-btn" type="button" aria-label="왼쪽">⬅️</button>
+        <button id="btnDown" class="dpad-btn" type="button" aria-label="아래쪽">⬇️</button>
+        <button id="btnRight" class="dpad-btn" type="button" aria-label="오른쪽">➡️</button>
+      </div>
+    </div>
+
+    <!-- 조작 방법 안내 -->
+    <footer class="game-footer">
+      <p class="controls-guide">
+        💡 <strong>조작 방법:</strong> 🖱️ 마우스를 판 위에서 움직이면 파란색 뱀이 마우스를 따라 쓱쓱 따라와요! (키보드 방향키 및 버튼으로도 조작할 수 있어요)
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

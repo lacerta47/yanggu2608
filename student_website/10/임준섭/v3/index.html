@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under the Red Sky - 3D 벽 타기 파쿠르 v3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="infoCard">
+        <h2>🔴 Under the Red Sky (v3)</h2>
+        <p class="guide-text">🖱️ 화면을 클릭하면 시선이 고정됩니다.</p>
+        <div class="controls-list">
+            <span>🏃 <strong>이동:</strong> W, A, S, D</span>
+            <span>🦘 <strong>점프 / 벽 점프:</strong> Space</span>
+            <span>🧗 <strong>벽 타기:</strong> 벽 근처에서 이동</span>
+        </div>
+    </div>
+
+    <!-- Wall Running Status Alert -->
+    <div id="wallStatus" class="hidden">🧗 벽 타기 중!</div>
+
+    <!-- Center Crosshair for 1st-Person Perspective -->
+    <div id="crosshair">+</div>
+
+    <!-- External Libraries: Three.js & PointerLockControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1662 @@
+<!-- START_HTML -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎲 v9 초호화 운빨존많겜 (Super Lucky Defense)</title>
+  <meta name="description" content="운빨 소환, 영웅 합성, 신화 조합, 행운의 도박으로 50웨이브를 방어하는 초호화 운빨 타워 디펜스!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 12px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1050px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .back-btn {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #f43f5e; }
+
+    .game-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #facc15, #f43f5e, #a855f7, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.4);
+    }
+
+    .header-tools { display: flex; gap: 8px; }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #f8fafc;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 1050px;
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .game-container { grid-template-columns: 1fr; }
+    }
+
+    .main-screen { display: flex; flex-direction: column; gap: 10px; }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 12px 14px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-label { font-size: 0.78rem; color: #94a3b8; font-weight: 700; }
+    .status-value { font-size: 1.15rem; font-weight: 900; color: #fbbf24; }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      background: #020617;
+      border: 3px solid #fbbf24;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(250, 204, 21, 0.25);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background-color: #090d16;
+    }
+
+    /* 4x4 DOM Overlay Grid */
+    .board-grid-overlay {
+      position: absolute;
+      top: 20%;
+      left: 27.5%;
+      width: 45%;
+      height: 60%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 6px;
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    .dom-slot {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .dom-slot:hover {
+      transform: scale(1.04);
+      border-color: #60a5fa;
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
+    }
+    .dom-slot.selected {
+      border: 3px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+    }
+
+    .dom-unit-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      border: 2.5px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .dom-unit-name {
+      font-size: 0.68rem;
+      font-weight: 800;
+      margin-top: 2px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    /* HTML DOM Monster Layer Overlay (Z-Index 50: ALWAYS ON TOP OF EVERYTHING!) */
+    .monster-overlay-layer {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .dom-monster {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: left 0.05s linear, top 0.05s linear;
+      z-index: 50;
+    }
+
+    .monster-img {
+      width: 52px;
+      height: 52px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.9));
+      animation: monsterFloat 1.2s infinite alternate ease-in-out;
+    }
+
+    .dom-monster.boss .monster-img {
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.9));
+      animation: bossPulse 0.9s infinite alternate ease-in-out;
+    }
+
+    @keyframes monsterFloat {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-4px) scale(1.06); }
+    }
+
+    @keyframes bossPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+
+    .dom-monster-name-tag {
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1.5px solid #ef4444;
+      padding: 1px 6px;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+
+    .dom-monster-hp-bar {
+      width: 56px;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1.5px solid #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    }
+    .dom-monster-hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f87171);
+      width: 100%;
+      transition: width 0.08s linear;
+    }
+
+    .canvas-toast {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #fbbf24;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #facc15;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 60;
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+    }
+    .canvas-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(6px);
+    }
+
+    .unit-detail {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1.5px solid rgba(250, 204, 21, 0.4);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 46px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .control-panel { display: flex; flex-direction: column; gap: 12px; }
+
+    .panel-card {
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    .panel-header {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 6px;
+    }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .game-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 8px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }
+    .game-btn:active { transform: scale(0.96); }
+
+    .btn-sub { font-size: 0.72rem; font-weight: 600; opacity: 0.9; }
+
+    .btn-summon {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      border: 1px solid #60a5fa;
+      grid-column: span 2;
+      padding: 15px;
+      font-size: 1.1rem;
+    }
+    .btn-summon:hover {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+    }
+
+    .btn-gamble {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      border: 1px solid #fbbf24;
+    }
+
+    .btn-upgrade {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border: 1px solid #34d399;
+    }
+
+    .btn-fuse-all {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      border: 1px solid #c084fc;
+      grid-column: span 2;
+    }
+
+    .chance-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .chance-badge { padding: 5px 2px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+    .r-common { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid #64748b; }
+    .r-rare { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #0284c7; }
+    .r-heroic { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #9333ea; }
+    .r-legendary { background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid #d97706; }
+    .r-mythic { background: linear-gradient(135deg, #f43f5e, #a855f7); color: #fff; border: 1px solid #fda4af; }
+
+    .placed-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .placed-card {
+      background: rgba(15, 23, 42, 0.85);
+      border-left: 4px solid #64748b;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.76rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .recipe-list { display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; }
+    .recipe-item {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .recipe-name { font-weight: 800; color: #f43f5e; }
+    .recipe-req { color: #94a3b8; font-size: 0.74rem; }
+    .recipe-btn {
+      background: #e11d48;
+      border: none;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+
+    .modal-content {
+      background: #0f172a;
+      border: 3px solid #fbbf24;
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(250, 204, 21, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../index.html" class="back-btn">
+      ◀ 미니게임 목록으로
+    </a>
+    <div class="game-title">🎲 v9 초호화 운빨존많겜 (Lucky Defense)</div>
+    <div class="header-tools">
+      <button class="icon-btn" id="speed-btn" onclick="toggleSpeed()">⏩ 1x 배속</button>
+      <button class="icon-btn" id="audio-btn" onclick="toggleAudio()">🔊 사운드 ON</button>
+      <button class="icon-btn" id="auto-btn" onclick="toggleAutoSummon()">🤖 자동소환 OFF</button>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="main-screen">
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">웨이브</span>
+          <span class="status-value" id="wave-val">🌊 1 / 50</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">골드 (소환/강화)</span>
+          <span class="status-value" id="gold-val" style="color:#fbbf24;">🪙 400</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">행운 코인 (도박/조합)</span>
+          <span class="status-value" id="coin-val" style="color:#38bdf8;">💎 5</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">몬스터 제한</span>
+          <span class="status-value" id="mob-val" style="color:#f43f5e;">👹 0 / 80</span>
+        </div>
+      </div>
+
+      <div class="canvas-wrapper">
+        <div class="canvas-toast" id="toast-msg">소환 성공! [희귀] 화염법사</div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <!-- Interactive DOM Grid Overlay -->
+        <div class="board-grid-overlay" id="grid-overlay"></div>
+
+        <!-- HTML Monster Layer Overlay -->
+        <div class="monster-overlay-layer" id="monster-overlay"></div>
+      </div>
+
+      <div class="unit-detail" id="unit-detail-bar">
+        <span style="color:#fbbf24; font-weight:700;">🎲 [운빨 영웅 소환] 버튼을 눌러 영웅을 추가하세요!</span>
+      </div>
+    </div>
+
+    <div class="control-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>🎮 메인 조작</span>
+          <span style="font-size:0.78rem; color:#94a3b8;" id="board-count-txt">배치: 0 / 16</span>
+        </div>
+        <div class="btn-grid">
+          <button class="game-btn btn-summon" onclick="summonUnit()">
+            <span>🎲 운빨 영웅 소환</span>
+            <span class="btn-sub" id="summon-cost-txt">비용: 100 Gold</span>
+          </button>
+          
+          <button class="game-btn btn-gamble" onclick="runGamble()">
+            <span>🎰 행운의 잭팟 도박</span>
+            <span class="btn-sub">비용: 30 코인 (50% 확률)</span>
+          </button>
+
+          <button class="game-btn btn-upgrade" onclick="upgradeAttack()">
+            <span>⚔️ 전체 공격력 강화</span>
+            <span class="btn-sub" id="upgrade-cost-txt">Lv.1 (+10%) | 150G</span>
+          </button>
+
+          <button class="game-btn btn-fuse-all" onclick="autoFuseDuplicates()">
+            <span>✨ 동일 유닛 일괄 합성</span>
+            <span class="btn-sub">보유 2개 동일 등급 즉시 합성</span>
+          </button>
+        </div>
+
+        <div class="chance-list">
+          <div class="chance-badge r-common">일반 60%</div>
+          <div class="chance-badge r-rare">희귀 25%</div>
+          <div class="chance-badge r-heroic">영웅 10%</div>
+          <div class="chance-badge r-legendary">전설 4%</div>
+          <div class="chance-badge r-mythic">신화 1%</div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>📋 배치된 영웅 현황</span>
+          <span style="font-size:0.75rem; color:#38bdf8;" id="placed-summary-txt">총 0기</span>
+        </div>
+        <div class="placed-list" id="placed-list-container"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>⚡ 히든 신화 영웅 조합법</span>
+          <span style="font-size:0.75rem; color:#f43f5e;">강림 버튼 클릭</span>
+        </div>
+        <div class="recipe-list" id="recipe-container"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <span>🏆 행운의 유물 강화</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button class="icon-btn" style="justify-content:space-between; width:100%;" onclick="buyRelic('gold')">
+            <span>💰 골드 이자 증가 (+50G)</span>
+            <span style="color:#fbbf24;" id="relic-gold-txt">Lv.0 | 5💎</span>
+          </button>
+          <button class="icon-btn" style="justify-content:space-between; width:100%;" onclick="buyRelic('crit')">
+            <span>💥 크리티컬 확률 (+5%)</span>
+            <span style="color:#fbbf24;" id="relic-crit-txt">Lv.0 | 5💎</span>
+          </button>
+          <button class="icon-btn" style="justify-content:space-between; width:100%;" onclick="buyRelic('speed')">
+            <span>⚡ 공속 하이퍼 버프 (+10%)</span>
+            <span style="color:#fbbf24;" id="relic-speed-txt">Lv.0 | 5💎</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="game-modal">
+    <div class="modal-content">
+      <h2 style="font-size:1.6rem; color:#facc15; font-weight:900;" id="modal-title-txt">🎉 웨이브 클리어!</h2>
+      <p id="modal-desc-txt" style="color:#cbd5e1; font-size:0.95rem; margin:10px 0;">운빨의 신이 당신과 함께했습니다!</p>
+      
+      <div style="background:rgba(30,41,59,0.85); border-radius:12px; padding:12px; margin:14px 0; text-align:left; font-size:0.9rem; display:flex; flex-direction:column; gap:6px;">
+        <div>🌊 도달 웨이브: <strong id="stat-wave" style="color:#fbbf24;">35 Wave</strong></div>
+        <div>👹 처치한 몬스터: <strong id="stat-kills" style="color:#38bdf8;">420 마리</strong></div>
+        <div>⚡ 보유 신화 영웅: <strong id="stat-mythic" style="color:#a855f7;">3 기</strong></div>
+        <div>🎰 잭팟 대박 횟수: <strong id="stat-jackpot" style="color:#f43f5e;">5 회</strong></div>
+      </div>
+
+      <button style="background:linear-gradient(135deg, #f59e0b, #ef4444); color:#fff; border:none; padding:12px 28px; font-size:1.1rem; font-weight:900; border-radius:12px; cursor:pointer;" onclick="restartGame()">다시 도전하기 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    // 100% Reliable Custom SVG Image Data URLs (Independent of system fonts!)
+    const SVG_SLIME = "data:image/svg+xml," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="g1" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="60%" stop-color="#10b981"/><stop offset="100%" stop-color="#047857"/></radialGradient></defs><ellipse cx="50" cy="85" rx="35" ry="10" fill="rgba(0,0,0,0.4)"/><path d="M 20 65 C 10 35, 30 15, 50 15 C 70 15, 90 35, 80 65 C 75 80, 25 80, 20 65 Z" fill="url(#g1)" stroke="#a7f3d0" stroke-width="3"/><ellipse cx="38" cy="45" rx="6" ry="8" fill="#ffffff"/><ellipse cx="62" cy="45" rx="6" ry="8" fill="#ffffff"/><circle cx="40" cy="46" r="3" fill="#0f172a"/><circle cx="64" cy="46" r="3" fill="#0f172a"/><circle cx="36" cy="42" r="2" fill="#ffffff"/><circle cx="60" cy="42" r="2" fill="#ffffff"/><path d="M 44 58 Q 50 64 56 58" fill="none" stroke="#064e3b" stroke-width="3" stroke-linecap="round"/></svg>`);
+
+    const SVG_GOBLIN = "data:image/svg+xml," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="85" rx="32" ry="8" fill="rgba(0,0,0,0.4)"/><polygon points="10,35 30,45 25,20" fill="#15803d" stroke="#166534" stroke-width="2"/><polygon points="90,35 70,45 75,20" fill="#15803d" stroke="#166534" stroke-width="2"/><circle cx="50" cy="50" r="32" fill="#22c55e" stroke="#15803d" stroke-width="3"/><ellipse cx="38" cy="45" rx="7" ry="7" fill="#ef4444"/><ellipse cx="62" cy="45" rx="7" ry="7" fill="#ef4444"/><circle cx="38" cy="45" r="3" fill="#fef08a"/><circle cx="62" cy="45" r="3" fill="#fef08a"/><path d="M 40 34 L 48 38 M 60 34 L 52 38" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/><polygon points="44,60 48,54 52,60 56,54 50,65" fill="#ffffff"/><path d="M 36 58 Q 50 68 64 58" fill="none" stroke="#0f172a" stroke-width="3"/></svg>`);
+
+    const SVG_ORC = "data:image/svg+xml," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="85" rx="36" ry="10" fill="rgba(0,0,0,0.5)"/><path d="M 20 30 L 10 10 L 35 25 M 80 30 L 90 10 L 65 25" fill="#b91c1c" stroke="#7f1d1d" stroke-width="3"/><rect x="20" y="25" width="60" height="60" rx="20" fill="#dc2626" stroke="#7f1d1d" stroke-width="4"/><polygon points="34,42 44,45 32,48" fill="#facc15"/><polygon points="66,42 56,45 68,48" fill="#facc15"/><circle cx="38" cy="44" r="5" fill="#000000"/><circle cx="62" cy="44" r="5" fill="#000000"/><circle cx="38" cy="44" r="2" fill="#facc15"/><circle cx="62" cy="44" r="2" fill="#facc15"/><path d="M 30 35 L 45 40 M 70 35 L 55 40" stroke="#450a0a" stroke-width="4"/><polygon points="38,72 42,58 46,72" fill="#ffffff" stroke="#000000"/><polygon points="62,72 58,58 54,72" fill="#ffffff" stroke="#000000"/></svg>`);
+
+    const SVG_GOLEM = "data:image/svg+xml," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="85" rx="38" ry="10" fill="rgba(0,0,0,0.5)"/><rect x="18" y="20" width="64" height="60" rx="14" fill="#475569" stroke="#1e293b" stroke-width="4"/><rect x="28" y="30" width="44" height="40" rx="8" fill="#334155"/><line x1="28" y1="45" x2="72" y2="45" stroke="#38bdf8" stroke-width="4"/><circle cx="38" cy="45" r="6" fill="#38bdf8"/><circle cx="62" cy="45" r="6" fill="#38bdf8"/><circle cx="38" cy="45" r="2" fill="#ffffff"/><circle cx="62" cy="45" r="2" fill="#ffffff"/><path d="M 40 62 L 60 62" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg>`);
+
+    const SVG_BOSS = "data:image/svg+xml," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="88" rx="42" ry="12" fill="rgba(0,0,0,0.6)"/><path d="M 25 35 C 5 10, -5 -5, 20 5 C 30 10, 32 25, 35 35 Z" fill="#facc15" stroke="#d97706" stroke-width="3"/><path d="M 75 35 C 95 10, 105 -5, 80 5 C 70 10, 68 25, 65 35 Z" fill="#facc15" stroke="#d97706" stroke-width="3"/><circle cx="50" cy="52" r="36" fill="#881337" stroke="#fda4af" stroke-width="4"/><polygon points="34,45 46,48 32,54" fill="#facc15"/><polygon points="66,45 54,48 68,54" fill="#facc15"/><circle cx="38" cy="46" r="6" fill="#facc15"/><circle cx="62" cy="46" r="6" fill="#facc15"/><circle cx="38" cy="46" r="3" fill="#000000"/><circle cx="62" cy="46" r="3" fill="#000000"/><path d="M 32 66 Q 50 78 68 66" fill="none" stroke="#ffffff" stroke-width="4"/><polygon points="40,66 43,74 46,66" fill="#ffffff"/><polygon points="60,66 57,74 54,66" fill="#ffffff"/></svg>`);
+
+    const RARITY = {
+      COMMON: { name: '일반', color: '#94a3b8', border: '#64748b', bgColor: '#1e293b', chance: 0.60, tier: 1 },
+      RARE: { name: '희귀', color: '#38bdf8', border: '#0284c7', bgColor: '#0369a1', chance: 0.25, tier: 2 },
+      HEROIC: { name: '영웅', color: '#c084fc', border: '#9333ea', bgColor: '#6b21a8', chance: 0.10, tier: 3 },
+      LEGENDARY: { name: '전설', color: '#facc15', border: '#d97706', bgColor: '#b45309', chance: 0.04, tier: 4 },
+      MYTHIC: { name: '신화', color: '#f43f5e', border: '#fda4af', bgColor: '#9f1239', chance: 0.01, tier: 5 }
+    };
+
+    const UNIT_TYPES = [
+      { id: 'archer', name: '궁수', rarity: RARITY.COMMON, damage: 25, attackSpeed: 1.0, range: 240, icon: '\u{1F3F9}' },
+      { id: 'swordsman', name: '검사', rarity: RARITY.COMMON, damage: 35, attackSpeed: 0.8, range: 180, icon: '\u{2694}' },
+      { id: 'bandit', name: '도적', rarity: RARITY.COMMON, damage: 20, attackSpeed: 1.4, range: 200, icon: '\u{1F5E1}' },
+      { id: 'spearman', name: '창병', rarity: RARITY.COMMON, damage: 30, attackSpeed: 0.9, range: 220, icon: '\u{1F531}' },
+
+      { id: 'fire_wiz', name: '화염법사', rarity: RARITY.RARE, damage: 75, attackSpeed: 0.7, range: 240, icon: '\u{1F525}' },
+      { id: 'ice_wiz', name: '빙결법사', rarity: RARITY.RARE, damage: 50, attackSpeed: 0.9, range: 230, icon: '\u{2744}' },
+      { id: 'shield_knight', name: '방패기사', rarity: RARITY.RARE, damage: 90, attackSpeed: 0.6, range: 190, icon: '\u{1F6E1}' },
+      { id: 'ninja', name: '닌자', rarity: RARITY.RARE, damage: 110, attackSpeed: 1.2, range: 210, icon: '\u{1F977}' },
+
+      { id: 'paladin', name: '팔라딘', rarity: RARITY.HEROIC, damage: 240, attackSpeed: 0.8, range: 220, icon: '\u{269C}' },
+      { id: 'necro', name: '네크로맨서', rarity: RARITY.HEROIC, damage: 200, attackSpeed: 0.9, range: 260, icon: '\u{1F480}' },
+      { id: 'storm_dragon', name: '폭풍드래곤', rarity: RARITY.HEROIC, damage: 280, attackSpeed: 1.1, range: 280, icon: '\u{1F409}' },
+      { id: 'sniper', name: '헤드저격수', rarity: RARITY.HEROIC, damage: 450, attackSpeed: 0.5, range: 340, icon: '\u{1F3AF}' },
+
+      { id: 'archangel', name: '대천사 미카엘', rarity: RARITY.LEGENDARY, damage: 700, attackSpeed: 1.0, range: 300, icon: '\u{1F47C}' },
+      { id: 'demon_lord', name: '마왕 루시퍼', rarity: RARITY.LEGENDARY, damage: 850, attackSpeed: 0.9, range: 280, icon: '\u{1F608}' },
+      { id: 'titan', name: '대지의 타이탄', rarity: RARITY.LEGENDARY, damage: 1000, attackSpeed: 0.6, range: 250, icon: '\u{1F5FF}' },
+      { id: 'phoenix', name: '불사조 피닉스', rarity: RARITY.LEGENDARY, damage: 650, attackSpeed: 1.5, range: 320, icon: '\u{1F985}' },
+
+      { id: 'god_thor', name: '뇌신 토르', rarity: RARITY.MYTHIC, damage: 2200, attackSpeed: 1.4, range: 350, icon: '\u{1F528}' },
+      { id: 'god_ra', name: '태양신 라', rarity: RARITY.MYTHIC, damage: 2600, attackSpeed: 1.2, range: 380, icon: '\u{2600}' },
+      { id: 'cosmic_destroyer', name: '우주 파괴자', rarity: RARITY.MYTHIC, damage: 3500, attackSpeed: 1.0, range: 400, icon: '\u{1FA90}' },
+      { id: 'god_luck', name: '운빨의 제왕', rarity: RARITY.MYTHIC, damage: 4444, attackSpeed: 1.6, range: 450, icon: '\u{1F3B0}' }
+    ];
+
+    const MYTHIC_RECIPES = [
+      { resultId: 'god_thor', name: '⚡ 뇌신 토르', reqs: { rare: 2, heroic: 1 }, desc: '희귀 2개 + 영웅 1개' },
+      { resultId: 'god_ra', name: '☀️ 태양신 라', reqs: { heroic: 2, legendary: 1 }, desc: '영웅 2개 + 전설 1개' },
+      { resultId: 'cosmic_destroyer', name: '🌌 우주 파괴자', reqs: { legendary: 2 }, desc: '전설 2개' },
+      { resultId: 'god_luck', name: '👑 운빨의 제왕', reqs: { rare: 3, heroic: 2 }, desc: '희귀 3개 + 영웅 2개' }
+    ];
+
+    let canvas, ctx;
+    let gold = 400;
+    let coins = 5;
+    let wave = 1;
+    let maxWaves = 50;
+    let waveTimer = 20;
+    let waveSubTimer = 0;
+    let attackUpgradeLevel = 1;
+    let attackMultiplier = 1.0;
+    let killsCount = 0;
+    let mythicCount = 0;
+    let jackpotCount = 0;
+    let gameSpeed = 1;
+    let soundEnabled = true;
+    let autoSummon = false;
+    let isGameOver = false;
+
+    let relicGoldLv = 0;
+    let relicCritLv = 0;
+    let relicSpeedLv = 0;
+
+    const GRID_ROWS = 4;
+    const GRID_COLS = 4;
+    const boardSlots = new Array(GRID_ROWS * GRID_COLS).fill(null);
+    let selectedSlotIndex = -1;
+
+    let monsters = [];
+    let projectiles = [];
+    let particles = [];
+    let damageTexts = [];
+
+    // Track Waypoints wrapping around the 4x4 Grid (Canvas 800x600)
+    const WAYPOINTS = [
+      { x: 130, y: 55 },   // Top-Left Spawn Gate
+      { x: 670, y: 55 },   // Top-Right Turn
+      { x: 670, y: 545 },  // Bottom-Right Turn
+      { x: 130, y: 545 },  // Bottom-Left Turn
+      { x: 130, y: 300 }   // Castle Nexus Goal
+    ];
+
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'summon') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } else if (type === 'fuse') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(650, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'hit') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.04);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+          osc.start(now);
+          osc.stop(now + 0.04);
+        } else if (type === 'jackpot') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.type = 'square';
+            o.frequency.setValueAtTime(freq, now + i * 0.08);
+            g.gain.setValueAtTime(0.08, now + i * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.15);
+            o.start(now + i * 0.08);
+            o.stop(now + i * 0.08 + 0.15);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function showToast(msg, color = '#facc15') {
+      const toast = document.getElementById('toast-msg');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.style.borderColor = color;
+      toast.style.color = color;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1800);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+
+      buildDOMOverlayGrid();
+      renderRecipesUI();
+
+      // Initial 2 Starter Units
+      summonUnit(true);
+      summonUnit(true);
+
+      // IMMEDIATELY Spawn 5 Monsters along the track so monsters are 100% visible on load!
+      spawnMonsterAt(1, '초록 슬라임', SVG_SLIME, 130, 55);
+      spawnMonsterAt(1, '고블린 정찰병', SVG_GOBLIN, 400, 55);
+      spawnMonsterAt(2, '오크 전사', SVG_ORC, 670, 200);
+      spawnMonsterAt(3, '골렘 파괴자', SVG_GOLEM, 500, 545);
+      spawnMonsterAt(4, '마왕 보스', SVG_BOSS, 130, 450, true);
+
+      updateUI();
+
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    });
+
+    function buildDOMOverlayGrid() {
+      const overlay = document.getElementById('grid-overlay');
+      if (!overlay) return;
+      overlay.innerHTML = '';
+
+      for (let i = 0; i < 16; i++) {
+        const slotDiv = document.createElement('div');
+        slotDiv.className = 'dom-slot';
+        slotDiv.dataset.index = i;
+        slotDiv.onclick = () => handleSlotClick(i);
+        overlay.appendChild(slotDiv);
+      }
+    }
+
+    function updateDOMOverlayGrid() {
+      const slots = document.querySelectorAll('.dom-slot');
+      slots.forEach((slot, i) => {
+        const unit = boardSlots[i];
+        const isSelected = (selectedSlotIndex === i);
+        
+        slot.className = isSelected ? 'dom-slot selected' : 'dom-slot';
+
+        if (unit) {
+          slot.innerHTML = `
+            <div class="dom-unit-badge" style="background:${unit.template.rarity.bgColor}; border-color:${unit.template.rarity.border}">
+              ${unit.template.icon}
+            </div>
+            <div class="dom-unit-name" style="background:${unit.template.rarity.color}">
+              ${unit.template.name}
+            </div>
+          `;
+        } else {
+          slot.innerHTML = '';
+        }
+      });
+    }
+
+    function updateDOMMonsters() {
+      const overlay = document.getElementById('monster-overlay');
+      if (!overlay) return;
+
+      // Clean up dead monsters
+      const currentIds = new Set(monsters.map(m => m.id));
+      Array.from(overlay.children).forEach(child => {
+        if (!currentIds.has(child.dataset.id)) {
+          child.remove();
+        }
+      });
+
+      // Render/Update living monsters using SVG DATA URL IMAGES!
+      monsters.forEach(m => {
+        let mEl = overlay.querySelector(`[data-id="${m.id}"]`);
+        if (!mEl) {
+          mEl = document.createElement('div');
+          mEl.className = m.isBoss ? 'dom-monster boss' : 'dom-monster';
+          mEl.dataset.id = m.id;
+          mEl.innerHTML = `
+            <div class="dom-monster-name-tag">${m.name}</div>
+            <img src='${m.svgUrl}' class="monster-img" alt="${m.name}">
+            <div class="dom-monster-hp-bar">
+              <div class="dom-monster-hp-fill" id="hp-${m.id}"></div>
+            </div>
+          `;
+          overlay.appendChild(mEl);
+        }
+
+        // Percentage position on 800x600 canvas wrapper
+        const pctX = (m.x / 800) * 100;
+        const pctY = (m.y / 600) * 100;
+        mEl.style.left = pctX + '%';
+        mEl.style.top = pctY + '%';
+
+        const hpFill = document.getElementById(`hp-${m.id}`);
+        if (hpFill) {
+          const hpPct = Math.max(0, Math.min(100, (m.hp / m.maxHp) * 100));
+          hpFill.style.width = hpPct + '%';
+        }
+      });
+    }
+
+    function handleSlotClick(index) {
+      if (selectedSlotIndex === -1) {
+        if (boardSlots[index]) {
+          selectedSlotIndex = index;
+        }
+      } else {
+        if (selectedSlotIndex === index) {
+          selectedSlotIndex = -1;
+        } else {
+          fuseUnits(selectedSlotIndex, index);
+        }
+      }
+      updateUI();
+    }
+
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let monsterIdCounter = 1;
+
+    function gameLoop(time) {
+      try {
+        const dt = Math.min((time - lastTime) / 1000, 0.1) * gameSpeed;
+        lastTime = time;
+
+        if (!isGameOver) {
+          updateGame(dt);
+        }
+
+        renderGame();
+        updateDOMMonsters();
+      } catch (err) {
+        console.error("Game loop error:", err);
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    function updateGame(dt) {
+      waveSubTimer += dt;
+      if (waveSubTimer >= 1.0) {
+        waveSubTimer -= 1.0;
+        waveTimer--;
+        if (waveTimer <= 0) {
+          nextWave();
+        }
+      }
+
+      spawnTimer += dt;
+      const spawnInterval = Math.max(0.6, 1.6 - wave * 0.02);
+      if (spawnTimer >= spawnInterval) {
+        spawnTimer = 0;
+        spawnMonster();
+      }
+
+      if (autoSummon && gold >= 100) {
+        summonUnit();
+      }
+
+      // Update Monsters
+      for (let i = monsters.length - 1; i >= 0; i--) {
+        const m = monsters[i];
+        m.update(dt);
+        if (m.waypointIndex >= WAYPOINTS.length) {
+          monsters.splice(i, 1);
+          showToast('⚠️ 몬스터 성문 침투!', '#f43f5e');
+        }
+      }
+
+      if (monsters.length >= 80) {
+        triggerGameOver(false, '몬스터 수 한계 초과 (80마리)');
+        return;
+      }
+
+      // Update Board Units
+      for (let i = 0; i < boardSlots.length; i++) {
+        const unit = boardSlots[i];
+        if (unit) {
+          const slotPos = getSlotCenter(i);
+          unit.update(dt, slotPos, monsters);
+        }
+      }
+
+      // Update Projectiles
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.update(dt);
+        if (p.destroyed) projectiles.splice(i, 1);
+      }
+
+      // Update Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.update(dt);
+        if (pt.alpha <= 0) particles.splice(i, 1);
+      }
+
+      // Update Floating Texts
+      for (let i = damageTexts.length - 1; i >= 0; i--) {
+        const txt = damageTexts[i];
+        txt.y -= 30 * dt;
+        txt.alpha -= dt * 1.2;
+        if (txt.alpha <= 0) damageTexts.splice(i, 1);
+      }
+    }
+
+    function spawnMonster() {
+      const isBoss = (wave % 5 === 0 && waveTimer > 15);
+      const hpMultiplier = Math.pow(1.15, wave - 1);
+      const baseHp = isBoss ? 5000 * hpMultiplier : 800 * hpMultiplier;
+      const speed = isBoss ? 45 : 75 + Math.min(wave * 2, 45);
+
+      const mTypes = [
+        { svg: SVG_SLIME, name: '초록 슬라임' },
+        { svg: SVG_GOBLIN, name: '고블린 정찰병' },
+        { svg: SVG_ORC, name: '오크 전사' },
+        { svg: SVG_GOLEM, name: '골렘 파괴자' }
+      ];
+      const mType = isBoss ? { svg: SVG_BOSS, name: `👑 Wave ${wave} 마왕 보스` } : mTypes[Math.floor(Math.random() * mTypes.length)];
+
+      monsters.push(new Monster({
+        id: 'm_' + (monsterIdCounter++),
+        hp: Math.round(baseHp),
+        maxHp: Math.round(baseHp),
+        speed: speed,
+        isBoss: isBoss,
+        svgUrl: mType.svg,
+        name: mType.name,
+        rewardGold: isBoss ? 150 : 14,
+        rewardCoin: isBoss ? 3 : 0,
+        startX: WAYPOINTS[0].x,
+        startY: WAYPOINTS[0].y,
+        nextWpIndex: 1
+      }));
+    }
+
+    function spawnMonsterAt(wpIndex, name, svgUrl, startX, startY, isBoss = false) {
+      monsters.push(new Monster({
+        id: 'm_' + (monsterIdCounter++),
+        hp: isBoss ? 4000 : 800,
+        maxHp: isBoss ? 4000 : 800,
+        speed: isBoss ? 45 : 75,
+        isBoss: isBoss,
+        svgUrl: svgUrl,
+        name: name,
+        rewardGold: isBoss ? 150 : 14,
+        rewardCoin: isBoss ? 3 : 0,
+        startX: startX,
+        startY: startY,
+        nextWpIndex: wpIndex
+      }));
+    }
+
+    function nextWave() {
+      wave++;
+      waveTimer = 20;
+
+      const interest = 100 + (relicGoldLv * 50);
+      gold += interest;
+      coins += 1;
+
+      playSound('jackpot');
+      showToast(`🌊 Wave ${wave} 시작! +${interest}G 보너스`, '#38bdf8');
+
+      if (wave > maxWaves) {
+        triggerGameOver(true, '50 웨이브 정복 완료! 신화의 마스터!');
+      }
+    }
+
+    function summonUnit(free = false) {
+      if (!free && gold < 100) {
+        showToast('골드가 부족합니다! (100G 필요)', '#ef4444');
+        return;
+      }
+
+      const emptyIndices = [];
+      for (let i = 0; i < boardSlots.length; i++) {
+        if (!boardSlots[i]) emptyIndices.push(i);
+      }
+
+      if (emptyIndices.length === 0) {
+        showToast('타일판이 가득 찼습니다! 합성을 진행하세요.', '#f43f5e');
+        return;
+      }
+
+      if (!free) gold -= 100;
+
+      const roll = Math.random();
+      let selectedRarity = RARITY.COMMON;
+
+      if (roll < RARITY.MYTHIC.chance) {
+        selectedRarity = RARITY.MYTHIC;
+        mythicCount++;
+        playSound('jackpot');
+      } else if (roll < RARITY.MYTHIC.chance + RARITY.LEGENDARY.chance) {
+        selectedRarity = RARITY.LEGENDARY;
+        playSound('jackpot');
+      } else if (roll < RARITY.MYTHIC.chance + RARITY.LEGENDARY.chance + RARITY.HEROIC.chance) {
+        selectedRarity = RARITY.HEROIC;
+        playSound('summon');
+      } else if (roll < RARITY.MYTHIC.chance + RARITY.LEGENDARY.chance + RARITY.HEROIC.chance + RARITY.RARE.chance) {
+        selectedRarity = RARITY.RARE;
+        playSound('summon');
+      } else {
+        selectedRarity = RARITY.COMMON;
+        playSound('summon');
+      }
+
+      const candidates = UNIT_TYPES.filter(u => u.rarity === selectedRarity);
+      const chosenTemplate = candidates[Math.floor(Math.random() * candidates.length)];
+      const randomSlot = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+      
+      boardSlots[randomSlot] = new Unit(chosenTemplate, randomSlot);
+      showToast(`[${chosenTemplate.rarity.name}] ${chosenTemplate.name} 소환!`, chosenTemplate.rarity.color);
+      
+      const pos = getSlotCenter(randomSlot);
+      createExplosionParticles(pos.x, pos.y, chosenTemplate.rarity.color, 20);
+      updateUI();
+    }
+
+    function fuseUnits(slotA, slotB) {
+      if (slotA === slotB) return;
+      const uA = boardSlots[slotA];
+      const uB = boardSlots[slotB];
+
+      if (!uA || !uB) return;
+
+      if (uA.template.rarity.tier !== uB.template.rarity.tier) {
+        showToast('동일 등급 유닛끼리만 합성 가능합니다!', '#ef4444');
+        return;
+      }
+
+      if (uA.template.rarity === RARITY.MYTHIC) {
+        showToast('신화 유닛은 최상위 등급입니다!', '#f43f5e');
+        return;
+      }
+
+      const currentTier = uA.template.rarity.tier;
+      let nextRarity = RARITY.RARE;
+      if (currentTier === 1) nextRarity = RARITY.RARE;
+      else if (currentTier === 2) nextRarity = RARITY.HEROIC;
+      else if (currentTier === 3) nextRarity = RARITY.LEGENDARY;
+      else if (currentTier === 4) nextRarity = RARITY.MYTHIC;
+
+      boardSlots[slotA] = null;
+      boardSlots[slotB] = null;
+
+      const candidates = UNIT_TYPES.filter(u => u.rarity === nextRarity);
+      const chosenTemplate = candidates[Math.floor(Math.random() * candidates.length)];
+      boardSlots[slotB] = new Unit(chosenTemplate, slotB);
+
+      playSound('fuse');
+      showToast(`✨ 합성 성공! [${chosenTemplate.rarity.name}] ${chosenTemplate.name}`, chosenTemplate.rarity.color);
+
+      const pos = getSlotCenter(slotB);
+      createExplosionParticles(pos.x, pos.y, '#ffffff', 30);
+      selectedSlotIndex = -1;
+      updateUI();
+    }
+
+    function autoFuseDuplicates() {
+      let fused = false;
+      for (let i = 0; i < boardSlots.length; i++) {
+        for (let j = i + 1; j < boardSlots.length; j++) {
+          const uA = boardSlots[i];
+          const uB = boardSlots[j];
+          if (uA && uB && uA.template.rarity.tier === uB.template.rarity.tier && uA.template.rarity !== RARITY.MYTHIC) {
+            fuseUnits(i, j);
+            fused = true;
+            break;
+          }
+        }
+        if (fused) break;
+      }
+
+      if (!fused) {
+        showToast('합성 가능한 동일 등급 유닛 쌍이 없습니다.', '#94a3b8');
+      }
+    }
+
+    function runGamble() {
+      if (coins < 30 && gold < 300) {
+        showToast('도박 자금 부족! (30 코인 또는 300G 필요)', '#ef4444');
+        return;
+      }
+
+      if (coins >= 30) coins -= 30;
+      else gold -= 300;
+
+      const roll = Math.random();
+      if (roll < 0.45) {
+        jackpotCount++;
+        playSound('jackpot');
+        const emptyIndices = boardSlots.map((u, i) => u === null ? i : null).filter(i => i !== null);
+        
+        if (emptyIndices.length > 0) {
+          const slot = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+          const chosenTemplate = UNIT_TYPES.find(u => u.id === (roll < 0.1 ? 'god_luck' : 'archangel'));
+          boardSlots[slot] = new Unit(chosenTemplate, slot);
+          showToast(`🎉🎰 대박 잭팟! [${chosenTemplate.rarity.name}] ${chosenTemplate.name} 강림!`, '#facc15');
+          createExplosionParticles(400, 300, '#facc15', 60);
+        } else {
+          gold += 1000;
+          showToast('🎰 잭팟! 1000 골드 환급!', '#facc15');
+        }
+      } else {
+        showToast('💸 꽝! 운빨이 엇나갔습니다...', '#94a3b8');
+      }
+      updateUI();
+    }
+
+    function upgradeAttack() {
+      const cost = Math.round(150 * Math.pow(1.4, attackUpgradeLevel - 1));
+      if (gold < cost) {
+        showToast(`골드가 부족합니다! (${cost}G 필요)`, '#ef4444');
+        return;
+      }
+
+      gold -= cost;
+      attackUpgradeLevel++;
+      attackMultiplier = 1.0 + (attackUpgradeLevel - 1) * 0.12;
+
+      playSound('summon');
+      showToast(`⚔️ 전체 공격력 강화 Lv.${attackUpgradeLevel}! (+${Math.round((attackMultiplier - 1) * 100)}%)`, '#34d399');
+      updateUI();
+    }
+
+    function buyRelic(type) {
+      if (coins < 5) {
+        showToast('행운 코인이 부족합니다! (5 코인 필요)', '#ef4444');
+        return;
+      }
+
+      coins -= 5;
+      if (type === 'gold') relicGoldLv++;
+      else if (type === 'crit') relicCritLv++;
+      else if (type === 'speed') relicSpeedLv++;
+
+      playSound('jackpot');
+      showToast('🏆 유물 강화 완료!', '#fbbf24');
+      updateUI();
+    }
+
+    function craftMythicRecipe(recipeIndex) {
+      const recipe = MYTHIC_RECIPES[recipeIndex];
+      let rareCount = 0, heroicCount = 0, legendaryCount = 0;
+      boardSlots.forEach(u => {
+        if (u) {
+          if (u.template.rarity === RARITY.RARE) rareCount++;
+          if (u.template.rarity === RARITY.HEROIC) heroicCount++;
+          if (u.template.rarity === RARITY.LEGENDARY) legendaryCount++;
+        }
+      });
+
+      const reqR = recipe.reqs.rare || 0;
+      const reqH = recipe.reqs.heroic || 0;
+      const reqL = recipe.reqs.legendary || 0;
+
+      if (rareCount < reqR || heroicCount < reqH || legendaryCount < reqL) {
+        showToast('필요한 재료 유닛이 부족합니다!', '#ef4444');
+        return;
+      }
+
+      let rLeft = reqR, hLeft = reqH, lLeft = reqL;
+      for (let i = 0; i < boardSlots.length; i++) {
+        const u = boardSlots[i];
+        if (u) {
+          if (u.template.rarity === RARITY.RARE && rLeft > 0) { boardSlots[i] = null; rLeft--; }
+          else if (u.template.rarity === RARITY.HEROIC && hLeft > 0) { boardSlots[i] = null; hLeft--; }
+          else if (u.template.rarity === RARITY.LEGENDARY && lLeft > 0) { boardSlots[i] = null; lLeft--; }
+        }
+      }
+
+      const emptySlot = boardSlots.findIndex(s => s === null);
+      const mythicTemplate = UNIT_TYPES.find(u => u.id === recipe.resultId);
+      if (emptySlot !== -1) {
+        boardSlots[emptySlot] = new Unit(mythicTemplate, emptySlot);
+      }
+
+      mythicCount++;
+      playSound('jackpot');
+      showToast(`⚡ 신화 강림! ${recipe.name}`, '#f43f5e');
+      createExplosionParticles(400, 300, '#f43f5e', 80);
+      updateUI();
+    }
+
+    class Unit {
+      constructor(template, slotIndex) {
+        this.template = template;
+        this.slotIndex = slotIndex;
+        this.cooldown = 0;
+      }
+
+      update(dt, pos, monsters) {
+        this.cooldown -= dt * (1.0 + relicSpeedLv * 0.1);
+        if (this.cooldown <= 0) {
+          const target = this.findTarget(pos, monsters);
+          if (target) {
+            this.attack(pos, target);
+            this.cooldown = 1.0 / this.template.attackSpeed;
+          }
+        }
+      }
+
+      findTarget(pos, monsters) {
+        let bestMonster = null;
+        let minDist = this.template.range;
+        for (const m of monsters) {
+          const dist = Math.hypot(m.x - pos.x, m.y - pos.y);
+          if (dist <= minDist) {
+            minDist = dist;
+            bestMonster = m;
+          }
+        }
+        return bestMonster;
+      }
+
+      attack(startPos, target) {
+        let isCrit = Math.random() < (0.15 + relicCritLv * 0.05);
+        let rawDmg = this.template.damage * attackMultiplier * (isCrit ? 2.2 : 1.0);
+
+        projectiles.push(new Projectile({
+          x: startPos.x,
+          y: startPos.y,
+          target: target,
+          damage: Math.round(rawDmg),
+          isCrit: isCrit,
+          color: this.template.rarity.color,
+          icon: this.template.icon
+        }));
+
+        playSound('hit');
+      }
+    }
+
+    class Monster {
+      constructor(opts) {
+        this.id = opts.id;
+        this.hp = opts.hp;
+        this.maxHp = opts.maxHp;
+        this.speed = opts.speed;
+        this.isBoss = opts.isBoss;
+        this.svgUrl = opts.svgUrl;
+        this.name = opts.name;
+        this.rewardGold = opts.rewardGold;
+        this.rewardCoin = opts.rewardCoin;
+
+        this.x = opts.startX !== undefined ? opts.startX : WAYPOINTS[0].x;
+        this.y = opts.startY !== undefined ? opts.startY : WAYPOINTS[0].y;
+        this.waypointIndex = opts.nextWpIndex !== undefined ? opts.nextWpIndex : 1;
+        this.radius = opts.isBoss ? 28 : 16;
+      }
+
+      update(dt) {
+        if (this.waypointIndex >= WAYPOINTS.length) return;
+
+        const targetWP = WAYPOINTS[this.waypointIndex];
+        const dx = targetWP.x - this.x;
+        const dy = targetWP.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 8) {
+          this.waypointIndex++;
+        } else {
+          this.x += (dx / dist) * this.speed * dt;
+          this.y += (dy / dist) * this.speed * dt;
+        }
+      }
+
+      takeDamage(amount, isCrit) {
+        this.hp -= amount;
+
+        damageTexts.push({
+          x: this.x + (Math.random() * 20 - 10),
+          y: this.y - 20,
+          text: isCrit ? `CRITICAL! ${amount}` : `${amount}`,
+          color: isCrit ? '#facc15' : '#ffffff',
+          scale: isCrit ? 1.4 : 1.0,
+          alpha: 1.0
+        });
+
+        if (this.hp <= 0) {
+          gold += this.rewardGold;
+          coins += this.rewardCoin;
+          killsCount++;
+          createExplosionParticles(this.x, this.y, this.isBoss ? '#facc15' : '#f43f5e', 14);
+        }
+      }
+    }
+
+    class Projectile {
+      constructor(opts) {
+        this.x = opts.x;
+        this.y = opts.y;
+        this.target = opts.target;
+        this.damage = opts.damage;
+        this.isCrit = opts.isCrit;
+        this.color = opts.color;
+        this.icon = opts.icon;
+        this.speed = 480;
+        this.destroyed = false;
+      }
+
+      update(dt) {
+        if (this.target.hp <= 0) {
+          this.destroyed = true;
+          return;
+        }
+
+        const dx = this.target.x - this.x;
+        const dy = this.target.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 15) {
+          this.target.takeDamage(this.damage, this.isCrit);
+          this.destroyed = true;
+        } else {
+          this.x += (dx / dist) * this.speed * dt;
+          this.y += (dy / dist) * this.speed * dt;
+        }
+      }
+    }
+
+    function createExplosionParticles(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 40 + Math.random() * 120;
+        particles.push({
+          x: x, y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          radius: 2 + Math.random() * 4,
+          color: color,
+          alpha: 1.0
+        });
+      }
+    }
+
+    function getSlotCenter(index) {
+      const row = Math.floor(index / GRID_COLS);
+      const col = index % GRID_COLS;
+      const startX = 220;
+      const startY = 120;
+      const slotSize = 90;
+      return {
+        x: startX + col * slotSize + slotSize / 2,
+        y: startY + row * slotSize + slotSize / 2
+      };
+    }
+
+    function renderGame() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 72px Wide Vibrant Paved Track Road Wrapping Around 4x4 Grid
+      ctx.strokeStyle = 'rgba(79, 70, 229, 0.45)';
+      ctx.lineWidth = 72;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      WAYPOINTS.forEach((wp, i) => {
+        if (i === 0) ctx.moveTo(wp.x, wp.y);
+        else ctx.lineTo(wp.x, wp.y);
+      });
+      ctx.stroke();
+
+      // Golden Dash Center Line
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 4;
+      ctx.setLineDash([12, 12]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Top Track Banner Title
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.fillRect(250, 10, 300, 32);
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(250, 10, 300, 32);
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 14px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`👹 4x4 필드 트랙 배회 몬스터: ${monsters.length}마리`, 400, 26);
+
+      // Spawn Portal (WAYPOINTS[0])
+      const spawnPos = WAYPOINTS[0];
+      ctx.fillStyle = '#8b5cf6';
+      ctx.beginPath();
+      ctx.arc(spawnPos.x, spawnPos.y, 28, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#c084fc';
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('\u{1F300}', spawnPos.x, spawnPos.y);
+
+      // Castle Nexus Goal (End WAYPOINT)
+      const gatePos = WAYPOINTS[WAYPOINTS.length - 1];
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(gatePos.x, gatePos.y, 28, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#f87171';
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('\u{1F3F0}', gatePos.x, gatePos.y);
+
+      // Render Projectiles
+      for (const p of projectiles) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.icon, p.x, p.y);
+      }
+
+      // Render Particles
+      for (const pt of particles) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, pt.alpha);
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Render Floating Damage Texts
+      for (const txt of damageTexts) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, txt.alpha);
+        ctx.fillStyle = txt.color;
+        ctx.font = `bold ${Math.round(15 * txt.scale)}px Outfit, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(txt.text, txt.x, txt.y);
+        ctx.restore();
+      }
+    }
+
+    function updateUI() {
+      const waveEl = document.getElementById('wave-val');
+      const goldEl = document.getElementById('gold-val');
+      const coinEl = document.getElementById('coin-val');
+      const mobEl = document.getElementById('mob-val');
+      if (waveEl) waveEl.innerText = `🌊 ${wave} / ${maxWaves}`;
+      if (goldEl) goldEl.innerText = `🪙 ${gold}`;
+      if (coinEl) coinEl.innerText = `💎 ${coins}`;
+      if (mobEl) mobEl.innerText = `👹 ${monsters.length} / 80`;
+
+      const placedCount = boardSlots.filter(s => s !== null).length;
+      const boardTxt = document.getElementById('board-count-txt');
+      if (boardTxt) boardTxt.innerText = `배치: ${placedCount} / 16`;
+
+      const summaryTxt = document.getElementById('placed-summary-txt');
+      if (summaryTxt) summaryTxt.innerText = `총 ${placedCount}기`;
+
+      const upgradeCost = Math.round(150 * Math.pow(1.4, attackUpgradeLevel - 1));
+      const upTxt = document.getElementById('upgrade-cost-txt');
+      if (upTxt) upTxt.innerText = `Lv.${attackUpgradeLevel} (+${Math.round((attackMultiplier - 1) * 100)}%) | ${upgradeCost}G`;
+
+      const relG = document.getElementById('relic-gold-txt');
+      const relC = document.getElementById('relic-crit-txt');
+      const relS = document.getElementById('relic-speed-txt');
+      if (relG) relG.innerText = `Lv.${relicGoldLv} | 5💎`;
+      if (relC) relC.innerText = `Lv.${relicCritLv} | 5💎`;
+      if (relS) relS.innerText = `Lv.${relicSpeedLv} | 5💎`;
+
+      const detailBar = document.getElementById('unit-detail-bar');
+      if (detailBar) {
+        if (selectedSlotIndex !== -1 && boardSlots[selectedSlotIndex]) {
+          const u = boardSlots[selectedSlotIndex];
+          detailBar.innerHTML = `
+            <div>
+              <strong style="color:${u.template.rarity.color}">${u.template.icon} [${u.template.rarity.name}] ${u.template.name}</strong>
+              <span style="margin-left:10px; color:#94a3b8;">공격력: ${Math.round(u.template.damage * attackMultiplier)} | 사거리: ${u.template.range}</span>
+            </div>
+            <span style="color:#fbbf24; font-size:0.75rem;">다른 동일 등급 유닛을 클릭하면 합성됩니다!</span>
+          `;
+        } else {
+          detailBar.innerHTML = `<span style="color:#fbbf24; font-weight:700;">🎲 [운빨 영웅 소환] 버튼을 누르거나 타일을 클릭해 영웅을 합성하세요!</span>`;
+        }
+      }
+
+      updateDOMOverlayGrid();
+      renderPlacedUnitsList();
+      renderRecipesUI();
+    }
+
+    function renderPlacedUnitsList() {
+      const container = document.getElementById('placed-list-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      boardSlots.forEach((u, i) => {
+        if (u) {
+          const card = document.createElement('div');
+          card.className = 'placed-card';
+          card.style.borderLeftColor = u.template.rarity.border;
+          card.innerHTML = `
+            <div>
+              <span style="font-size:1.1rem;">${u.template.icon}</span>
+              <strong style="color:${u.template.rarity.color}">${u.template.name}</strong>
+            </div>
+            <span style="color:#94a3b8; font-size:0.75rem;">${Math.round(u.template.damage * attackMultiplier)}딜</span>
+          `;
+          container.appendChild(card);
+        }
+      });
+
+      if (boardSlots.filter(s => s !== null).length === 0) {
+        container.innerHTML = `<div style="grid-column:span 2; color:#94a3b8; font-size:0.75rem; text-align:center;">소환된 영웅이 없습니다.</div>`;
+      }
+    }
+
+    function renderRecipesUI() {
+      const container = document.getElementById('recipe-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      MYTHIC_RECIPES.forEach((rec, idx) => {
+        const item = document.createElement('div');
+        item.className = 'recipe-item';
+        item.innerHTML = `
+          <div>
+            <div class="recipe-name">${rec.name}</div>
+            <div class="recipe-req">${rec.desc}</div>
+          </div>
+          <button class="recipe-btn" onclick="craftMythicRecipe(${idx})">강림 ⚡</button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function toggleSpeed() {
+      if (gameSpeed === 1) gameSpeed = 2;
+      else if (gameSpeed === 2) gameSpeed = 3;
+      else gameSpeed = 1;
+
+      document.getElementById('speed-btn').innerText = `⏩ ${gameSpeed}x 배속`;
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('audio-btn').innerText = soundEnabled ? '🔊 사운드 ON' : '🔇 사운드 OFF';
+      if (soundEnabled) initAudio();
+    }
+
+    function toggleAutoSummon() {
+      autoSummon = !autoSummon;
+      document.getElementById('auto-btn').innerText = autoSummon ? '🤖 자동소환 ON' : '🤖 자동소환 OFF';
+    }
+
+    function triggerGameOver(isWin, reason) {
+      isGameOver = true;
+      const modal = document.getElementById('game-modal');
+      document.getElementById('modal-title-txt').innerText = isWin ? '🏆 승리! 게임 클리어!' : '💀 패배... 게임 오버!';
+      document.getElementById('modal-desc-txt').innerText = reason;
+      
+      document.getElementById('stat-wave').innerText = `${wave} Wave`;
+      document.getElementById('stat-kills').innerText = `${killsCount} 마리`;
+      document.getElementById('stat-mythic').innerText = `${mythicCount} 기`;
+      document.getElementById('stat-jackpot').innerText = `${jackpotCount} 회`;
+
+      modal.classList.add('active');
+    }
+
+    function restartGame() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
+<!-- END_HTML -->

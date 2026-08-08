@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 초호화 브롤스타즈 배틀 아레나 (Brawl Stars Korea)</title>
+  <meta name="description" content="쉘리, 콜트, 엘 프리모로 즐기는 정통 젬 그랩 & 쇼다운 브롤스타즈 배틀 아레나 액션 게임!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&family=Lilita+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="brawl-wrapper">
+    <!-- Main Battle Arena Canvas -->
+    <canvas id="brawl-canvas"></canvas>
+
+    <!-- Top HUD Bar -->
+    <header class="brawl-hud">
+      <div class="hud-left">
+        <a href="../index.html" class="nav-btn">⬅ 메인 메뉴</a>
+        <div class="mode-badge-box">
+          <span class="m-badge" id="hud-mode-badge">💎 젬 그랩</span>
+          <span class="m-title" id="hud-mode-title">보석 10개를 모아 15초 카운트다운 동안 생존하세요!</span>
+        </div>
+      </div>
+
+      <!-- Gem Grab / Showdown Status Tracker -->
+      <div class="hud-center">
+        <div class="gem-scoreboard" id="gem-scoreboard">
+          <div class="team-score blue-team">
+            <span class="t-label">아군 💎</span>
+            <span class="t-val" id="hud-my-gems">0</span>
+          </div>
+          <div class="countdown-pill hidden" id="countdown-pill">
+            <span class="cd-title" id="cd-title">아군 승리 카운트다운!</span>
+            <span class="cd-sec" id="cd-sec">15</span>
+          </div>
+          <div class="team-score red-team">
+            <span class="t-label">적군 💎</span>
+            <span class="t-val" id="hud-enemy-gems">0</span>
+          </div>
+        </div>
+
+        <div class="showdown-tracker hidden" id="showdown-tracker">
+          <span class="sd-icon">💀</span>
+          <span class="sd-text">남은 브롤러: <b id="sd-alive">8</b> / 8</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <button class="brawl-hud-btn" id="btn-audio-toggle">🔊 사운드 ON</button>
+        <button class="brawl-hud-btn" id="btn-brawler-change">🦸 브롤러 교체</button>
+      </div>
+    </header>
+
+    <!-- Super Skill / Action Button Overlay (On screen for Mouse / Touch) -->
+    <div class="action-buttons-zone">
+      <button class="super-btn disabled" id="btn-super-skill" title="특수 공격 / 궁극기 (E / Shift)">
+        <div class="super-inner">
+          <span class="super-icon">⚡</span>
+          <span class="super-text">SUPER</span>
+        </div>
+        <svg class="super-svg" viewBox="0 0 100 100">
+          <circle class="super-circle-bg" cx="50" cy="50" r="45"></circle>
+          <circle class="super-circle-fg" id="super-circle-fg" cx="50" cy="50" r="45"></circle>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Dual Virtual Joystick -->
+    <div class="mobile-joysticks-container" id="mobile-joysticks">
+      <div class="joystick-zone" id="joy-move-zone">
+        <div class="joystick-base" id="joy-move-base">
+          <div class="joystick-stick" id="joy-move-stick"></div>
+        </div>
+      </div>
+      <div class="joystick-zone" id="joy-aim-zone">
+        <div class="joystick-base aim-base" id="joy-aim-base">
+          <div class="joystick-stick aim-stick" id="joy-aim-stick">🔥</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Key Guide -->
+    <footer class="brawl-footer">
+      <div class="guide-item"><span class="k-badge">W A S D / 방향키</span> 이동 & 대시</div>
+      <div class="guide-item"><span class="k-badge">마우스 조준 + 좌클릭</span> 🔫 일반 공격 발사</div>
+      <div class="guide-item"><span class="k-badge">E / Shift</span> ⚡ 특수 궁극기 (SUPER)</div>
+      <div class="guide-item"><span class="k-badge">🌿 수풀(Bushes)</span> 은신 잠복</div>
+      <div class="guide-item"><span class="k-badge">R</span> 즉시 재시작</div>
+    </footer>
+
+    <!-- Start / Brawler & Mode Selection Modal -->
+    <div id="start-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="m-hero-title">🌟 BRAWL STARS 🌟</div>
+        <h1 class="m-title">초호화 브롤스타즈 배틀 아레나</h1>
+        <p class="m-desc">플레이할 브롤러와 게임 모드를 선택하고 아레나에서 승리를 쟁취하세요!</p>
+
+        <!-- Brawler Selector Cards -->
+        <div class="brawlers-grid">
+          <!-- Shelly -->
+          <div class="brawler-card active" data-brawler="shelly">
+            <div class="b-avatar b-shelly">🔫</div>
+            <div class="b-info">
+              <span class="b-role">데미지 딜러</span>
+              <h3>쉘리 (Shelly)</h3>
+              <p>산탄총 벅샷 & 벽을 부수는 파괴적인 슈퍼 쉘 대포!</p>
+            </div>
+            <div class="select-badge">선택됨</div>
+          </div>
+
+          <!-- Colt -->
+          <div class="brawler-card" data-brawler="colt">
+            <div class="b-avatar b-colt">🦅</div>
+            <div class="b-info">
+              <span class="b-role">저격수 / 원거리</span>
+              <h3>콜트 (Colt)</h3>
+              <p>6연발 리볼버 속사 & 벽을 뚫는 12연발 불렛 스톰!</p>
+            </div>
+            <div class="select-badge">선택</div>
+          </div>
+
+          <!-- El Primo -->
+          <div class="brawler-card" data-brawler="el_primo">
+            <div class="b-avatar b-primo">🥊</div>
+            <div class="b-info">
+              <span class="b-role">탱커 / 근접 파이터</span>
+              <h3>엘 프리모 (El Primo)</h3>
+              <p>화염 펀치 연타 & 하늘로 도약하는 플라잉 엘보 드롭!</p>
+            </div>
+            <div class="select-badge">선택</div>
+          </div>
+        </div>
+
+        <!-- Mode Selector Cards -->
+        <div class="mode-select-row">
+          <div class="mode-tab active" data-mode="gem_grab">
+            <span class="m-ico">💎</span>
+            <div class="m-txt">
+              <h4>젬 그랩 (Gem Grab)</h4>
+              <span>보석 10개 쟁탈전</span>
+            </div>
+          </div>
+
+          <div class="mode-tab" data-mode="showdown">
+            <span class="m-ico">💀</span>
+            <div class="m-txt">
+              <h4>솔로 쇼다운 (Showdown)</h4>
+              <span>독가스 8인 배틀로얄</span>
+            </div>
+          </div>
+
+          <div class="mode-tab" data-mode="brawl_ball">
+            <span class="m-ico">⚽</span>
+            <div class="m-txt">
+              <h4>브롤 볼 (Brawl Ball)</h4>
+              <span>골대 슛 축구 대전</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-start-battle" class="brawl-play-btn">🔥 배틀 시작하기 (Space / Enter)</button>
+      </div>
+    </div>
+
+    <!-- Victory / Defeat Modal -->
+    <div id="result-modal" class="modal-overlay hidden">
+      <div class="modal-card result-card">
+        <div class="result-icon" id="res-icon">🏆 🎉 🌟</div>
+        <h2 class="res-title" id="res-title">VICTORY!</h2>
+        <p class="res-subtitle" id="res-subtitle">스타 플레이어에 등극했습니다! 완벽한 승리입니다.</p>
+
+        <div class="res-stats-grid">
+          <div class="stat-box">
+            <span class="sb-label">처치한 적 수 (KILLS)</span>
+            <span class="sb-val gold" id="res-kills">0 킬</span>
+          </div>
+          <div class="stat-box">
+            <span class="sb-label">모은 보석 / 파워</span>
+            <span class="sb-val cyan" id="res-gems">0 개</span>
+          </div>
+          <div class="stat-box">
+            <span class="sb-label">총 가한 피해량</span>
+            <span class="sb-val" id="res-damage">0 DMG</span>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button id="btn-retry-battle" class="act-btn primary">🔄 다시 배틀하기 (R)</button>
+          <button id="btn-change-mode" class="act-btn secondary">모드 / 브롤러 변경</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

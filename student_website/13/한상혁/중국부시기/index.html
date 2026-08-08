@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🇨🇳 중국 베이징 초광속 폭탄 게임 (도시 파괴 & 졸라맨 12전사)</title>
+  <meta name="description" content="마우스 클릭 즉시 0.000...001초 만에 폭발하는 중국 베이징 도시 파괴 & 졸라맨 12전사 시뮬레이터!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-wrapper">
+    <!-- Canvas container for render layers -->
+    <canvas id="ruins-canvas"></canvas>
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="crater-canvas"></canvas>
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- UI Overlay Header -->
+    <header class="hud-header">
+      <div class="header-left">
+        <a href="../index.html" class="back-btn">⬅ 메인 메뉴</a>
+        <div class="title-box">
+          <h1>🇨🇳 베이징 초광속 폭탄 시뮬레이터</h1>
+          <span class="timer-badge">⏱️ 폭발 지연 시간: 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001초</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <!-- City Destruction Progress Bar -->
+        <div class="stat-card destruction-card">
+          <span class="stat-label">🇨🇳 베이징 도시 파괴율</span>
+          <div class="destruct-progress-bg">
+            <div class="destruct-progress-bar" id="city-progress-bar" style="width: 0%;"></div>
+          </div>
+          <span class="destruct-text" id="city-percent-text">🔥 파괴율: 0%</span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">총 폭파 횟수</span>
+          <span class="stat-value" id="stat-count">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">총 파괴력</span>
+          <span class="stat-value" id="stat-power">0 메가톤</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">연사 속도</span>
+          <span class="stat-value" id="stat-cps">0 회/초</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Weapon Selector Floating Bar -->
+    <div class="hud-weapons">
+      <div class="weapon-title">무기 선택</div>
+      <div class="weapon-grid">
+        <button class="weapon-btn active" data-weapon="tnt">
+          <span class="w-icon">💣</span>
+          <span class="w-name">초광속 TNT</span>
+          <span class="w-sub">기본 0.000...001초</span>
+        </button>
+        <button class="weapon-btn" data-weapon="nuke">
+          <span class="w-icon">🚀</span>
+          <span class="w-name">베이징 전술 핵</span>
+          <span class="w-sub">대형 버섯구름</span>
+        </button>
+        <button class="weapon-btn" data-weapon="cluster">
+          <span class="w-icon">🎆</span>
+          <span class="w-name">연쇄 융단폭격</span>
+          <span class="w-sub">다중 광역 연사</span>
+        </button>
+        <button class="weapon-btn" data-weapon="orbital">
+          <span class="w-icon">⚡</span>
+          <span class="w-name">궤도 레이저 폭격</span>
+          <span class="w-sub">플라즈마 광선</span>
+        </button>
+        <button class="weapon-btn" data-weapon="stickman">
+          <span class="w-icon">🥊</span>
+          <span class="w-name">졸라맨 12전사</span>
+          <span class="w-sub">초광속 십이연타</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Tools Floating Control -->
+    <div class="hud-controls">
+      <button class="ctrl-btn" id="btn-sound" title="효과음 토글">
+        <span id="sound-icon">🔊</span> 효과음 켜짐
+      </button>
+      <button class="ctrl-btn active" id="btn-shake" title="화면 흔들림">
+        📳 화면 흔들림 켜짐
+      </button>
+      <button class="ctrl-btn" id="btn-auto" title="드래그 연속 폭파">
+        ⚡ 드래그 연사 꺼짐
+      </button>
+      <button class="ctrl-btn btn-danger" id="btn-reset" title="베이징 도시 복구">
+        🧹 베이징 도시 완전 복구
+      </button>
+    </div>
+
+    <!-- Center Tip Banner -->
+    <div class="guide-banner">
+      💡 중국 베이징 천안문(天安门), 자금성 궁궐, CBD 마천루를 폭파하여 파괴율 100%를 달성하세요!
+    </div>
+
+    <!-- Game Clear Modal Overlay -->
+    <div id="clear-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="clear-icon">🎉 🏆 🎉</div>
+        <h2 class="clear-title">중국 베이징 도시 완전 소멸 완료!</h2>
+        <p class="clear-sub">중국 베이징 시가지의 모든 건물이 0.000...001초 초광속 폭파로 사라졌습니다!</p>
+        
+        <div class="clear-stats">
+          <div class="c-stat-box">
+            <span class="c-label">총 폭격 횟수</span>
+            <span class="c-val" id="modal-bombs">0 회</span>
+          </div>
+          <div class="c-stat-box">
+            <span class="c-label">총 사용 파괴력</span>
+            <span class="c-val" id="modal-power">0 메가톤</span>
+          </div>
+          <div class="c-stat-box">
+            <span class="c-label">클리어 소요 시간</span>
+            <span class="c-val" id="modal-time">0 초</span>
+          </div>
+        </div>
+
+        <button id="modal-restart-btn" class="restart-btn">🔄 베이징 도시 복구 & 다시 도전하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

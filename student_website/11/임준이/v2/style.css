@@ -1,0 +1,412 @@
+/* ==========================================
+   말랑말랑 과일 쌓기 - v2 CSS
+   ========================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    font-family: 'Jua', 'Gowun Dodum', sans-serif;
+    /* 위는 진한 파랑, 아래로 갈수록 점차 연한 파랑 그라데이션 */
+    background: linear-gradient(180deg, #0d3b66 0%, #1d6a96 35%, #59a5d8 70%, #90e0ef 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    overflow-x: hidden;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 화면 전환 시스템 (Screen Manager) */
+.screen {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 카드리스타일 공통 */
+.home-card, .card {
+    background: rgba(255, 255, 255, 0.92);
+    color: #1e293b;
+    border-radius: 28px;
+    padding: 35px 25px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(13, 59, 102, 0.3);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.title-badge {
+    background: #ff70a6;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(255, 112, 166, 0.4);
+}
+
+.main-title {
+    font-size: 2.3rem;
+    color: #0f172a;
+    text-shadow: 2px 2px 0px #bae6fd;
+}
+
+.sub-title {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.4;
+}
+
+.glass-preview-box {
+    background: linear-gradient(135deg, rgba(224, 242, 254, 0.8), rgba(186, 230, 253, 0.5));
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    padding: 25px;
+    font-size: 2.5rem;
+    margin: 10px 0;
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+/* 공통 버튼 스타일 */
+.btn {
+    font-family: 'Jua', sans-serif;
+    font-size: 1.25rem;
+    padding: 14px 28px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    min-height: 52px;
+    width: 100%;
+    max-width: 280px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #ff70a6 0%, #ff9770 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 112, 166, 0.4);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(255, 112, 166, 0.6);
+}
+
+.secondary-btn {
+    background: #0284c7;
+    color: white;
+}
+
+.tertiary-btn {
+    background: #64748b;
+    color: white;
+}
+
+/* 스테이지 선택 버튼들 */
+.stage-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.stage-btn {
+    font-family: 'Jua', sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #38bdf8;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    min-height: 64px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    color: #0f172a;
+}
+
+.stage-btn:hover {
+    transform: scale(1.02);
+    border-color: #0284c7;
+    background: #e0f2fe;
+}
+
+.stage-num {
+    font-size: 1.3rem;
+    color: #0284c7;
+}
+
+.stage-desc {
+    font-size: 1rem;
+    color: #334155;
+}
+
+.stage-goal {
+    font-size: 0.9rem;
+    color: #e11d48;
+}
+
+/* 3. 게임 진행 화면 스타일 */
+.game-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.badge {
+    background: #0284c7;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 1.1rem;
+}
+
+.target-badge {
+    background: #fff;
+    color: #0f172a;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+    padding: 6px 12px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    color: #e11d48;
+}
+
+.next-fruit-bar {
+    background: rgba(255, 255, 255, 0.85);
+    color: #0f172a;
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.next-fruit-icon {
+    font-size: 1.4rem;
+}
+
+/* 유리컵 (Glass Cup Wrapper) - 유리컵은 조금 크게 해줘! */
+.glass-cup-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    aspect-ratio: 440 / 600;
+    /* 유리컵 스타일 배경 */
+    background: linear-gradient(180deg, rgba(240, 249, 255, 0.4) 0%, rgba(186, 230, 253, 0.6) 100%);
+    border-left: 6px solid rgba(255, 255, 255, 0.8);
+    border-right: 6px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 12px solid rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 8px 25px rgba(2, 132, 199, 0.3);
+}
+
+/* 방향키 버튼 (상, 하, 좌, 우) */
+.mobile-arrow-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.arrow-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.arrow-btn {
+    font-family: 'Jua', sans-serif;
+    font-size: 1.05rem;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #38bdf8;
+    border-radius: 16px;
+    padding: 12px;
+    min-height: 48px;
+    flex: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.1s ease, transform 0.1s ease;
+}
+
+.arrow-btn:active {
+    background: #7dd3fc;
+    transform: scale(0.95);
+}
+
+.controls-guide {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #e0f2fe;
+    text-align: center;
+}
+
+/* 4. 결과 / 클리어 모달 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(13, 59, 102, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 20px;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-card {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 28px;
+    padding: 30px 24px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.result-icon {
+    font-size: 3.5rem;
+}
+
+.drum-roll-text {
+    font-size: 1.3rem;
+    color: #e11d48;
+    font-weight: bold;
+    animation: bounce 0.4s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-6px); }
+}
+
+.modal-score-box {
+    background: #f1f5f9;
+    padding: 10px 20px;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    width: 100%;
+}
+
+.modal-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.modal-btn-group .btn {
+    max-width: 100%;
+}
+
+/* 반응형 모바일 */
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 1.8rem;
+    }
+    .arrow-btn {
+        font-size: 0.95rem;
+        padding: 10px 6px;
+    }
+}

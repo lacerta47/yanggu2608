@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧩 초호화 네온 테트리스 마스터 (Super Neon Tetris)</title>
+  <meta name="description" content="방향키와 스페이스바로 블록을 회전하고 배치하여 라인을 소거하는 정통 테트리스 게임!">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="tetris-wrapper">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <a href="../index.html" class="nav-btn">⬅ 메인 메뉴</a>
+        <div class="game-badge-tag">
+          <span class="g-badge">v7 NEW</span>
+          <span class="g-title">🧩 초호화 네온 테트리스</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button class="t-mode-btn" id="btn-audio-toggle">🔊 BGM ON</button>
+        <button class="t-mode-btn" id="btn-restart-top">🔄 다시 시작 (R)</button>
+      </div>
+    </header>
+
+    <!-- Main Game Board & Panels Container -->
+    <main class="tetris-stage">
+      <!-- Left Panel: Hold & Stats -->
+      <aside class="side-panel left-panel">
+        <div class="panel-box hold-box">
+          <h3 class="box-title">보관 (HOLD - C / Shift)</h3>
+          <canvas id="hold-canvas" width="120" height="120"></canvas>
+        </div>
+
+        <div class="panel-box stat-box">
+          <h3 class="box-title">게임 통계</h3>
+          <div class="stat-row">
+            <span class="s-label">레벨 (LEVEL)</span>
+            <span class="s-val gold" id="hud-level">1</span>
+          </div>
+          <div class="stat-row">
+            <span class="s-label">지운 줄 수 (LINES)</span>
+            <span class="s-val cyan" id="hud-lines">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="s-label">현재 점수 (SCORE)</span>
+            <span class="s-val gold" id="hud-score">0</span>
+          </div>
+        </div>
+
+        <div class="panel-box mode-info-box">
+          <h3 class="box-title">현재 모드</h3>
+          <span class="mode-name" id="hud-mode-name">🏆 마라톤 모드</span>
+        </div>
+      </aside>
+
+      <!-- Center: Main Tetris 10x20 Matrix Canvas -->
+      <div class="matrix-wrapper">
+        <canvas id="tetris-canvas" width="300" height="600"></canvas>
+
+        <!-- Dynamic Floating Clear Combo Popups -->
+        <div class="clear-popup hidden" id="clear-popup">
+          <div class="popup-title" id="pop-title">TETRIS!</div>
+          <div class="popup-sub" id="pop-sub">+1,200 PTS!</div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Next Queue & Mode Selector -->
+      <aside class="side-panel right-panel">
+        <div class="panel-box next-box">
+          <h3 class="box-title">다음 블록 (NEXT)</h3>
+          <canvas id="next-canvas" width="120" height="340"></canvas>
+        </div>
+
+        <div class="panel-box controls-card">
+          <h3 class="box-title">조작키 안내</h3>
+          <div class="k-list">
+            <div class="k-item"><span class="k-key">← →</span> 좌우 이동</div>
+            <div class="k-item"><span class="k-key">↑ / X</span> 시계방향 회전</div>
+            <div class="k-item"><span class="k-key">Z</span> 반시계 회전</div>
+            <div class="k-item"><span class="k-key">Space</span> ⚡ 하드 드롭 (즉시 낙하)</div>
+            <div class="k-item"><span class="k-key">↓</span> 소프트 드롭 (가속)</div>
+            <div class="k-item"><span class="k-key">C / Shift</span> 홀드 (블록 보관)</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Mobile Touch Control Pad -->
+    <div class="touch-control-grid" id="touch-controls">
+      <div class="touch-row">
+        <button class="touch-btn hold" id="tb-hold">보관 (HOLD)</button>
+        <button class="touch-btn hard" id="tb-hard">⚡ 즉시 낙하 (Space)</button>
+        <button class="touch-btn rot" id="tb-rot">🔄 회전 (↑)</button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" id="tb-left">◀ 좌로</button>
+        <button class="touch-btn down" id="tb-down">▼ 내리기</button>
+        <button class="touch-btn" id="tb-right">우로 ▶</button>
+      </div>
+    </div>
+
+    <!-- Start / Mode Select Modal -->
+    <div id="start-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="m-hero-icon">🧩 ⚡ 🏆</div>
+        <h1 class="m-title">초호화 네온 테트리스 마스터</h1>
+        <p class="m-desc">정통 7종 테트로미노 블록을 회전하여 빈틈없이 배치하고 라인을 소거하세요!</p>
+
+        <!-- Game Mode Cards -->
+        <div class="mode-select-grid">
+          <div class="mode-card active" data-mode="marathon">
+            <div class="mode-icon c-gold">🏆</div>
+            <div class="mode-meta">
+              <span class="m-tag classic">CLASSIC</span>
+              <h3>마라톤 모드 (Marathon)</h3>
+              <p>레벨 1부터 15까지 점점 빨라지는 속도에서 최고 기록 도전</p>
+            </div>
+          </div>
+
+          <div class="mode-card" data-mode="sprint">
+            <div class="mode-icon c-cyan">⚡</div>
+            <div class="mode-meta">
+              <span class="m-tag sprint">TIME ATTACK</span>
+              <h3>40줄 스프린트 (Sprint)</h3>
+              <p>40줄을 가장 빠른 시간 내에 클리어하는 스피드 챌린지</p>
+            </div>
+          </div>
+
+          <div class="mode-card" data-mode="practice">
+            <div class="mode-icon c-green">🧘</div>
+            <div class="mode-meta">
+              <span class="m-tag practice">SLOW & RELAX</span>
+              <h3>슬로우 연습 모드 (0.5x)</h3>
+              <p>여유로운 속도로 T-스핀과 회전 테크닉을 연습하는 모드</p>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-start-game" class="play-btn-large">🚀 테트리스 시작하기 (Space / Enter)</button>
+      </div>
+    </div>
+
+    <!-- Game Over / Victory Modal -->
+    <div id="gameover-modal" class="modal-overlay hidden">
+      <div class="modal-card result-card">
+        <div class="res-trophy" id="res-trophy">🏆 🎉 🌟</div>
+        <h2 class="res-heading" id="res-heading">GAME OVER</h2>
+        <p class="res-subtext" id="res-subtext">수고하셨습니다! 당신의 테트리스 기록입니다.</p>
+
+        <div class="res-grid">
+          <div class="r-card">
+            <span class="r-k">최종 점수</span>
+            <span class="r-v gold" id="res-score">0 점</span>
+          </div>
+          <div class="r-card">
+            <span class="r-k">소거한 줄 수</span>
+            <span class="r-v cyan" id="res-lines">0 줄</span>
+          </div>
+          <div class="r-card">
+            <span class="r-k">도달한 레벨</span>
+            <span class="r-v" id="res-level">LEVEL 1</span>
+          </div>
+          <div class="r-card">
+            <span class="r-k">최대 콤보</span>
+            <span class="r-v" id="res-combo">0 COMBO</span>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button id="btn-retry" class="act-btn primary">🔄 다시 플레이 (R)</button>
+          <button id="btn-mode-select" class="act-btn secondary">모드 선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

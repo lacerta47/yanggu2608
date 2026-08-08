@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under the Red Sky - Real Element Particle FX v13</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Home Lobby Screen Overlay -->
+    <div id="homeOverlay" class="overlay">
+        <div class="lobby-card">
+            <div class="logo-badge">🔥 REAL ELEMENT FX MASTER v13</div>
+            <h1>Under the Red Sky</h1>
+            <p class="subtitle">진짜 화염불꽃, 튀는 물방울, 날리는 나뭇잎, 얼음 결정 3D 이펙트!</p>
+            
+            <div class="lobby-buttons">
+                <button id="startGameHomeBtn" class="lobby-btn primary">⚡ 1단계 도전 시작</button>
+                <button id="specialStageHomeBtn" class="lobby-btn special">⭐ 익스트림 무지개 스페셜</button>
+                <button id="closetHomeBtn" class="lobby-btn secondary">👕 캐릭터 드레스룸 (5종 리얼 원소 이펙트)</button>
+                <button id="resetStageHomeBtn" class="lobby-btn secondary hidden">🔄 1단계부터 다시 시작</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Closet Drawer Modal -->
+    <div id="closetOverlay" class="overlay hidden">
+        <div class="modal-card closet-card">
+            <h2>✨ 리얼 원소 이펙트 드레스룸</h2>
+            <p>화염은 불꽃, 물은 튀는 물방울! 각 원소가 살아 숨쉬는 이펙트를 경험해보세요!</p>
+            
+            <div class="character-grid">
+                <!-- 1. Real Water Splash Skin -->
+                <div id="cardBasic" class="char-card selected skin-basic">
+                    <div class="char-icon">🌊</div>
+                    <h3>사이버 아쿠아 워터</h3>
+                    <span class="char-status unlocked-tag">💦 튀는 물방울 & 수면 물결 이펙트</span>
+                    <button id="equipBasicBtn" class="equip-btn active">장착 중</button>
+                </div>
+
+                <!-- 2. Real Fire Flame Dragon Skin -->
+                <div id="cardThunder" class="char-card locked skin-thunder">
+                    <div class="char-icon">🔥</div>
+                    <h3>썬더 파이어 드래곤</h3>
+                    <span id="thunderStatusTag" class="char-status locked-tag">🔒 5단계 (솟구치는 이중 화염 불꽃)</span>
+                    <button id="equipThunderBtn" class="equip-btn" disabled>잠김 🔒</button>
+                </div>
+
+                <!-- 3. Real Nature Leaf Knight Skin -->
+                <div id="cardEmerald" class="char-card locked skin-emerald">
+                    <div class="char-icon">🍃</div>
+                    <h3>섀도우 에메랄드 나이트</h3>
+                    <span id="emeraldStatusTag" class="char-status locked-tag">🔒 10단계 (흩날리는 바람 3D 나뭇잎)</span>
+                    <button id="equipEmeraldBtn" class="equip-btn" disabled>잠김 🔒</button>
+                </div>
+
+                <!-- 4. Real Ice Crystal Diamond Skin -->
+                <div id="cardDiamond" class="char-card locked skin-diamond">
+                    <div class="char-icon">❄️</div>
+                    <h3>다이아몬드 아스트랄</h3>
+                    <span id="diamondStatusTag" class="char-status locked-tag">🔒 15단계 (반짝이는 얼음 결정체)</span>
+                    <button id="equipDiamondBtn" class="equip-btn" disabled>잠김 🔒</button>
+                </div>
+
+                <!-- 5. Real Rainbow Fireworks God Skin -->
+                <div id="cardRainbow" class="char-card locked full-width skin-rainbow">
+                    <div class="char-icon">👑</div>
+                    <h3>⭐ 갓 레인보우 히어로</h3>
+                    <span id="rainbowStatusTag" class="char-status locked-tag">🔒 스페셜 완주 (무지개 은하수 불꽃놀이)</span>
+                    <button id="equipRainbowBtn" class="equip-btn" disabled>잠김 🔒</button>
+                </div>
+            </div>
+
+            <button id="closeClosetBtn" class="secondary-btn margin-top">닫기 ✖</button>
+        </div>
+    </div>
+
+    <!-- Top In-Game HUD Bar -->
+    <div id="hudContainer">
+        <button id="homeNavBtn" class="hud-nav-btn">🏠 홈으로</button>
+        <button id="bgmToggleBtn" class="hud-nav-btn bgm-btn">🎵 BGM ON</button>
+        <div class="hud-item">
+            🎨 테마: <strong id="themeNameDisplay">☀️ 맑은 낮 파란 하늘</strong>
+        </div>
+        <div class="hud-item">
+            🚩 스테이지: <strong id="stageNum">1</strong> / 20
+        </div>
+        <div class="hud-item">
+            ⏱️ 시간: <strong id="timerDisplay">00:00.0</strong>
+        </div>
+        <button id="specialStageHudBtn" class="special-hud-btn">⭐ 익스트림 스페셜</button>
+    </div>
+
+    <!-- Controls Guide Banner -->
+    <div id="controlsBanner">
+        <span>🔥 <strong>리얼 이펙트:</strong> 불꽃, 물방울, 나뭇잎, 얼음결정</span>
+        <span>🔻 <strong>추락/피격:</strong> 시간초 리셋</span>
+        <span>⚡ <strong>🔴 위험:</strong> 이동식 레이저</span>
+        <span>⏳ <strong>벽 타기:</strong> 2초</span>
+        <span>🛷 <strong>C / Ctrl:</strong> 슬라이딩</span>
+        <span>🦘 <strong>Space:</strong> 점프</span>
+    </div>
+
+    <!-- Gameplay Status Badges -->
+    <div id="badgeContainer">
+        <div id="laserBadge" class="action-badge warning hidden">⚡ 붉은 레이저 피격! 시간 리셋!</div>
+        <div id="wallBadge" class="action-badge hidden">🧗 벽 타기 중!</div>
+        <div id="wallCdBadge" class="action-badge warning hidden">⏳ 벽 타기 쿨타임 중...</div>
+        <div id="slideBadge" class="action-badge hidden">🛷 슬라이딩 중!</div>
+        <div id="boosterBadge" class="action-badge boost hidden">🚀 슈퍼 점프 부스터!</div>
+        <div id="checkpointBadge" class="action-badge success hidden">🚩 리스폰 발판 저장!</div>
+    </div>
+
+    <!-- Center Aim Dot (NO CROSS LINES) -->
+    <div id="crosshair"></div>
+
+    <!-- Stage Complete & Victory Overlay Modal -->
+    <div id="victoryOverlay" class="overlay hidden">
+        <div class="modal-card">
+            <h1 id="victoryTitle">🎉 스테이지 클리어!</h1>
+            <p id="victoryMessage">축하합니다! 코스를 무사히 완주하셨습니다.</p>
+            
+            <div id="unlockNoticeBanner" class="unlock-banner hidden">
+                🎉 새로운 캐릭터 스킨이 드레스룸에 해금되었습니다!
+            </div>
+
+            <div class="time-record">
+                최종 기록: <strong id="finalTimeDisplay">00:00.0</strong>
+            </div>
+            <div class="modal-buttons">
+                <button id="nextStageBtn" class="primary-btn">다음 스테이지 ▶</button>
+                <button id="restartGameBtn" class="secondary-btn">처음부터 다시 하기 🔄</button>
+                <button id="returnHomeBtn" class="secondary-btn">홈으로 이동 🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries: Three.js & PointerLockControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
