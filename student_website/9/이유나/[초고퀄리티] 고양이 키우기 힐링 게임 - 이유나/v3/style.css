@@ -1,0 +1,683 @@
+:root {
+  --font-family: 'Gaegu', 'Gowun Dodum', sans-serif;
+  --bg-color: #fff9f0;
+  --panel-bg: rgba(255, 255, 255, 0.92);
+  --primary-pink: #ff85a2;
+  --primary-pink-hover: #ff6b8b;
+  --soft-yellow: #fff3bf;
+  --soft-blue: #a5d8ff;
+  --soft-green: #b2f2bb;
+  --text-color: #495057;
+  --border-radius: 1.2rem;
+  --shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: #f7e8d8;
+  background-image: 
+    radial-gradient(#ffdfd3 15%, transparent 16%),
+    radial-gradient(#e0f2fe 15%, transparent 16%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.game-app {
+  width: 100%;
+  max-width: 900px;
+  height: 95vh;
+  max-height: 720px;
+  background-color: var(--bg-color);
+  border-radius: 1.8rem;
+  box-shadow: 0 16px 40px rgba(100, 80, 60, 0.15);
+  border: 4px solid #fff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 화면 전환 공통 */
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease;
+}
+
+.screen.hidden {
+  display: none !important;
+  opacity: 0;
+}
+
+.screen.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* 글래스 카더 스타일 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+  max-width: 540px;
+  width: 90%;
+  margin: auto;
+  border: 2px solid #fff;
+}
+
+/* 1. 시작 화면 */
+#start-screen {
+  background: linear-gradient(135deg, #ffe3e8 0%, #fff4e6 100%);
+  justify-content: center;
+  align-items: center;
+}
+
+.main-title {
+  font-size: 2.2rem;
+  color: #d63384;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.start-cat-illustration {
+  font-size: 5rem;
+  margin: 1rem 0;
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 2. 고양이 선택 화면 */
+#select-screen {
+  background: linear-gradient(135deg, #e7f5ff 0%, #fff0f6 100%);
+  justify-content: center;
+  align-items: center;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  color: #495057;
+  margin-bottom: 1.2rem;
+}
+
+.breed-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.breed-card {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 1rem;
+  padding: 0.6rem 0.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.breed-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-pink);
+}
+
+.breed-card.selected {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 12px rgba(255, 133, 162, 0.4);
+}
+
+.breed-avatar {
+  font-size: 2.2rem;
+}
+
+.breed-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+.name-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.name-input-group label {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.name-input-group input {
+  font-family: var(--font-family);
+  font-size: 1.3rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.8rem;
+  border: 2px solid #ced4da;
+  outline: none;
+  text-align: center;
+  width: 220px;
+}
+
+/* 버튼 스타일 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  min-height: 48px;
+  padding: 0.6rem 1.4rem;
+  transition: all 0.2s ease;
+}
+
+.primary-btn {
+  background-color: var(--primary-pink);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(255, 133, 162, 0.4);
+  width: 100%;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-pink-hover);
+  transform: translateY(-2px);
+}
+
+.secondary-btn {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.success-btn {
+  background: linear-gradient(135deg, #51cf66 0%, #20c997 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(32, 201, 151, 0.4);
+}
+
+.success-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* 3. 메인 게임 화면 상단 UI */
+.top-left-panel {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+}
+
+.cat-profile {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.6rem 1rem;
+  border-radius: 1rem;
+  border: 2px solid #ffe3e8;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.profile-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d63384;
+}
+
+.profile-breed {
+  font-size: 0.95rem;
+  color: #868e96;
+}
+
+.profile-age {
+  background: #fff0f6;
+  color: #d63384;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.6rem;
+}
+
+/* 고양이 이름 하단 BGM 버튼 */
+.bgm-btn {
+  background: #e7f5ff;
+  border: 1.5px solid #74c0fc;
+  color: #1971c2;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.bgm-btn:hover {
+  background: #d0ebff;
+}
+
+.top-right-panel {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  max-width: 280px;
+}
+
+.gauge-container {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.6rem 1rem;
+  border-radius: 1rem;
+  border: 2px solid #e7f5ff;
+  box-shadow: var(--shadow);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.gauge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.gauge-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.gauge-bar-bg {
+  width: 130px;
+  height: 14px;
+  background: #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+}
+
+.gauge-bar-fill.hunger { background: linear-gradient(90deg, #ff922b, #ffc078); }
+.gauge-bar-fill.thirst { background: linear-gradient(90deg, #339af0, #74c0fc); }
+.gauge-bar-fill.boredom { background: linear-gradient(90deg, #51cf66, #8ce99a); }
+
+/* 요구사항 직사각형 창 */
+.thought-box {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #ffd8a8;
+  border-radius: 0.8rem;
+  padding: 0.5rem 0.8rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.thought-icon {
+  font-size: 1.2rem;
+}
+
+.thought-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e8590c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-center-panel {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid #ffd8a8;
+  font-family: var(--font-family);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+/* 상단 오른쪽 씬 완성 버튼 */
+.top-scene-done {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 25;
+}
+
+.top-scene-done.hidden {
+  display: none !important;
+}
+
+/* 캔버스 */
+.bedroom-canvas-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.effect-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 하단 버튼 */
+.bottom-controls {
+  padding: 0.8rem 1.2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 2px solid #f1f3f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 10;
+}
+
+.action-btn {
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  color: #495057;
+  flex: 1;
+  max-width: 160px;
+}
+
+.action-btn:hover {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
+  color: #d63384;
+}
+
+.menu-toggle-btn {
+  background: #e7f5ff;
+  border: 2px solid #74c0fc;
+  color: #1971c2;
+  font-size: 1.6rem;
+  padding: 0.4rem 1rem;
+  min-width: 52px;
+}
+
+/* 햄버거 메뉴 */
+.extra-menu {
+  position: absolute;
+  bottom: 70px;
+  right: 1.2rem;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid #a5d8ff;
+  border-radius: 1.2rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  z-index: 20;
+}
+
+.extra-menu.hidden {
+  display: none;
+}
+
+.extra-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1971c2;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #e7f5ff;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #868e96;
+}
+
+.extra-menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.extra-btn {
+  font-size: 1.05rem;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  justify-content: space-between;
+}
+
+.extra-btn.unlocked {
+  background: #e6fcf5;
+  border: 2px solid #63e6be;
+  color: #0ca678;
+}
+
+.extra-btn.locked {
+  background: #f1f3f5;
+  border: 2px solid #ced4da;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.unlock-timer {
+  font-size: 0.85rem;
+  color: #868e96;
+}
+
+/* 드레스룸 패널 */
+.dressroom-panel {
+  position: absolute;
+  bottom: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #ff4081;
+  border-radius: 1.2rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.dressroom-panel.hidden {
+  display: none !important;
+}
+
+.dressroom-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #d63384;
+}
+
+.dressroom-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dress-item-btn {
+  background: #f8f9fa;
+  border: 1.5px solid #dee2e6;
+  border-radius: 0.8rem;
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dress-item-btn:hover, .dress-item-btn.selected {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
+  color: #d63384;
+}
+
+/* 알림 토스트 */
+.unlock-toast {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffec99 0%, #ffd43b 100%);
+  color: #5c940d;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 0.6rem 1.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 30;
+}
+
+.unlock-toast.hidden {
+  display: none;
+}
+
+/* 모달 */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-card {
+  max-width: 500px;
+}
+
+.modal-title {
+  font-size: 2rem;
+  color: #d63384;
+  margin-bottom: 0.8rem;
+}
+
+.modal-text {
+  font-size: 1.2rem;
+  color: #495057;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.kittens-display {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .breed-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gauge-bar-bg {
+    width: 90px;
+  }
+
+  .bottom-controls {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .btn {
+    font-size: 1.1rem;
+    padding: 0.5rem 0.8rem;
+  }
+}

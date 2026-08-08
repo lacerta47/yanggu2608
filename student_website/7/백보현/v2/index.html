@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500km 대모험 RPG - WASD</title>
+    <!-- Google Fonts: Outfit & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 게임 상단 헤더 -->
+        <header class="game-header">
+            <div class="main-title-box">
+                <span class="badge-km">🚩 메인 목표: 500km 모험</span>
+                <h1 class="game-title">⚔️ 500km 대모험 RPG ⚔️</h1>
+            </div>
+            
+            <!-- 플레이어 대시보드 (레벨, 경험치, 무기) -->
+            <div class="dashboard">
+                <div class="dash-card level-card">
+                    <span class="card-label">현재 레벨</span>
+                    <div class="level-badge"><span id="player-level">1</span> <small>/ 50 Lv</small></div>
+                </div>
+
+                <div class="dash-card exp-card">
+                    <div class="exp-header">
+                        <span class="card-label">경험치 (EXP)</span>
+                        <span class="exp-text"><span id="current-exp">0</span> / <span id="max-exp">1000</span></span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="exp-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="dash-card weapon-card">
+                    <span class="card-label">장착 무기</span>
+                    <div class="weapon-info">
+                        <span id="weapon-icon" class="weapon-icon">🗡️</span>
+                        <span id="weapon-name" class="weapon-name">초보자의 나무 검</span>
+                    </div>
+                    <span id="weapon-dmg" class="weapon-dmg">공격력 +10</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 메인 영역 (필드 맵 + 전투 인터페이스 + 퀘스트 창) -->
+        <main class="game-main">
+            <!-- 캔버스 모험 필드 -->
+            <section class="field-section">
+                <div class="field-header">
+                    <span class="field-title">🧭 이동 거리: <strong id="distance-val">0</strong>km / 500km</span>
+                    <span class="control-hint">💡 WASD 키로 캐릭터를 움직이세요!</span>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="700" height="420"></canvas>
+                    
+                    <!-- 알림 팝업 메시지 -->
+                    <div id="toast-message" class="toast-message hidden">
+                        <span id="toast-text">알림 내용</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 사이드 정보창 (전투 및 퀘스트) -->
+            <aside class="sidebar-section">
+                <!-- 몬스터 상태창 -->
+                <div class="panel monster-panel">
+                    <div class="panel-header">
+                        <h2>👾 필드 몬스터</h2>
+                        <span id="monster-tier" class="monster-tier-badge">LV.1 몬스터</span>
+                    </div>
+                    <div class="monster-display">
+                        <div id="monster-avatar" class="monster-avatar">🟢</div>
+                        <div class="monster-details">
+                            <h3 id="monster-name">아기 슬라임</h3>
+                            <div class="hp-box">
+                                <span class="hp-label">체력</span>
+                                <div class="progress-bar-bg hp-bg">
+                                    <div id="monster-hp-bar" class="progress-bar-fill hp-fill" style="width: 100%;"></div>
+                                </div>
+                                <span class="hp-text"><span id="monster-hp">50</span> / <span id="monster-max-hp">50</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="attack-btn" class="action-btn attack-btn">⚔️ 몬스터 공격하기 (+100 EXP)</button>
+                </div>
+
+                <!-- 퀘스트 창 -->
+                <div class="panel quest-panel">
+                    <div class="panel-header">
+                        <h2>📜 모험 퀘스트</h2>
+                        <span class="quest-reward-badge">보상: +50 EXP</span>
+                    </div>
+                    <ul id="quest-list" class="quest-list">
+                        <!-- JS로 dynamic 생성 -->
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 모바일 터치 조작부 (WASD) -->
+        <div class="mobile-wasd-controls">
+            <div class="wasd-pad">
+                <button id="btn-w" class="wasd-btn btn-up" aria-label="위로 이동 (W)">W</button>
+                <div class="wasd-middle-row">
+                    <button id="btn-a" class="wasd-btn btn-left" aria-label="왼쪽 이동 (A)">A</button>
+                    <button id="btn-s" class="wasd-btn btn-down" aria-label="아래로 이동 (S)">S</button>
+                    <button id="btn-d" class="wasd-btn btn-right" aria-label="오른쪽 이동 (D)">D</button>
+                </div>
+            </div>
+            <div class="mobile-action-group">
+                <button id="mobile-attack-btn" class="mobile-attack-btn">⚔️ 공격</button>
+            </div>
+        </div>
+
+        <!-- 게임 완료 (레벨 50 달성) 모달 -->
+        <div id="victory-modal" class="modal hidden">
+            <div class="modal-content victory-content">
+                <div class="trophy-icon">🏆</div>
+                <h2>🎉 축하합니다! 모험 전설 달성!</h2>
+                <p>500km 모험을 완수하고 <strong>50레벨</strong>에 도달했습니다!</p>
+                <div class="final-stats">
+                    <p>최종 장착 무기: <strong id="final-weapon">신들의 신검</strong></p>
+                    <p>최종 공격력: <strong id="final-dmg">1000</strong></p>
+                </div>
+                <button id="restart-btn" class="glow-btn">새로운 모험 다시 시작하기</button>
+            </div>
+        </div>
+
+        <footer class="game-footer">
+            <p>🎮 <strong>조작법:</strong> 키보드 <span>W</span> <span>A</span> <span>S</span> <span>D</span> 키 또는 하단 터치 버튼으로 이동하세요!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

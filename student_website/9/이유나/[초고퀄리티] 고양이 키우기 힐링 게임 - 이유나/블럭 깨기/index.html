@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>귀여운 블록깨기 게임 (v1)</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <!-- 점수판 (HUD) -->
+    <header class="hud">
+      <div class="hud-item">
+        <span class="hud-label">점수</span>
+        <span id="score" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">최고 기록</span>
+        <span id="high-score" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">레벨</span>
+        <span id="level" class="hud-value">1</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">하트</span>
+        <div id="lives" class="lives-container">
+          <span class="heart">♥</span>
+          <span class="heart">♥</span>
+          <span class="heart">♥</span>
+        </div>
+      </div>
+      <button id="sound-btn" class="hud-btn" title="소리 켜기/끄기">🔊</button>
+    </header>
+
+    <!-- 게임 화면 -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+      <!-- 시작 화면 -->
+      <div id="start-screen" class="overlay active">
+        <div class="glass-card">
+          <h1 class="title">🐾 알록달록 블록깨기 🐾</h1>
+          <p class="subtitle">공을 튕겨서 상단의 모든 블록을 깨보세요!</p>
+
+          <div class="controls-guide">
+            <div class="control-item">
+              <span class="key">◀</span> <span class="key">▶</span> 또는 <span class="key">A</span> <span class="key">D</span>
+              <span class="desc">하단 바 이동하기</span>
+            </div>
+            <div class="control-item">
+              <span class="key">SPACE</span>
+              <span class="desc">공 발사하기</span>
+            </div>
+            <div class="control-item">
+              <span class="key">P</span> / <span class="key">ESC</span>
+              <span class="desc">잠시 멈추기</span>
+            </div>
+          </div>
+
+          <button id="start-btn" class="btn primary-btn">게임 시작하기!</button>
+        </div>
+      </div>
+
+      <!-- 일시정지 화면 -->
+      <div id="pause-screen" class="overlay hidden">
+        <div class="glass-card">
+          <h2 class="overlay-title">잠시 쉬는 시간</h2>
+          <p class="subtitle">게임이 잠시 멈췄어요.</p>
+          <button id="resume-btn" class="btn primary-btn">다시 시작하기 (P)</button>
+        </div>
+      </div>
+
+      <!-- 게임오버 화면 -->
+      <div id="gameover-screen" class="overlay hidden">
+        <div class="glass-card">
+          <h2 class="overlay-title danger">아쉬워요! 게임 오버</h2>
+          <p class="result-label">최종 점수</p>
+          <div id="final-score-over" class="result-score">0</div>
+          <p id="new-high-over" class="high-score-notice hidden">🎉 신기록 달성!</p>
+          <button id="restart-btn-over" class="btn primary-btn">다시 도전하기</button>
+        </div>
+      </div>
+
+      <!-- 승리 화면 -->
+      <div id="win-screen" class="overlay hidden">
+        <div class="glass-card">
+          <h2 class="overlay-title success">축하합니다! 승리!</h2>
+          <p class="subtitle">모든 블록을 다 깼어요!</p>
+          <p class="result-label">최종 점수</p>
+          <div id="final-score-win" class="result-score">0</div>
+          <p id="new-high-win" class="high-score-notice hidden">🎉 신기록 달성!</p>
+          <div class="btn-group">
+            <button id="next-level-btn" class="btn primary-btn">다음 단계로</button>
+            <button id="restart-btn-win" class="btn secondary-btn">처음부터 다시</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 아이템 효과 표시 바 -->
+    <div id="powerup-bar" class="powerup-bar"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

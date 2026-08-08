@@ -1,0 +1,327 @@
+:root {
+    --bg-color: #1a1c29;
+    --panel-bg: rgba(30, 34, 53, 0.9);
+    --border-color: #4a5173;
+    --text-color: #ffffff;
+    --accent-gold: #ffd700;
+    --accent-red: #ff4757;
+    --accent-green: #2ed573;
+    --accent-cyan: #1e90ff;
+    --font-main: 'Noto Sans KR', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at 50% 30%, #2b2e47 0%, #11121c 100%);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 940px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* 헤더 및 스탯창 */
+.game-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.status-board {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--panel-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status-item .label {
+    font-size: 0.8rem;
+    color: #a0a5c0;
+    margin-bottom: 0.2rem;
+}
+
+.status-item .value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.highlight-yellow {
+    color: var(--accent-gold);
+}
+
+.highlight-red {
+    color: var(--accent-red);
+}
+
+/* EXP 경험치 바 */
+.exp-item {
+    flex: 1;
+    max-width: 280px;
+}
+
+.exp-bar-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background: #0e1017;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #3d4361;
+}
+
+.exp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1e90ff, #70a1ff);
+    transition: width 0.3s ease;
+}
+
+.exp-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* 퀘스트 배너 */
+.quest-banner {
+    width: 100%;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quest-title {
+    font-weight: bold;
+    color: var(--accent-gold);
+}
+
+#quest-description {
+    color: #e0e0e0;
+}
+
+/* 캔버스 영역 */
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 9 / 5;
+    background: #0f121d;
+    border: 3px solid #3d4361;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
+
+#rpgCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 모달 대화창 */
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #1b1e2e;
+    border: 2px solid var(--accent-gold);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    max-width: 450px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    text-align: center;
+}
+
+.npc-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+#npc-avatar {
+    font-size: 2.2rem;
+}
+
+#npc-name {
+    font-size: 1.3rem;
+    color: var(--accent-gold);
+}
+
+#dialogue-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #dcdde1;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 0.8rem;
+    width: 100%;
+}
+
+.action-btn {
+    flex: 1;
+    min-height: 48px;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: #2f3542;
+    border: 1px solid #57606f;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover, .action-btn:active {
+    background: #57606f;
+}
+
+.accent-btn {
+    background: #2ed573;
+    border-color: #2ed573;
+    color: #000000;
+}
+
+.accent-btn:hover, .accent-btn:active {
+    background: #26af5f;
+    color: #ffffff;
+}
+
+/* 아래 조작 버튼 */
+.controls-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-group {
+    display: flex;
+    gap: 0.6rem;
+    flex: 1;
+}
+
+.ctrl-btn {
+    flex: 1;
+    min-height: 52px;
+    font-family: var(--font-main);
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--text-color);
+    background: var(--panel-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: all 0.15s ease;
+}
+
+.ctrl-btn:active {
+    background: #3d4361;
+    transform: translateY(2px);
+}
+
+.attack-btn {
+    flex: 1.2;
+    background: rgba(255, 71, 87, 0.2);
+    border-color: var(--accent-red);
+    color: #ff6b81;
+}
+
+.attack-btn:active {
+    background: var(--accent-red);
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 1.3rem;
+    }
+    .status-board {
+        padding: 0.5rem;
+    }
+    .status-item .label {
+        font-size: 0.7rem;
+    }
+    .status-item .value {
+        font-size: 1.1rem;
+    }
+    .quest-banner {
+        font-size: 0.85rem;
+    }
+    .ctrl-btn {
+        min-height: 48px;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네온 블록 깨기 (Neon Block Breaker)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 헤더 / 점수판 -->
+        <header class="game-header">
+            <h1 class="game-title">✨ 네온 블록 깨기 ✨</h1>
+            <div class="scoreboard">
+                <div class="score-box">
+                    <span class="label">점수</span>
+                    <span id="score-text">0</span>
+                </div>
+                <div class="score-box">
+                    <span class="label">최고 점수</span>
+                    <span id="high-score-text">0</span>
+                </div>
+                <div class="score-box">
+                    <span class="label">남은 기회</span>
+                    <span id="lives-text">♥♥♥</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 캔버스 영역 -->
+        <main class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <!-- 시작 오버레이 -->
+            <div id="start-overlay" class="overlay active">
+                <div class="overlay-content">
+                    <h2 class="neon-text-cyan">NEON BLOCK BREAKER</h2>
+                    <p class="guide-text">방향키(◀ ▶) 또는 화면 조작으로 바를 움직이세요!</p>
+                    <p class="guide-subtext">모든 네온 블록을 부수고 최고 점수를 기록해보세요.</p>
+                    <button id="start-btn" class="neon-btn">게임 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 게임 오버 오버레이 -->
+            <div id="gameover-overlay" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2 class="neon-text-red">GAME OVER</h2>
+                    <p class="final-score-text">최종 점수: <span id="final-score">0</span>점</p>
+                    <button id="restart-btn" class="neon-btn">다시 도전하기</button>
+                </div>
+            </div>
+
+            <!-- 승리 오버레이 -->
+            <div id="victory-overlay" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2 class="neon-text-gold">STAGE CLEAR! 🎉</h2>
+                    <p class="victory-text">축하합니다! 모든 블록을 파괴했습니다!</p>
+                    <p class="final-score-text">최종 점수: <span id="victory-score">0</span>점</p>
+                    <button id="victory-restart-btn" class="neon-btn">한 번 더 하기</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 모바일 / 터치용 조작 버튼 -->
+        <footer class="controls-container">
+            <button id="btn-left" class="control-btn" aria-label="왼쪽 이동">◀</button>
+            <button id="btn-sound" class="control-btn sound-btn" aria-label="음소거 토글">🔊 효과음 켜짐</button>
+            <button id="btn-right" class="control-btn" aria-label="오른쪽 이동">▶</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

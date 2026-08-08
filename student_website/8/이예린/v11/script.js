@@ -1,0 +1,1336 @@
+// -------------------------------------------------------------
+// 3D 1인칭 용사의 모험 RPG v11 Engine (렉 방지 & 60FPS 최적화 버핑 엔진)
+// -------------------------------------------------------------
+
+// DOM UI 요소
+const playerLevelSpan = document.getElementById('player-level');
+const hpBarFill = document.getElementById('hp-bar');
+const hpTextSpan = document.getElementById('hp-text');
+const playerDamageSpan = document.getElementById('player-damage');
+const expBarFill = document.getElementById('exp-bar');
+const expTextSpan = document.getElementById('exp-text');
+const shiftLockStatusSpan = document.getElementById('shift-lock-status');
+const locationNameSpan = document.getElementById('location-name');
+const questDescriptionSpan = document.getElementById('quest-description');
+
+const startOverlay = document.getElementById('start-overlay');
+const dialogueModal = document.getElementById('dialogue-modal');
+const resultOverlay = document.getElementById('result-overlay');
+
+const btnStartGame = document.getElementById('btn-start-game');
+const btnFinishGame = document.getElementById('btn-finish-game');
+const btnRestartGame = document.getElementById('btn-restart-game');
+
+const npcAvatar = document.getElementById('npc-avatar');
+const npcName = document.getElementById('npc-name');
+const npcRole = document.getElementById('npc-role-tag');
+const dialogueStory = document.getElementById('dialogue-story');
+const dialogueText = document.getElementById('dialogue-text');
+const btnAcceptQuest = document.getElementById('btn-accept-quest');
+const btnCloseDialogue = document.getElementById('btn-close-dialogue');
+
+const resultLevelSpan = document.getElementById('result-level');
+const resultMonstersSpan = document.getElementById('result-monsters');
+const resultQuestsSpan = document.getElementById('result-quests');
+const resultWaveSpan = document.getElementById('result-wave');
+
+const btnUp = document.getElementById('btn-up');
+const btnDown = document.getElementById('btn-down');
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnShiftLock = document.getElementById('btn-shift-lock');
+const btnAttack = document.getElementById('btn-attack');
+
+// 게임 수치
+let gameState = 'START';
+let currentMap = 'VILLAGE';
+
+let level = 1;
+let hp = 150;
+let maxHp = 150;
+let lastRenderedHp = 150; // DOM 리플로우 렉 방지용 변수
+let exp = 0;
+const targetExp = 100;
+let swordDamage = 10;
+let monstersSlain = 0;
+let questsCompletedCount = 0;
+let currentWave = 1;
+
+const ATTACK_RANGE = 6.5;
+
+// 쉬프트락 및 터치 드래그 변수
+let isShiftLocked = false;
+let isPointerDragging = false;
+let previousPointerX = 0;
+let previousPointerY = 0;
+let yaw = 0;
+let pitch = 0;
+
+// 오디오 재사용 최적화
+let audioCtx = null;
+function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playCustomSound(type) {
+    if (!audioCtx) return;
+    try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'ching') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(1400, now);
+            osc.frequency.exponentialRampToValueAtTime(350, now + 0.1);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+        } else if (type === 'bbyong') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(950, now + 0.16);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+            osc.start(now);
+            osc.stop(now + 0.18);
+        } else if (type === 'yap') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(360, now);
+            osc.frequency.setValueAtTime(540, now + 0.08);
+            osc.frequency.setValueAtTime(720, now + 0.16);
+            osc.frequency.setValueAtTime(1080, now + 0.24);
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+            osc.start(now);
+            osc.stop(now + 0.45);
+        } else if (type === 'door') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(250, now);
+            osc.frequency.exponentialRampToValueAtTime(500, now + 0.15);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        } else if (type === 'hit') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(190, now);
+            osc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        } else if (type === 'powerup') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(650, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        }
+    } catch (e) {}
+}
+
+// -------------------------------------------------------------
+// 3D 스프라이트 유틸리티 (캔버스 재생성 최소화 최적화)
+// -------------------------------------------------------------
+function createNpcNameSprite(nameText) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 80;
+    const ctx = canvas.getContext('2d');
+
+    ctx.font = 'Bold 18px "Noto Sans KR", sans-serif';
+    ctx.fillStyle = '#ffd32a';
+    ctx.textAlign = 'center';
+    ctx.fillText('💬 [터치/Space] 대화', 128, 24);
+
+    ctx.font = 'Bold 22px "Noto Sans KR", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(nameText, 128, 58);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(3.2, 1.0, 1);
+    return sprite;
+}
+
+function createTagSprite(tagText, colorStr = '#ff9f43') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+
+    ctx.font = 'Bold 20px "Noto Sans KR", sans-serif';
+    ctx.fillStyle = colorStr;
+    ctx.textAlign = 'center';
+    ctx.fillText(tagText, 128, 38);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(3.8, 1.0, 1);
+    return sprite;
+}
+
+function updateMonsterHpSprite(m) {
+    if (!m.hpSpriteCanvas) {
+        m.hpSpriteCanvas = document.createElement('canvas');
+        m.hpSpriteCanvas.width = 256;
+        m.hpSpriteCanvas.height = 96;
+        m.hpTexture = new THREE.CanvasTexture(m.hpSpriteCanvas);
+        const spriteMat = new THREE.SpriteMaterial({ map: m.hpTexture, depthTest: false });
+        m.hpSprite = new THREE.Sprite(spriteMat);
+        m.hpSprite.scale.set(3.6, 1.35, 1);
+        m.mesh.add(m.hpSprite);
+        m.hpSprite.position.set(0, 1.8, 0);
+    }
+
+    const canvas = m.hpSpriteCanvas;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = 'Bold 20px "Noto Sans KR", sans-serif';
+    ctx.fillStyle = '#ff9f43';
+    ctx.textAlign = 'center';
+    ctx.fillText(`[W${currentWave}] ${m.baseName}`, 128, 24);
+
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(28, 42, 200, 20);
+
+    const ratio = Math.max(0, m.hp / m.maxHp);
+    ctx.fillStyle = ratio > 0.4 ? '#2ecc71' : '#ff4d4d';
+    ctx.fillRect(30, 44, 196 * ratio, 16);
+
+    ctx.font = 'Bold 13px "Noto Sans KR", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(`${Math.ceil(m.hp)} / ${m.maxHp}`, 128, 57);
+
+    m.hpTexture.needsUpdate = true;
+}
+
+// -------------------------------------------------------------
+// THREE.JS 3D WebGL 1인칭 고성능 최적화 엔진
+// -------------------------------------------------------------
+const container = document.getElementById('webgl-container');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(65, 900 / 500, 0.1, 1000);
+camera.rotation.order = 'YXZ';
+scene.add(camera);
+
+// 🚀 렉 방지 최적화: 렌더러 버퍼 및 프레임 부하 절감
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setSize(900, 500);
+// 💡 실시간 섀도우 맵 오버헤드 제거하여 60 FPS 부드러운 진행 보장
+renderer.shadowMap.enabled = false;
+container.appendChild(renderer.domElement);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
+dirLight.position.set(15, 30, 20);
+scene.add(dirLight);
+
+scene.fog = new THREE.FogExp2(0x0a101d, 0.015);
+
+const villageGroup = new THREE.Group();
+const blacksmithInteriorGroup = new THREE.Group();
+const forestGroup = new THREE.Group();
+
+scene.add(villageGroup);
+scene.add(blacksmithInteriorGroup);
+scene.add(forestGroup);
+
+blacksmithInteriorGroup.visible = false;
+forestGroup.visible = false;
+
+// 1인칭 칼 (First-Person Sword)
+const fpSwordGroup = new THREE.Group();
+const fpBlade = new THREE.Mesh(
+    new THREE.BoxGeometry(0.14, 1.8, 0.07),
+    new THREE.MeshStandardMaterial({ color: 0xf1f2f6, metalness: 0.9, roughness: 0.1 })
+);
+fpBlade.position.set(0, 0.8, 0);
+
+const fpHilt = new THREE.Mesh(
+    new THREE.BoxGeometry(0.4, 0.09, 0.09),
+    new THREE.MeshStandardMaterial({ color: 0xffd32a })
+);
+fpHilt.position.set(0, 0, 0);
+
+fpSwordGroup.add(fpBlade);
+fpSwordGroup.add(fpHilt);
+fpSwordGroup.position.set(0.45, -0.45, -0.75);
+fpSwordGroup.rotation.set(Math.PI / 6, -Math.PI / 12, -Math.PI / 12);
+camera.add(fpSwordGroup);
+
+// 플레이어 물리 위치
+const player3D = {
+    x: -14,
+    z: 0,
+    baseSpeed: 0.16,
+    runSpeed: 0.3,
+    isAttacking: false,
+    attackTimer: 0
+};
+
+camera.position.set(player3D.x, 1.6, player3D.z);
+
+// -------------------------------------------------------------
+// 3D 마을 (Map 1) 에셋 & 포탈
+// -------------------------------------------------------------
+const villageFloor = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 30),
+    new THREE.MeshStandardMaterial({ color: 0x2ecc71, roughness: 0.8 })
+);
+villageFloor.rotation.x = -Math.PI / 2;
+villageGroup.add(villageFloor);
+
+function createNormalHouse(x, z, color) {
+    const house = new THREE.Group();
+    const wall = new THREE.Mesh(
+        new THREE.BoxGeometry(3.5, 2.8, 3.5),
+        new THREE.MeshStandardMaterial({ color: color })
+    );
+    wall.position.y = 1.4;
+    house.add(wall);
+
+    const roof = new THREE.Mesh(
+        new THREE.ConeGeometry(3, 2, 4),
+        new THREE.MeshStandardMaterial({ color: 0xc0392b })
+    );
+    roof.position.y = 3.8;
+    roof.rotation.y = Math.PI / 4;
+    house.add(roof);
+
+    house.position.set(x, 0, z);
+    villageGroup.add(house);
+}
+createNormalHouse(-18, -6, 0xe67e22);
+createNormalHouse(18, -6, 0xd35400);
+
+function createTree(x, z) {
+    const tree = new THREE.Group();
+    const trunk = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.35, 0.45, 3, 8),
+        new THREE.MeshStandardMaterial({ color: 0x7f8c8d })
+    );
+    trunk.position.y = 1.5;
+    tree.add(trunk);
+
+    const leaves = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(1.8),
+        new THREE.MeshStandardMaterial({ color: 0x10ac84, roughness: 0.5 })
+    );
+    leaves.position.y = 3.6;
+    tree.add(leaves);
+
+    tree.position.set(x, 0, z);
+    villageGroup.add(tree);
+}
+createTree(-10, -6);
+createTree(10, -6);
+
+// ⚒️ 마을 한가운데 3D 대장간 건물
+const blacksmithBuilding = new THREE.Group();
+const bsWall = new THREE.Mesh(
+    new THREE.BoxGeometry(5.2, 3.2, 4.8),
+    new THREE.MeshStandardMaterial({ color: 0x546de5, roughness: 0.5 })
+);
+bsWall.position.y = 1.6;
+blacksmithBuilding.add(bsWall);
+
+const bsRoof = new THREE.Mesh(
+    new THREE.ConeGeometry(4.4, 2.4, 4),
+    new THREE.MeshStandardMaterial({ color: 0x303952 })
+);
+bsRoof.position.y = 4.4;
+bsRoof.rotation.y = Math.PI / 4;
+blacksmithBuilding.add(bsRoof);
+
+const bsChimney = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.45, 0.45, 3.2, 8),
+    new THREE.MeshStandardMaterial({ color: 0x2c3e50 })
+);
+bsChimney.position.set(1.6, 3.9, -1.0);
+blacksmithBuilding.add(bsChimney);
+
+const bsSign = new THREE.Mesh(
+    new THREE.BoxGeometry(2.2, 0.8, 0.2),
+    new THREE.MeshStandardMaterial({ color: 0xffd32a })
+);
+bsSign.position.set(0, 2.7, 2.5);
+blacksmithBuilding.add(bsSign);
+
+const bsAnvil = new THREE.Mesh(
+    new THREE.BoxGeometry(0.9, 0.7, 0.6),
+    new THREE.MeshStandardMaterial({ color: 0x2c3e50, metalness: 0.8 })
+);
+bsAnvil.position.set(-1.8, 0.35, 2.7);
+blacksmithBuilding.add(bsAnvil);
+
+const bsDoorTag = createTagSprite('⚒️ [Space] 대장간 들어가기', '#ff9f43');
+bsDoorTag.position.set(0, 2.2, 2.7);
+blacksmithBuilding.add(bsDoorTag);
+
+blacksmithBuilding.position.set(0, 0, -2.5);
+villageGroup.add(blacksmithBuilding);
+
+// 🌲 마을 동쪽 포탈 게이트
+const forestGateInVillage = new THREE.Group();
+const gatePillarLeft = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8, 4.0, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0x2ecc71 })
+);
+gatePillarLeft.position.set(-2, 2, 0);
+forestGateInVillage.add(gatePillarLeft);
+
+const gatePillarRight = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8, 4.0, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0x2ecc71 })
+);
+gatePillarRight.position.set(2, 2, 0);
+forestGateInVillage.add(gatePillarRight);
+
+const gateArch = new THREE.Mesh(
+    new THREE.BoxGeometry(4.8, 0.8, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0x1abc9c })
+);
+gateArch.position.set(0, 4.2, 0);
+forestGateInVillage.add(gateArch);
+
+const forestPortalTag = createTagSprite('🌲 [Space] 숲속 맵 들어가기', '#00f3ff');
+forestPortalTag.position.set(0, 5.2, 0);
+forestGateInVillage.add(forestPortalTag);
+
+forestGateInVillage.position.set(22, 0, 0);
+villageGroup.add(forestGateInVillage);
+
+// 마을 귀여운 3D NPC 5명
+const npcsVillage = [
+    { 
+        id: 'elder', 
+        name: '마을 이장님', 
+        role: '마을 수호자', 
+        avatar: '👴', 
+        x: -11, 
+        z: 0, 
+        color: 0xffdd59, 
+        story: "허허, 어서오게 젊은 용사여!\n우리 마을은 평화로워 보이지만, 동쪽 숲속 포탈 너머에는 무시무시한 몬스터들이 점점 도사리고 있다네.\n숲으로 떠나기 전에 마을 중앙 대장간에 들러 대장장이에게 칼을 점검받아보게나!",
+        quest: { title: "이장님의 청부", desc: "숲속 몬스터 2마리 처치하기 (진행: 0/2)", targetType: "kill", targetCount: 2, rewardExp: 50, active: false, completed: false } 
+    },
+    { 
+        id: 'villager1', 
+        name: '약초꾼 주희', 
+        role: '마을 주민', 
+        avatar: '👩‍🌾', 
+        x: -6, 
+        z: 0, 
+        color: 0x2ecc71, 
+        story: "안녕하세요 용사님! 전 마을 아픈 주민들을 치료할 상처 약초를 모으는 주희예요.\n요즘 숲속 슬라임들이 약초밭을 다 망쳐놓고 있어요...\n용사님께서 숲속 몬스터들을 혼내주시면 약초도 구하고 넉넉한 보상을 드릴게요!",
+        quest: { title: "약초밭 지키기", desc: "숲속 몬스터 4마리 처치하기 (진행: 0/4)", targetType: "kill", targetCount: 4, rewardExp: 60, active: false, completed: false } 
+    },
+    { 
+        id: 'villager3', 
+        name: '꼬마 민우', 
+        role: '마을 주민', 
+        avatar: '👦', 
+        x: 6, 
+        z: 0, 
+        color: 0xe74c3c, 
+        story: "와! 칼을 든 멋진 용사 형이다!\n형, 마을 동쪽 끝 게이트 포탈을 지나가면 커다란 숲이 나오는데, 거기 무서운 골렘이랑 독거미도 있대요!\n몬스터를 무찌를수록 계속 강해진대요! 조심해서 다녀오세요!",
+        quest: { title: "숲속 탐험", desc: "숲 맵으로 건너가 탐험해보기", targetType: "explore", rewardExp: 30, active: false, completed: false } 
+    },
+    { 
+        id: 'villager4', 
+        name: '정원사 영희', 
+        role: '마을 주민', 
+        avatar: '👩', 
+        x: 10, 
+        z: 0, 
+        color: 0x9b59b6, 
+        story: "향기로운 제 장미 정원이 숲속 독거미들의 거미줄 때문에 다 시들어버리고 있어요...\n멋진 칼솜씨로 몬스터들을 소탕해주시면 제 장미꽃들이 다시 예쁘게 피어날 수 있답니다!",
+        quest: { title: "장미밭 구하기", desc: "숲속 몬스터 6마리 처치하기 (진행: 0/6)", targetType: "kill", targetCount: 6, rewardExp: 80, active: false, completed: false } 
+    },
+    { 
+        id: 'villager5', 
+        name: '모험가 한스', 
+        role: '마을 주민', 
+        avatar: '🧙‍♂️', 
+        x: 14, 
+        z: 0, 
+        color: 0x3498db, 
+        story: "전 세계 7대 대륙을 주름잡았던 전설의 모험가 한스라고 부르게!\n진정한 모험가의 실력은 몬스터들의 강력한 Wave 공격 속에서도 굴하지 않는 법이지.\n레벨을 3까지 올려 자네의 용기를 증명해보게나!",
+        quest: { title: "진정한 용사의 길", desc: "Lv.3 도달하기", targetType: "level", targetLevel: 3, rewardExp: 100, active: false, completed: false } 
+    }
+];
+
+npcsVillage.forEach(npc => {
+    const npcGroup = new THREE.Group();
+
+    const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.45, 0.5, 1.3, 12),
+        new THREE.MeshStandardMaterial({ color: npc.color, roughness: 0.5 })
+    );
+    body.position.y = 0.65;
+    npcGroup.add(body);
+
+    const head = new THREE.Mesh(
+        new THREE.SphereGeometry(0.45, 16, 16),
+        new THREE.MeshStandardMaterial({ color: 0xffdfba, roughness: 0.3 })
+    );
+    head.position.y = 1.5;
+    npcGroup.add(head);
+
+    npcGroup.position.set(npc.x, 0, npc.z);
+
+    const nameSprite = createNpcNameSprite(`${npc.avatar} ${npc.name}`);
+    nameSprite.position.set(0, 2.2, 0);
+    npcGroup.add(nameSprite);
+
+    villageGroup.add(npcGroup);
+    npc.mesh = npcGroup;
+});
+
+// -------------------------------------------------------------
+// ⚒️ 3D 대장간 건물 내부 맵 (Map 2)
+// -------------------------------------------------------------
+const bsFloor = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    new THREE.MeshStandardMaterial({ color: 0x474754, roughness: 0.7 })
+);
+bsFloor.rotation.x = -Math.PI / 2;
+blacksmithInteriorGroup.add(bsFloor);
+
+function createWall(w, h, d, x, y, z) {
+    const wall = new THREE.Mesh(
+        new THREE.BoxGeometry(w, h, d),
+        new THREE.MeshStandardMaterial({ color: 0x2d3436, roughness: 0.6 })
+    );
+    wall.position.set(x, y, z);
+    blacksmithInteriorGroup.add(wall);
+}
+createWall(20, 6, 0.5, 0, 3, -10);
+createWall(0.5, 6, 20, -10, 3, 0);
+createWall(0.5, 6, 20, 10, 3, 0);
+
+// 🔥 1. 용광로
+const forgeStoneGroup = new THREE.Group();
+const forgeBase = new THREE.Mesh(
+    new THREE.BoxGeometry(3.2, 2.6, 3.2),
+    new THREE.MeshStandardMaterial({ color: 0x2c3e50 })
+);
+forgeBase.position.set(0, 1.3, 0);
+forgeStoneGroup.add(forgeBase);
+
+const forgeCore = new THREE.Mesh(
+    new THREE.BoxGeometry(1.8, 1.6, 1.8),
+    new THREE.MeshStandardMaterial({ color: 0xe74c3c, emissive: 0xff4757, emissiveIntensity: 0.9 })
+);
+forgeCore.position.set(0, 1.3, 0.7);
+forgeStoneGroup.add(forgeCore);
+
+const forgeLight = new THREE.PointLight(0xff6b6b, 2.5, 10);
+forgeLight.position.set(0, 2.0, 1.0);
+forgeStoneGroup.add(forgeLight);
+
+forgeStoneGroup.position.set(-6, 0, -8);
+blacksmithInteriorGroup.add(forgeStoneGroup);
+
+// 🪵 2. 땔감 장작
+const firewoodGroup = new THREE.Group();
+for (let i = 0; i < 6; i++) {
+    const log = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.18, 0.18, 1.4, 8),
+        new THREE.MeshStandardMaterial({ color: 0x7f8c8d })
+    );
+    log.rotation.z = Math.PI / 2;
+    log.position.set((i % 2) * 0.4, Math.floor(i / 2) * 0.35 + 0.18, (i % 3) * 0.3);
+    firewoodGroup.add(log);
+}
+firewoodGroup.position.set(-8.5, 0, -6.5);
+blacksmithInteriorGroup.add(firewoodGroup);
+
+// 🗡️ 3. 무기 거치대 & 방패
+const weaponRackGroup = new THREE.Group();
+const rackBack = new THREE.Mesh(
+    new THREE.BoxGeometry(4.5, 2.5, 0.2),
+    new THREE.MeshStandardMaterial({ color: 0x7f8c8d })
+);
+weaponRackGroup.add(rackBack);
+
+for (let s = -1; s <= 1; s += 2) {
+    const displaySword = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 1.8, 0.06),
+        new THREE.MeshStandardMaterial({ color: 0xf1f2f6, metalness: 0.8 })
+    );
+    displaySword.position.set(s * 1.2, 0, 0.2);
+    displaySword.rotation.z = s * (Math.PI / 6);
+    weaponRackGroup.add(displaySword);
+}
+
+const displayShield = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.75, 0.75, 0.12, 16),
+    new THREE.MeshStandardMaterial({ color: 0x2980b9, metalness: 0.9 })
+);
+displayShield.rotation.x = Math.PI / 2;
+displayShield.position.set(0, 0, 0.25);
+weaponRackGroup.add(displayShield);
+
+weaponRackGroup.position.set(4.5, 3.2, -9.7);
+blacksmithInteriorGroup.add(weaponRackGroup);
+
+// 🔨 4. 작업대 & 모루 & 뜨거운 철괴
+const workTableGroup = new THREE.Group();
+const tableTop = new THREE.Mesh(
+    new THREE.BoxGeometry(3.2, 0.4, 1.5),
+    new THREE.MeshStandardMaterial({ color: 0x5f27cd })
+);
+tableTop.position.y = 0.9;
+workTableGroup.add(tableTop);
+
+for (let lx of [-1.3, 1.3]) {
+    for (let lz of [-0.5, 0.5]) {
+        const leg = new THREE.Mesh(
+            new THREE.BoxGeometry(0.25, 0.9, 0.25),
+            new THREE.MeshStandardMaterial({ color: 0x341f97 })
+        );
+        leg.position.set(lx, 0.45, lz);
+        workTableGroup.add(leg);
+    }
+}
+
+const anvilMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 0.7, 0.6),
+    new THREE.MeshStandardMaterial({ color: 0x1e272e, metalness: 0.95 })
+);
+anvilMesh.position.set(-0.5, 1.45, 0);
+workTableGroup.add(anvilMesh);
+
+const hotIronBar = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5, 0.12, 0.15),
+    new THREE.MeshStandardMaterial({ color: 0xff4d4d, emissive: 0xff7675, emissiveIntensity: 1.0 })
+);
+hotIronBar.position.set(-0.5, 1.86, 0);
+workTableGroup.add(hotIronBar);
+
+workTableGroup.position.set(0, 0, -3.5);
+blacksmithInteriorGroup.add(workTableGroup);
+
+// 📦 5. 보물 상자 & 물통
+const barrel = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.65, 0.65, 1.3, 12),
+    new THREE.MeshStandardMaterial({ color: 0x747d8c })
+);
+barrel.position.set(-8, 0.65, 3);
+blacksmithInteriorGroup.add(barrel);
+
+const chest = new THREE.Mesh(
+    new THREE.BoxGeometry(1.4, 0.9, 0.9),
+    new THREE.MeshStandardMaterial({ color: 0xffa502 })
+);
+chest.position.set(7.5, 0.45, -7.5);
+blacksmithInteriorGroup.add(chest);
+
+// 🚪 출구 문 3D 태그
+const exitDoorTag = createTagSprite('🚪 [Space] 마을로 나가기', '#ff9f43');
+exitDoorTag.position.set(0, 2.2, 8);
+blacksmithInteriorGroup.add(exitDoorTag);
+
+// 🧔 3D 대장장이 NPC
+const blacksmithNpc = {
+    id: 'villager2',
+    name: '대장장이 철수',
+    role: '3D 대장간 장인',
+    avatar: '🧔',
+    x: 1.8,
+    z: -3.5,
+    color: 0xe67e22,
+    story: "뜨거운 불꽃이 타오르는 대장간에 잘 왔네 용사여!\n내 붉은 용광로에서 벼려낸 강철은 단단한 암석 골렘의 피부도 단칼에 벨 수 있다네.\n자네 칼의 기량을 키우고 강한 용사로 거듭나게!",
+    quest: { title: "칼 단련 시험", desc: "Lv.2 도달하기", targetType: "level", targetLevel: 2, rewardExp: 40, active: false, completed: false }
+};
+
+const blacksmithGroup = new THREE.Group();
+const bsBody = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.5, 0.55, 1.3, 12),
+    new THREE.MeshStandardMaterial({ color: blacksmithNpc.color })
+);
+bsBody.position.y = 0.65;
+blacksmithGroup.add(bsBody);
+
+const bsHead = new THREE.Mesh(
+    new THREE.SphereGeometry(0.48, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0xffdfba })
+);
+bsHead.position.y = 1.5;
+blacksmithGroup.add(bsHead);
+
+blacksmithGroup.position.set(blacksmithNpc.x, 0, blacksmithNpc.z);
+
+const bsNameSprite = createNpcNameSprite(`🧔 대장장이 철수`);
+bsNameSprite.position.set(0, 2.2, 0);
+blacksmithGroup.add(bsNameSprite);
+
+blacksmithInteriorGroup.add(blacksmithGroup);
+blacksmithNpc.mesh = blacksmithGroup;
+
+const npcs3D = [...npcsVillage, blacksmithNpc];
+
+// -------------------------------------------------------------
+// 🌲 3D 숲속 맵 (Map 3)
+// -------------------------------------------------------------
+const forestFloor = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 30),
+    new THREE.MeshStandardMaterial({ color: 0x16a085, roughness: 0.9 })
+);
+forestFloor.rotation.x = -Math.PI / 2;
+forestGroup.add(forestFloor);
+
+for (let i = -24; i <= 24; i += 6) {
+    const fTree = new THREE.Group();
+    const trunk = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.5, 4, 8),
+        new THREE.MeshStandardMaterial({ color: 0x34495e })
+    );
+    trunk.position.y = 2;
+    fTree.add(trunk);
+
+    const leaves = new THREE.Mesh(
+        new THREE.ConeGeometry(2.5, 4.5, 8),
+        new THREE.MeshStandardMaterial({ color: 0x1abc9c, roughness: 0.4 })
+    );
+    leaves.position.y = 5;
+    fTree.add(leaves);
+
+    fTree.position.set(i, 0, -6.5);
+    forestGroup.add(fTree);
+}
+
+const villageGateInForest = new THREE.Group();
+const vGateLeft = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8, 4.0, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0xf1c40f })
+);
+vGateLeft.position.set(-2, 2, 0);
+villageGateInForest.add(vGateLeft);
+
+const vGateRight = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8, 4.0, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0xf1c40f })
+);
+vGateRight.position.set(2, 2, 0);
+villageGateInForest.add(vGateRight);
+
+const vGateArch = new THREE.Mesh(
+    new THREE.BoxGeometry(4.8, 0.8, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0xf39c12 })
+);
+vGateArch.position.set(0, 4.2, 0);
+villageGateInForest.add(vGateArch);
+
+const villagePortalTag = createTagSprite('🏡 [Space] 마을 맵으로 돌아가기', '#ffd32a');
+villagePortalTag.position.set(0, 5.2, 0);
+villageGateInForest.add(villagePortalTag);
+
+villageGateInForest.position.set(-22, 0, 0);
+forestGroup.add(villageGateInForest);
+
+function getMonsterStats(baseHp, baseDmg, wave) {
+    return {
+        maxHp: Math.floor(baseHp + (wave - 1) * 35),
+        touchDmg: baseDmg + (wave - 1) * 2,
+        expReward: 35 + (wave - 1) * 10
+    };
+}
+
+const monsters3D = [
+    { id: 'slime', baseName: '🟢 숲 슬라임', x: -14, z: 0, geo: new THREE.DodecahedronGeometry(0.8), color: 0x2ecc71, baseHp: 100, baseDmg: 5 },
+    { id: 'goblin', baseName: '🔴 분노한 고블린', x: -6, z: -2, geo: new THREE.BoxGeometry(1.2, 1.4, 1.2), color: 0xe74c3c, baseHp: 110, baseDmg: 6 },
+    { id: 'wolf', baseName: '🐺 숲 늑대', x: 2, z: 2, geo: new THREE.CylinderGeometry(0.6, 0.8, 1.5, 8), color: 0x7f8c8d, baseHp: 120, baseDmg: 7 },
+    { id: 'golem', baseName: '🗿 암석 골렘', x: 8, z: -1, geo: new THREE.BoxGeometry(1.6, 2.0, 1.6), color: 0x95a5a6, baseHp: 150, baseDmg: 8 },
+    { id: 'spider', baseName: '🕷️ 독 거미', x: 14, z: 1, geo: new THREE.SphereGeometry(0.9, 12, 12), color: 0x9b59b6, baseHp: 105, baseDmg: 6 },
+    { id: 'skeleton', baseName: '👻 해골 전사', x: 20, z: -2, geo: new THREE.CylinderGeometry(0.5, 0.5, 2.0, 8), color: 0xf1f2f6, baseHp: 130, baseDmg: 7 }
+];
+
+monsters3D.forEach(m => {
+    m.hp = m.baseHp;
+    m.maxHp = m.baseHp;
+    m.touchDmg = m.baseDmg;
+    m.expReward = 35;
+    m.alive = true;
+    m.respawnTimer = 0;
+
+    const mMesh = new THREE.Mesh(m.geo, new THREE.MeshStandardMaterial({ color: m.color, roughness: 0.4 }));
+    mMesh.position.set(m.x, 1.0, m.z);
+    forestGroup.add(mMesh);
+    m.mesh = mMesh;
+
+    updateMonsterHpSprite(m);
+});
+
+// -------------------------------------------------------------
+// 🌐 3D 시점 회전 (드래그 & 쉬프트락)
+// -------------------------------------------------------------
+const raycaster = new THREE.Raycaster();
+const mouseVec = new THREE.Vector2();
+
+container.addEventListener('pointerdown', (e) => {
+    initAudio();
+    if (gameState !== 'PLAYING') return;
+
+    isPointerDragging = true;
+    previousPointerX = e.clientX;
+    previousPointerY = e.clientY;
+
+    const rect = container.getBoundingClientRect();
+    mouseVec.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseVec.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouseVec, camera);
+
+    let activeNpcs = [];
+    if (currentMap === 'VILLAGE') activeNpcs = npcsVillage;
+    else if (currentMap === 'BLACKSMITH_INTERIOR') activeNpcs = [blacksmithNpc];
+
+    for (let npc of activeNpcs) {
+        const intersects = raycaster.intersectObject(npc.mesh, true);
+        if (intersects.length > 0) {
+            const dist = Math.hypot(player3D.x - npc.x, player3D.z - npc.z);
+            if (dist < 6.5) {
+                openNpcDialogue(npc);
+                return;
+            }
+        }
+    }
+});
+
+window.addEventListener('pointermove', (e) => {
+    if (gameState !== 'PLAYING') return;
+
+    if (isShiftLocked) {
+        const sens = 0.003;
+        yaw -= e.movementX * sens;
+        pitch -= e.movementY * sens;
+        pitch = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, pitch));
+        camera.rotation.set(pitch, yaw, 0, 'YXZ');
+    } else if (isPointerDragging) {
+        const deltaX = e.clientX - previousPointerX;
+        const deltaY = e.clientY - previousPointerY;
+        previousPointerX = e.clientX;
+        previousPointerY = e.clientY;
+
+        const sens = 0.004;
+        yaw -= deltaX * sens;
+        pitch -= deltaY * sens;
+        pitch = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, pitch));
+        camera.rotation.set(pitch, yaw, 0, 'YXZ');
+    }
+});
+
+window.addEventListener('pointerup', () => {
+    isPointerDragging = false;
+});
+
+// -------------------------------------------------------------
+// 🔒 쉬프트락 제어
+// -------------------------------------------------------------
+function toggleShiftLock() {
+    try {
+        if (document.pointerLockElement === container) {
+            document.exitPointerLock();
+        } else {
+            container.requestPointerLock();
+        }
+    } catch (e) {}
+}
+
+document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement === container) {
+        isShiftLocked = true;
+        shiftLockStatusSpan.textContent = '🔒 ON (360도 마우스 회전)';
+    } else {
+        isShiftLocked = false;
+        shiftLockStatusSpan.textContent = '🔓 OFF (Shift키/드래그 시점)';
+    }
+});
+
+// -------------------------------------------------------------
+// 입력 및 대화/포탈 처리
+// -------------------------------------------------------------
+let keys = { up: false, down: false, left: false, right: false };
+let pressTime = 0;
+
+document.addEventListener('keydown', (e) => {
+    initAudio();
+    if (e.key === 'Shift' || e.key === 'ShiftLeft' || e.key === 'ShiftRight') {
+        toggleShiftLock();
+    }
+    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        if (!keys.up) pressTime = Date.now();
+        keys.up = true;
+    }
+    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        if (!keys.down) pressTime = Date.now();
+        keys.down = true;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        if (!keys.right) pressTime = Date.now();
+        keys.right = true;
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        if (!keys.left) pressTime = Date.now();
+        keys.left = true;
+    }
+    if (e.code === 'Space') {
+        e.preventDefault();
+        triggerAttackOrInteract();
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { keys.up = false; }
+    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { keys.down = false; }
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { keys.right = false; }
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { keys.left = false; }
+    if (!keys.up && !keys.down && !keys.left && !keys.right) pressTime = 0;
+});
+
+btnUp.addEventListener('mousedown', () => { initAudio(); keys.up = true; pressTime = Date.now(); });
+btnUp.addEventListener('mouseup', () => { keys.up = false; pressTime = 0; });
+btnUp.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); keys.up = true; pressTime = Date.now(); });
+btnUp.addEventListener('touchend', () => { keys.up = false; pressTime = 0; });
+
+btnDown.addEventListener('mousedown', () => { initAudio(); keys.down = true; pressTime = Date.now(); });
+btnDown.addEventListener('mouseup', () => { keys.down = false; pressTime = 0; });
+btnDown.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); keys.down = true; pressTime = Date.now(); });
+btnDown.addEventListener('touchend', () => { keys.down = false; pressTime = 0; });
+
+btnLeft.addEventListener('mousedown', () => { initAudio(); keys.left = true; pressTime = Date.now(); });
+btnLeft.addEventListener('mouseup', () => { keys.left = false; pressTime = 0; });
+btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); keys.left = true; pressTime = Date.now(); });
+btnLeft.addEventListener('touchend', () => { keys.left = false; pressTime = 0; });
+
+btnRight.addEventListener('mousedown', () => { initAudio(); keys.right = true; pressTime = Date.now(); });
+btnRight.addEventListener('mouseup', () => { keys.right = false; pressTime = 0; });
+btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); keys.right = true; pressTime = Date.now(); });
+btnRight.addEventListener('touchend', () => { keys.right = false; pressTime = 0; });
+
+btnShiftLock.addEventListener('click', () => { initAudio(); toggleShiftLock(); });
+btnAttack.addEventListener('click', () => { initAudio(); triggerAttackOrInteract(); });
+
+function goToForestMap() {
+    currentMap = 'FOREST';
+    villageGroup.visible = false;
+    blacksmithInteriorGroup.visible = false;
+    forestGroup.visible = true;
+
+    player3D.x = -18;
+    player3D.z = 0;
+    playCustomSound('door');
+    checkQuests();
+    updateUI();
+}
+
+function goToVillageMap() {
+    currentMap = 'VILLAGE';
+    villageGroup.visible = true;
+    blacksmithInteriorGroup.visible = false;
+    forestGroup.visible = false;
+
+    player3D.x = 18;
+    player3D.z = 0;
+    playCustomSound('door');
+    updateUI();
+}
+
+function triggerAttackOrInteract() {
+    if (gameState !== 'PLAYING') return;
+
+    if (currentMap === 'VILLAGE') {
+        const distToForestPortal = Math.hypot(player3D.x - 22, player3D.z - 0);
+        if (distToForestPortal < 3.5) {
+            goToForestMap();
+            return;
+        }
+
+        const distToBsDoor = Math.hypot(player3D.x - 0, player3D.z - 0.2);
+        if (distToBsDoor < 2.8) {
+            currentMap = 'BLACKSMITH_INTERIOR';
+            villageGroup.visible = false;
+            blacksmithInteriorGroup.visible = true;
+            forestGroup.visible = false;
+
+            player3D.x = 0;
+            player3D.z = 6;
+            playCustomSound('door');
+            updateUI();
+            return;
+        }
+
+        let interacted = false;
+        npcsVillage.forEach(npc => {
+            const dist = Math.hypot(player3D.x - npc.x, player3D.z - npc.z);
+            if (dist < 5.5) {
+                openNpcDialogue(npc);
+                interacted = true;
+            }
+        });
+        if (interacted) return;
+    }
+
+    if (currentMap === 'BLACKSMITH_INTERIOR') {
+        const distToBs = Math.hypot(player3D.x - blacksmithNpc.x, player3D.z - blacksmithNpc.z);
+        if (distToBs < 5.5) {
+            openNpcDialogue(blacksmithNpc);
+            return;
+        }
+
+        if (player3D.z > 7.0) {
+            currentMap = 'VILLAGE';
+            villageGroup.visible = true;
+            blacksmithInteriorGroup.visible = false;
+            forestGroup.visible = false;
+
+            player3D.x = 0;
+            player3D.z = 1.0;
+            playCustomSound('door');
+            updateUI();
+            return;
+        }
+    }
+
+    if (currentMap === 'FOREST') {
+        const distToVillagePortal = Math.hypot(player3D.x - (-22), player3D.z - 0);
+        if (distToVillagePortal < 3.5) {
+            goToVillageMap();
+            return;
+        }
+    }
+
+    if (!player3D.isAttacking) {
+        player3D.isAttacking = true;
+        player3D.attackTimer = 14;
+        playCustomSound('ching');
+
+        fpSwordGroup.rotation.set(-Math.PI / 3, 0, -Math.PI / 2);
+
+        if (currentMap === 'FOREST') {
+            monsters3D.forEach(m => {
+                if (m.alive) {
+                    const dist = Math.hypot(player3D.x - m.x, player3D.z - m.z);
+                    if (dist < ATTACK_RANGE) {
+                        damageMonster(m);
+                    }
+                }
+            });
+        }
+    }
+}
+
+let currentNpc = null;
+function openNpcDialogue(npc) {
+    currentNpc = npc;
+    const q = npc.quest;
+    npcAvatar.textContent = npc.avatar;
+    npcName.textContent = npc.name;
+    npcRole.textContent = npc.role;
+
+    dialogueStory.textContent = npc.story;
+
+    if (q.completed) {
+        dialogueText.textContent = `🎉 정말 감사합니다 용사님! '${q.title}' 퀘스트를 완료하셨군요! (보상 획득 완료)`;
+        btnAcceptQuest.style.display = 'none';
+    } else if (q.active) {
+        dialogueText.textContent = `📜 진행 중인 퀘스트: ${q.desc}`;
+        btnAcceptQuest.style.display = 'none';
+    } else {
+        dialogueText.textContent = `📜 퀘스트 요청: '${q.title}' (${q.desc})`;
+        btnAcceptQuest.style.display = 'inline-block';
+        btnAcceptQuest.textContent = '퀘스트 수락하기';
+    }
+
+    dialogueModal.classList.remove('hidden');
+    dialogueModal.classList.add('active');
+    playCustomSound('ching');
+}
+
+btnAcceptQuest.addEventListener('click', () => {
+    if (currentNpc) {
+        const q = currentNpc.quest;
+        q.active = true;
+        questDescriptionSpan.textContent = `[${currentNpc.name}] ${q.desc}`;
+        playCustomSound('ching');
+        dialogueModal.classList.remove('active');
+        dialogueModal.classList.add('hidden');
+    }
+});
+
+btnCloseDialogue.addEventListener('click', () => {
+    dialogueModal.classList.remove('active');
+    dialogueModal.classList.add('hidden');
+});
+
+function damageMonster(m) {
+    m.hp -= swordDamage;
+    playCustomSound('hit');
+
+    updateMonsterHpSprite(m);
+
+    if (m.hp <= 0) {
+        m.hp = 0;
+        m.alive = false;
+        m.respawnTimer = 100;
+        m.mesh.visible = false;
+        monstersSlain++;
+
+        const nextWave = Math.floor(monstersSlain / 3) + 1;
+        if (nextWave > currentWave) {
+            currentWave = nextWave;
+            playCustomSound('powerup');
+        }
+
+        gainExp(m.expReward);
+        checkQuests();
+    }
+}
+
+function gainExp(amount) {
+    exp += amount;
+
+    while (exp >= targetExp) {
+        exp -= targetExp;
+        level += 1;
+        swordDamage += 1;
+        playCustomSound('yap');
+    }
+
+    updateUI();
+    checkQuests();
+}
+
+function checkQuests() {
+    npcs3D.forEach(npc => {
+        const q = npc.quest;
+        if (q.active && !q.completed) {
+            let isDone = false;
+
+            if (q.targetType === 'kill') {
+                q.desc = `숲속 몬스터 처치하기 (진행: ${Math.min(monstersSlain, q.targetCount)}/${q.targetCount})`;
+                if (monstersSlain >= q.targetCount) isDone = true;
+            } else if (q.targetType === 'level') {
+                if (level >= q.targetLevel) isDone = true;
+            } else if (q.targetType === 'explore') {
+                if (currentMap === 'FOREST' || currentMap === 'BLACKSMITH_INTERIOR') isDone = true;
+            }
+
+            if (isDone) {
+                q.completed = true;
+                questsCompletedCount++;
+                playCustomSound('bbyong');
+                gainExp(q.rewardExp);
+            }
+        }
+    });
+
+    updateUI();
+}
+
+// 🚀 UI 최적화: 수치 변동 시에만 DOM 트리 업데이트하여 렉 완벽 제거!
+function updateUI() {
+    playerLevelSpan.textContent = `Lv.${level}`;
+    playerDamageSpan.textContent = swordDamage;
+    monsterWaveSpan.textContent = `Wave ${currentWave}`;
+
+    const hpRatio = Math.max(0, (hp / maxHp) * 100);
+    hpBarFill.style.width = `${hpRatio}%`;
+    hpTextSpan.textContent = `${Math.ceil(hp)} / ${maxHp}`;
+
+    const expRatio = Math.min(100, Math.floor((exp / targetExp) * 100));
+    expBarFill.style.width = `${expRatio}%`;
+    expTextSpan.textContent = `${exp} / ${targetExp}`;
+
+    if (currentMap === 'VILLAGE') {
+        locationNameSpan.textContent = '🏡 3D 평화로운 마을';
+    } else if (currentMap === 'BLACKSMITH_INTERIOR') {
+        locationNameSpan.textContent = '⚒️ 3D 대장간 내부';
+    } else {
+        locationNameSpan.textContent = '🌲 3D 다채로운 숲속';
+    }
+}
+
+function startGame() {
+    initAudio();
+    gameState = 'PLAYING';
+    currentMap = 'VILLAGE';
+    level = 1;
+    hp = 150;
+    lastRenderedHp = 150;
+    exp = 0;
+    swordDamage = 10;
+    monstersSlain = 0;
+    questsCompletedCount = 0;
+    currentWave = 1;
+    yaw = 0;
+    pitch = 0;
+    camera.rotation.set(0, 0, 0, 'YXZ');
+
+    villageGroup.visible = true;
+    blacksmithInteriorGroup.visible = false;
+    forestGroup.visible = false;
+
+    player3D.x = -14;
+    player3D.z = 0;
+    camera.position.set(player3D.x, 1.6, player3D.z);
+
+    monsters3D.forEach(m => {
+        m.alive = true;
+        m.mesh.visible = true;
+        m.hp = m.baseHp;
+        m.maxHp = m.baseHp;
+        updateMonsterHpSprite(m);
+    });
+
+    startOverlay.style.display = 'none';
+    startOverlay.classList.remove('active');
+    startOverlay.classList.add('hidden');
+    resultOverlay.classList.remove('active');
+    resultOverlay.classList.add('hidden');
+
+    updateUI();
+}
+
+btnStartGame.addEventListener('click', (e) => {
+    e.stopPropagation();
+    startGame();
+    try {
+        container.requestPointerLock();
+    } catch (err) {}
+});
+
+function finishGame() {
+    gameState = 'GAMEOVER';
+
+    if (document.pointerLockElement === container) {
+        document.exitPointerLock();
+    }
+
+    resultLevelSpan.textContent = `Lv.${level}`;
+    resultMonstersSpan.textContent = `${monstersSlain}마리`;
+    resultQuestsSpan.textContent = `${questsCompletedCount}개`;
+    resultWaveSpan.textContent = `Wave ${currentWave} (HP: ${100 + (currentWave - 1) * 35})`;
+
+    resultOverlay.classList.remove('hidden');
+    resultOverlay.classList.add('active');
+}
+
+// -------------------------------------------------------------
+// 3D 1인칭 메인 애니메이션 60FPS 최적화 루프
+// -------------------------------------------------------------
+function animate() {
+    requestAnimationFrame(animate);
+
+    if (gameState === 'PLAYING') {
+        const isRunning = (keys.up || keys.down || keys.left || keys.right) && (Date.now() - pressTime > 180);
+        const moveSpeed = isRunning ? player3D.runSpeed : player3D.baseSpeed;
+
+        if (keys.up) {
+            player3D.x -= Math.sin(yaw) * moveSpeed;
+            player3D.z -= Math.cos(yaw) * moveSpeed;
+        }
+        if (keys.down) {
+            player3D.x += Math.sin(yaw) * moveSpeed;
+            player3D.z += Math.cos(yaw) * moveSpeed;
+        }
+        if (keys.left) {
+            player3D.x -= Math.cos(yaw) * moveSpeed;
+            player3D.z += Math.sin(yaw) * moveSpeed;
+        }
+        if (keys.right) {
+            player3D.x += Math.cos(yaw) * moveSpeed;
+            player3D.z -= Math.sin(yaw) * moveSpeed;
+        }
+
+        camera.position.set(player3D.x, 1.6, player3D.z);
+
+        if (currentMap === 'VILLAGE' && player3D.x > 21) {
+            goToForestMap();
+        } else if (currentMap === 'FOREST' && player3D.x < -21) {
+            goToVillageMap();
+        }
+
+        if (currentMap === 'BLACKSMITH_INTERIOR') {
+            if (player3D.x < -9) player3D.x = -9;
+            if (player3D.x > 9) player3D.x = 9;
+            if (player3D.z < -9) player3D.z = -9;
+            if (player3D.z > 8.5) {
+                currentMap = 'VILLAGE';
+                villageGroup.visible = true;
+                blacksmithInteriorGroup.visible = false;
+                forestGroup.visible = false;
+                player3D.x = 0;
+                player3D.z = 1.0;
+                playCustomSound('door');
+                updateUI();
+            }
+        }
+
+        if (player3D.isAttacking) {
+            player3D.attackTimer--;
+            if (player3D.attackTimer <= 0) {
+                player3D.isAttacking = false;
+                fpSwordGroup.rotation.set(Math.PI / 6, -Math.PI / 12, -Math.PI / 12);
+            }
+        }
+
+        if (currentMap === 'FOREST') {
+            let hpChanged = false;
+            monsters3D.forEach(m => {
+                if (m.alive) {
+                    const dist = Math.hypot(player3D.x - m.x, player3D.z - m.z);
+                    if (dist < 1.8) {
+                        hp -= (m.touchDmg / 60);
+                        hpChanged = true;
+                    }
+                } else {
+                    m.respawnTimer--;
+                    if (m.respawnTimer <= 0) {
+                        m.alive = true;
+                        m.mesh.visible = true;
+                        const stats = getMonsterStats(m.baseHp, m.baseDmg, currentWave);
+                        m.maxHp = stats.maxHp;
+                        m.hp = m.maxHp;
+                        m.touchDmg = stats.touchDmg;
+                        m.expReward = stats.expReward;
+                        updateMonsterHpSprite(m);
+                    }
+                }
+            });
+
+            // ⚡ 렉 방지: 체력 수치가 실제로 변경되었을 때만 DOM UI 업데이트
+            if (hpChanged && Math.abs(hp - lastRenderedHp) > 0.5) {
+                lastRenderedHp = hp;
+                updateUI();
+            }
+
+            if (hp <= 0) {
+                hp = 0;
+                finishGame();
+            }
+        }
+    }
+
+    renderer.render(scene, camera);
+}
+
+btnFinishGame.addEventListener('click', finishGame);
+btnRestartGame.addEventListener('click', startGame);
+
+animate();

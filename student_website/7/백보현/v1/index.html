@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네온 우주 블록 깨기</title>
+    <!-- Google Fonts: Outfit & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 게임 헤더 -->
+        <header class="game-header">
+            <h1 class="game-title">✨ 네온 우주 블록 깨기 ✨</h1>
+            <div class="scoreboard">
+                <div class="score-card">
+                    <span class="label">점수</span>
+                    <span id="score-val" class="value">0</span>
+                </div>
+                <div class="score-card">
+                    <span class="label">최고 점수</span>
+                    <span id="highscore-val" class="value">0</span>
+                </div>
+                <div class="score-card">
+                    <span class="label">남은 블록</span>
+                    <span id="bricks-val" class="value">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 게임 캔버스 영역 -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <!-- 게임 시작 화면 모달 -->
+            <div id="start-modal" class="modal active">
+                <div class="modal-content">
+                    <h2>🚀 게임 준비!</h2>
+                    <p>방향키 <strong>[←] [→]</strong>를 사용해서 아래 바를 움직여 공을 튕겨내세요.</p>
+                    <p>위쪽의 알록달록한 네온 블록을 모두 깨뜨리면 승리합니다!</p>
+                    <button id="start-btn" class="glow-btn">게임 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 게임 오버 모달 -->
+            <div id="gameover-modal" class="modal">
+                <div class="modal-content danger">
+                    <h2>💥 게임 오버!</h2>
+                    <p>공이 아래로 떨어졌어요...</p>
+                    <p class="final-score-text">획득한 점수: <span id="gameover-score">0</span>점</p>
+                    <button id="restart-btn" class="glow-btn">다시 도전하기</button>
+                </div>
+            </div>
+
+            <!-- 승리 모달 -->
+            <div id="victory-modal" class="modal">
+                <div class="modal-content success">
+                    <h2>🏆 축하합니다! 승리!</h2>
+                    <p>모든 네온 블록을 완벽하게 깨뜨렸어요!</p>
+                    <p class="final-score-text">최종 점수: <span id="victory-score">0</span>점</p>
+                    <button id="victory-restart-btn" class="glow-btn">한 번 더 하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 / 터치 조작 버튼 -->
+        <div class="mobile-controls">
+            <button id="touch-left" class="touch-btn" aria-label="왼쪽 이동">◀ 왼쪽</button>
+            <button id="touch-right" class="touch-btn" aria-label="오른쪽 이동">오른쪽 ▶</button>
+        </div>
+
+        <!-- 조작 안내 문구 -->
+        <footer class="game-footer">
+            <p>💡 <strong>조작 방법:</strong> 키보드 <span>←</span> <span>→</span> 방향키 또는 화면 하단 터치 버튼</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG - 대장장이 칼 강화 & 코인 시스템</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Three.js 3D 라이브러리 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 헤더 및 상태바 -->
+        <header class="game-header">
+            <h1 class="game-title">RPG</h1>
+
+            <div class="status-board">
+                <div class="status-item">
+                    <span class="label">레벨</span>
+                    <span id="player-level" class="value highlight-yellow">Lv.1</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">용사 체력 (HP)</span>
+                    <div class="bar-container hp-bar-container">
+                        <div id="hp-bar" class="bar-fill hp-fill" style="width: 100%;"></div>
+                        <span id="hp-text" class="bar-text">150 / 150</span>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="label">칼 데미지</span>
+                    <span id="player-damage" class="value highlight-red">10</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">💰 보유 코인</span>
+                    <span id="player-coins" class="value highlight-gold">0코인</span>
+                </div>
+                <div class="status-item exp-item">
+                    <span class="label">경험치 (EXP)</span>
+                    <div class="bar-container exp-bar-container">
+                        <div id="exp-bar" class="bar-fill exp-fill" style="width: 0%;"></div>
+                        <span id="exp-text" class="bar-text">0 / 100</span>
+                    </div>
+                </div>
+                <div class="status-item wave-item">
+                    <span class="label">🔒 쉬프트락 모드</span>
+                    <span id="shift-lock-status" class="value highlight-cyan">Shift 키 / 클릭</span>
+                </div>
+                <button id="btn-finish-game" class="finish-btn">🏁 게임 종료</button>
+            </div>
+        </header>
+
+        <!-- 현재 위치 및 퀘스트 배너 -->
+        <div class="info-banner">
+            <div class="location-tag">
+                <span class="location-label">현재 위치:</span>
+                <span id="location-name" class="location-value">🏡 3D 평화로운 마을</span>
+            </div>
+            <div class="quest-tag">
+                <span class="quest-label">📜 진행 중인 퀘스트:</span>
+                <span id="quest-description">몬스터를 사냥하여 코인을 모으고 대장장이에게 칼 강화를 부탁하세요!</span>
+            </div>
+        </div>
+
+        <!-- 3D 1인칭 뷰포트 영역 -->
+        <main class="canvas-wrapper">
+            <div id="webgl-container"></div>
+
+            <!-- 1인칭 조준점 -->
+            <div class="crosshair">+</div>
+
+            <!-- 1. 시작 화면 오버레이 -->
+            <div id="start-overlay" class="overlay active">
+                <div class="start-content">
+                    <h2 class="title-text">RPG</h2>
+                    <p class="subtitle-text">몬스터 1마리 사냥당 10코인 획득! 대장간에서 칼을 강화하세요!</p>
+
+                    <div class="controls-guide-box">
+                        <h3>🔨 대장장이 50% 칼 강화 시스템 사양</h3>
+                        <ul>
+                            <li><strong>💰 코인 획득:</strong> 몬스터 1마리 사냥 시 <strong>+10 코인</strong> 획득</li>
+                            <li><strong>⚒️ 대장장이 칼 강화:</strong> 대장간 안 대장장이에게 강화 부탁 (기본 100코인, 50% 확률 성공 시 <strong>공격력 +5</strong>!)</li>
+                            <li><strong>📈 강화 재도전 비용:</strong> 강화 시도마다 비용이 <strong>+10원씩 상승</strong>합니다!</li>
+                            <li><strong>🔒 조작법:</strong> Shift 키/클릭으로 시점 360도 회전 (W,A,S,D 정방향 이동)</li>
+                        </ul>
+                    </div>
+
+                    <button id="btn-start-game" class="main-start-btn">시작</button>
+                </div>
+            </div>
+
+            <!-- 2. NPC 대화 & 대장장이 칼 강화 모달 -->
+            <div id="dialogue-modal" class="overlay hidden">
+                <div class="dialogue-box">
+                    <div class="npc-header">
+                        <span id="npc-avatar">🧔</span>
+                        <div class="npc-info">
+                            <h3 id="npc-name">대장장이 철수</h3>
+                            <span id="npc-role" class="npc-role-tag">3D 대장간 장인</span>
+                        </div>
+                    </div>
+                    <div class="story-scroll-area">
+                        <p id="dialogue-story" class="dialogue-story-text">이야기 불러오는 중...</p>
+                    </div>
+
+                    <!-- 🔨 대장장이 전용 칼 강화 패널 -->
+                    <div id="forge-panel" class="forge-container hidden">
+                        <div class="forge-info-card">
+                            <div class="forge-stat">
+                                <span class="forge-stat-label">현재 칼 데미지:</span>
+                                <span id="forge-current-damage" class="forge-stat-val highlight-red">10</span>
+                            </div>
+                            <div class="forge-stat">
+                                <span class="forge-stat-label">성공 시 효과:</span>
+                                <span class="forge-stat-val highlight-green">공격력 +5 상승!</span>
+                            </div>
+                            <div class="forge-stat">
+                                <span class="forge-stat-label">강화 성공 확률:</span>
+                                <span class="forge-stat-val highlight-gold">50%</span>
+                            </div>
+                            <div class="forge-stat">
+                                <span class="forge-stat-label">필요 강화 비용:</span>
+                                <span id="forge-cost-text" class="forge-stat-val highlight-yellow">100 코인</span>
+                            </div>
+                        </div>
+                        <div id="forge-result-msg" class="forge-msg-box">강화 버튼을 눌러 칼을 강화해보세요!</div>
+                        <button id="btn-forge-weapon" class="forge-action-btn">⚒️ 칼 강화 도전하기 (100 코인)</button>
+                    </div>
+
+                    <p id="dialogue-text" class="quest-status-text">안녕하신가 용사여!</p>
+                    <div class="dialogue-actions">
+                        <button id="btn-accept-quest" class="dialogue-btn accent-btn">퀘스트 수락하기</button>
+                        <button id="btn-close-dialogue" class="dialogue-btn">대화 마치기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 결과창 모달 -->
+            <div id="result-overlay" class="overlay hidden">
+                <div class="result-box">
+                    <h2 id="result-title" class="result-title-text">🏆 RPG 모험 결과창 🏆</h2>
+                    
+                    <div class="stats-summary-grid">
+                        <div class="summary-card">
+                            <span class="summary-icon">🎖️</span>
+                            <span class="summary-label">최종 레벨</span>
+                            <span id="result-level" class="summary-value">Lv.1</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="summary-icon">👾</span>
+                            <span class="summary-label">처치한 몬스터</span>
+                            <span id="result-monsters" class="summary-value">0마리</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="summary-icon">💰</span>
+                            <span class="summary-label">획득한 총 코인</span>
+                            <span id="result-coins" class="summary-value highlight-gold">0코인</span>
+                        </div>
+                        <div class="summary-card full-width-card">
+                            <span class="summary-icon">⚔️</span>
+                            <span class="summary-label">최종 달성 칼 공격력</span>
+                            <span id="result-damage" class="summary-value highlight-red">10</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-restart-game" class="main-start-btn">다시 시작</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 터치 조작 컨트롤러 -->
+        <footer class="controls-container">
+            <div class="move-btns-grid">
+                <button id="btn-up" class="ctrl-btn dpad-up">▲ 전진</button>
+                <div class="dpad-middle">
+                    <button id="btn-left" class="ctrl-btn dpad-left">◀ 좌</button>
+                    <button id="btn-down" class="ctrl-btn dpad-down">▼ 후진</button>
+                    <button id="btn-right" class="ctrl-btn dpad-right">우 ▶</button>
+                </div>
+            </div>
+            <button id="btn-shift-lock" class="ctrl-btn shift-btn">🔒 Shift Lock 켜기</button>
+            <button id="btn-attack" class="ctrl-btn attack-btn">⚔️ 1인칭 칼 베기 (Space)</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

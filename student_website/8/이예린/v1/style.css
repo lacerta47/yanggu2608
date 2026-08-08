@@ -1,0 +1,297 @@
+/* 전올적인 네온 테마 리셋 및 스타일 */
+:root {
+    --bg-color: #0d0e15;
+    --card-bg: rgba(20, 24, 40, 0.85);
+    --neon-cyan: #00f3ff;
+    --neon-magenta: #ff0055;
+    --neon-yellow: #ffe600;
+    --neon-green: #00ff66;
+    --neon-purple: #b026ff;
+    --neon-gold: #ffaa00;
+    --text-color: #ffffff;
+    --font-main: 'Orbitron', 'Noto Sans KR', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(circle at 50% 20%, rgba(0, 243, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 85, 0.08) 0%, transparent 50%);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    overflow-x: hidden;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* 헤더 & 스코어보드 */
+.game-header {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    letter-spacing: 2px;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background: var(--card-bg);
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-box .label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.2rem;
+}
+
+.score-box span:not(.label) {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 8px var(--neon-yellow);
+}
+
+#lives-text {
+    color: var(--neon-magenta) !important;
+    text-shadow: 0 0 8px var(--neon-magenta) !important;
+}
+
+/* 캔버스 영역 */
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(0, 243, 255, 0.2);
+    background: #05060a;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 오버레이 (시작, 게임오버, 승리) */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 12, 22, 0.9);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.overlay.hidden {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.neon-text-cyan {
+    font-size: 2.2rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+}
+
+.neon-text-red {
+    font-size: 2.5rem;
+    color: var(--neon-magenta);
+    text-shadow: 0 0 15px var(--neon-magenta), 0 0 30px var(--neon-magenta);
+}
+
+.neon-text-gold {
+    font-size: 2.2rem;
+    color: var(--neon-gold);
+    text-shadow: 0 0 15px var(--neon-gold), 0 0 30px var(--neon-gold);
+}
+
+.guide-text {
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.guide-subtext, .victory-text {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.final-score-text {
+    font-size: 1.2rem;
+    color: var(--neon-yellow);
+}
+
+/* 네온 버튼 */
+.neon-btn {
+    min-width: 200px;
+    min-height: 48px;
+    padding: 0.8rem 1.6rem;
+    font-family: var(--font-main);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    border-radius: 30px;
+    box-shadow: 0 0 12px var(--neon-green);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.neon-btn:hover, .neon-btn:active {
+    background: var(--neon-green);
+    color: #000000;
+    box-shadow: 0 0 25px var(--neon-green);
+    transform: scale(1.05);
+}
+
+/* 컨트롤러 버튼 */
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    gap: 1rem;
+}
+
+.control-btn {
+    flex: 1;
+    min-height: 54px;
+    font-size: 1.4rem;
+    font-family: var(--font-main);
+    font-weight: bold;
+    color: var(--neon-cyan);
+    background: var(--card-bg);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.control-btn:active {
+    background: var(--neon-cyan);
+    color: #000000;
+    box-shadow: 0 0 20px var(--neon-cyan);
+    transform: translateY(2px);
+}
+
+.sound-btn {
+    font-size: 0.95rem;
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 10px rgba(176, 38, 255, 0.2);
+}
+
+.sound-btn:active {
+    background: var(--neon-purple);
+    color: #ffffff;
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 1.4rem;
+    }
+
+    .scoreboard {
+        padding: 0.5rem 0.8rem;
+    }
+
+    .score-box .label {
+        font-size: 0.65rem;
+    }
+
+    .score-box span:not(.label) {
+        font-size: 1rem;
+    }
+
+    .neon-text-cyan, .neon-text-red, .neon-text-gold {
+        font-size: 1.6rem;
+    }
+
+    .guide-text, .final-score-text {
+        font-size: 0.9rem;
+    }
+
+    .neon-btn {
+        min-width: 160px;
+        font-size: 0.95rem;
+    }
+}

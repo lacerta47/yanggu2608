@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D 액션 RPG - 용사의 모험</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 게임 헤더 & 상태창 -->
+        <header class="game-header">
+            <h1 class="game-title">⚔️ 2D 용사의 모험 RPG ⚔️</h1>
+            
+            <div class="status-board">
+                <div class="status-item">
+                    <span class="label">레벨</span>
+                    <span id="player-level" class="value highlight-yellow">Lv.1</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">공격력 (칼 데미지)</span>
+                    <span id="player-damage" class="value highlight-red">10</span>
+                </div>
+                <div class="status-item exp-item">
+                    <span class="label">경험치 (EXP)</span>
+                    <div class="exp-bar-container">
+                        <div id="exp-bar" class="exp-bar-fill" style="width: 0%;"></div>
+                        <span id="exp-text" class="exp-bar-text">0 / 100</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 퀘스트 알림창 -->
+        <div id="quest-banner" class="quest-banner">
+            <span class="quest-title">📜 진행 중인 퀘스트:</span>
+            <span id="quest-description">마을 이장님에게 다가가 대화를 나눠보세요!</span>
+        </div>
+
+        <!-- 캔버스 영역 -->
+        <main class="canvas-wrapper">
+            <canvas id="rpgCanvas" width="900" height="500"></canvas>
+
+            <!-- NPC 대화 오버레이 모달 -->
+            <div id="dialogue-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="npc-profile">
+                        <span id="npc-avatar">👴</span>
+                        <h3 id="npc-name">마을 이장님</h3>
+                    </div>
+                    <p id="dialogue-text">어서오게 용사여! 오른쪽 들판에 몬스터들이 쳐들어왔다네. 몬스터 3마리를 처치해 주겠나?</p>
+                    <div class="modal-buttons">
+                        <button id="btn-accept-quest" class="action-btn accent-btn">퀘스트 수락하기</button>
+                        <button id="btn-close-dialogue" class="action-btn">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 모바일 및 키보드 안내 컨트롤러 -->
+        <footer class="controls-container">
+            <div class="control-group">
+                <button id="btn-move-left" class="ctrl-btn">◀ 왼쪽</button>
+                <button id="btn-move-right" class="ctrl-btn">오른쪽 ▶</button>
+            </div>
+            <button id="btn-attack" class="ctrl-btn attack-btn">⚔️ 칼 휘두르기 (Space)</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

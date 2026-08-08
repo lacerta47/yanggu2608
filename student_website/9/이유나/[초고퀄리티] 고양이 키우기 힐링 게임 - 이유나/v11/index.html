@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[초고퀄리티] 고양이 키우기 힐링 게임 (v11)</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-app" class="game-app">
+    
+    <!-- 1. 초기 화면 (Start Screen) -->
+    <div id="start-screen" class="screen active">
+      <div class="glass-card">
+        <h1 class="main-title">🐾 [초고퀄리티] 고양이 키우기 힐링 게임 🐾</h1>
+        <p class="sub-title">귀여운 아기 고양이를 사랑으로 보살펴 어른 고양이로 키워보세요!</p>
+        <div class="start-cat-illustration">🐱✨</div>
+        <button id="start-game-btn" class="btn primary-btn">시작하기</button>
+      </div>
+    </div>
+
+    <!-- 2. 고양이 선택 및 이름 입력 화면 (Selection & Naming Screen) -->
+    <div id="select-screen" class="screen hidden">
+      <div class="glass-card">
+        <h2 class="section-title">함께할 고양이를 선택해주세요!</h2>
+        <div id="breed-options" class="breed-grid">
+          <div class="breed-card selected" data-breed="siamese">
+            <div class="breed-avatar">🐱</div>
+            <div class="breed-name">샴</div>
+          </div>
+          <div class="breed-card" data-breed="persian">
+            <div class="breed-avatar">😸</div>
+            <div class="breed-name">페르시안</div>
+          </div>
+          <div class="breed-card" data-breed="korean">
+            <div class="breed-avatar">😻</div>
+            <div class="breed-name">코리안 숏헤어</div>
+          </div>
+          <div class="breed-card" data-breed="ragdoll">
+            <div class="breed-avatar">😽</div>
+            <div class="breed-name">렉돌</div>
+          </div>
+          <div class="breed-card" data-breed="russian">
+            <div class="breed-avatar">😺</div>
+            <div class="breed-name">러시안 블루</div>
+          </div>
+        </div>
+
+        <div class="name-input-group">
+          <label for="cat-name-input">고양이의 이름을 지어주세요:</label>
+          <input type="text" id="cat-name-input" placeholder="예: 야옹이" value="야옹이" maxlength="10" />
+        </div>
+
+        <button id="confirm-select-btn" class="btn primary-btn">키우기 시작!</button>
+      </div>
+    </div>
+
+    <!-- 3. 메인 게임 화면 (Main Bedroom & Sub-scenes) -->
+    <div id="main-screen" class="screen hidden">
+      
+      <!-- 상단 왼쪽: 고양이 이름 및 하단 다시하기 버튼/BGM 토글 버튼 -->
+      <div class="top-left-panel">
+        <div class="cat-profile">
+          <div class="profile-header">
+            <span id="display-cat-name" class="profile-name">야옹이</span>
+            <span id="display-cat-breed" class="profile-breed">(샴)</span>
+            <span id="display-cat-age" class="profile-age">0살 (아기)</span>
+          </div>
+          <div class="profile-buttons-row">
+            <button id="bgm-toggle-btn" class="bgm-btn">🎵 BGM ON</button>
+            <button id="restart-game-btn" class="restart-btn" title="처음부터 다시하기">🔄 다시하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 상단 오른쪽: 상태 지수 및 요구사항 창 -->
+      <div class="top-right-panel">
+        <div class="gauge-container">
+          <div class="gauge-row">
+            <span class="gauge-label">🍚 배고픔</span>
+            <div class="gauge-bar-bg"><div id="gauge-hunger" class="gauge-bar-fill hunger" style="width: 100%;"></div></div>
+          </div>
+          <div class="gauge-row">
+            <span class="gauge-label">💧 목마름</span>
+            <div class="gauge-bar-bg"><div id="gauge-thirst" class="gauge-bar-fill thirst" style="width: 100%;"></div></div>
+          </div>
+          <div class="gauge-row">
+            <span class="gauge-label">⚽ 심심함</span>
+            <div class="gauge-bar-bg"><div id="gauge-boredom" class="gauge-bar-fill boredom" style="width: 100%;"></div></div>
+          </div>
+        </div>
+
+        <div class="thought-box">
+          <span class="thought-icon">💭</span>
+          <span id="thought-text" class="thought-text">기분이 너무 좋아요! 고롱고롱~</span>
+        </div>
+      </div>
+
+      <!-- 상단 중앙: 낮/밤 토글 버튼 -->
+      <div class="top-center-panel">
+        <button id="day-night-btn" class="icon-btn" title="낮/밤 변경">☀️ 낮</button>
+      </div>
+
+      <!-- 상단 오른쪽 씬 완성 버튼 -->
+      <div id="scene-done-container" class="top-scene-done hidden">
+        <button id="scene-done-btn" class="btn success-btn">✨ 완성! (침실로 돌아가기)</button>
+      </div>
+
+      <!-- 게임 캔버스 메인 영역 -->
+      <div class="bedroom-canvas-container">
+        <canvas id="gameCanvas" width="850" height="520"></canvas>
+        <div id="effect-overlay" class="effect-overlay"></div>
+      </div>
+
+      <!-- 하단 주요 버튼 및 햄버거 메뉴 -->
+      <footer class="bottom-controls">
+        <button id="btn-feed" class="btn action-btn">🍚 밥주기</button>
+        <button id="btn-water" class="btn action-btn">💧 물주기</button>
+        <button id="btn-play" class="btn action-btn">🧶 놀아주기</button>
+        <button id="btn-menu" class="btn menu-toggle-btn" title="기타 메뉴">☰</button>
+      </footer>
+
+      <!-- 햄버거 슬라이드/모달 메뉴 (1분마다 하나씩 해금) -->
+      <div id="extra-menu" class="extra-menu hidden">
+        <div class="extra-menu-header">
+          <span>기타 케어 장치 목록 (1분마다 해금)</span>
+          <button id="close-menu-btn" class="close-btn">✕</button>
+        </div>
+        <div class="extra-menu-grid">
+          <button id="btn-clothes" class="btn extra-btn locked" data-unlock="0">
+            🔒 드레스룸 이동 <span class="unlock-timer">(0:00 해금)</span>
+          </button>
+          <button id="btn-walk" class="btn extra-btn locked" data-unlock="1">
+            🔒 분수대 공원 산책 <span class="unlock-timer">(1:00 해금)</span>
+          </button>
+          <button id="btn-bath" class="btn extra-btn locked" data-unlock="2">
+            🔒 목욕실 이동 <span class="unlock-timer">(2:00 해금)</span>
+          </button>
+          <button id="btn-brush" class="btn extra-btn locked" data-unlock="3">
+            🔒 털 빗어주기 (눕기) <span class="unlock-timer">(3:00 해금)</span>
+          </button>
+          <button id="btn-tease" class="btn extra-btn locked" data-unlock="4">
+            🔒 장난치기 <span class="unlock-timer">(4:00 해금)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 드레스룸 전용 하단 피팅 패널 -->
+      <div id="dressroom-panel" class="dressroom-panel hidden">
+        <div class="dressroom-header-bar">
+          <span class="dressroom-title">👗 드레스룸 피팅룸 - 옷과 장신구를 고르면 고양이가 바로 착용해요!</span>
+        </div>
+        
+        <div class="dressroom-controls-row">
+          <!-- 카테고리 1: 머리 장신구 -->
+          <div class="dressroom-category">
+            <span class="category-label">👑 머리 장신구:</span>
+            <div class="dressroom-options">
+              <button class="head-item-btn selected" data-head="0">없음</button>
+              <button class="head-item-btn" data-head="1">🎀 리본</button>
+              <button class="head-item-btn" data-head="2">🎩 모자</button>
+              <button class="head-item-btn" data-head="3">👑 왕관</button>
+              <button class="head-item-btn" data-head="4">👓 안경</button>
+              <button class="head-item-btn" data-head="5">🌸 벚꽃핀</button>
+            </div>
+          </div>
+
+          <!-- 카테고리 2: 몸통 의상 -->
+          <div class="dressroom-category">
+            <span class="category-label">👕 몸통 의상:</span>
+            <div class="dressroom-options">
+              <button class="body-item-btn selected" data-body="0">없음</button>
+              <button class="body-item-btn" data-body="1">👕 셔츠</button>
+              <button class="body-item-btn" data-body="2">👗 드레스</button>
+              <button class="body-item-btn" data-body="3">🧥 망토</button>
+              <button class="body-item-btn" data-body="4">🦺 멜빵</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 상단 알림 팝업 -->
+      <div id="unlock-toast" class="unlock-toast hidden">
+        <span class="toast-icon">✨</span>
+        <span id="toast-message" class="toast-message">새로운 기능이 해금되었어요!</span>
+      </div>
+
+    </div>
+
+    <!-- 4. 성공 결과 모달 -->
+    <div id="victory-modal" class="modal-overlay hidden">
+      <div class="glass-card modal-card">
+        <h2 class="modal-title">🎉 축하합니다! 경사났어요! 🎉</h2>
+        <p id="victory-summary" class="modal-text">
+          어미 고양이가 5살이 되어 귀여운 새끼 고양이 3마리를 낳았어요! 함께 잠을 자고, 공원 산책과 목욕도 같이 즐겨보세요!
+        </p>
+        <div id="kittens-display" class="kittens-display">🐱🐱🐱</div>
+        <div class="modal-btn-group">
+          <button id="btn-restart" class="btn secondary-btn">🔄 다시하기</button>
+          <button id="btn-continue" class="btn primary-btn">🐾 이어하기</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 1인칭 용사의 모험 RPG v8 - 대장간 건물 & 내부 탐험</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Three.js 3D 라이브러리 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 헤더 및 상태바 -->
+        <header class="game-header">
+            <h1 class="game-title">⚒️ 3D 1인칭 용사의 모험 RPG ⚒️</h1>
+
+            <div class="status-board">
+                <div class="status-item">
+                    <span class="label">레벨</span>
+                    <span id="player-level" class="value highlight-yellow">Lv.1</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">용사 체력 (HP)</span>
+                    <div class="bar-container hp-bar-container">
+                        <div id="hp-bar" class="bar-fill hp-fill" style="width: 100%;"></div>
+                        <span id="hp-text" class="bar-text">150 / 150</span>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="label">칼 데미지</span>
+                    <span id="player-damage" class="value highlight-red">10</span>
+                </div>
+                <div class="status-item exp-item">
+                    <span class="label">경험치 (EXP)</span>
+                    <div class="bar-container exp-bar-container">
+                        <div id="exp-bar" class="bar-fill exp-fill" style="width: 0%;"></div>
+                        <span id="exp-text" class="bar-text">0 / 100</span>
+                    </div>
+                </div>
+                <div class="status-item wave-item">
+                    <span class="label">🔥 몬스터 강화 단계</span>
+                    <span id="monster-wave" class="value highlight-orange">Wave 1</span>
+                </div>
+                <button id="btn-finish-game" class="finish-btn">🏁 게임 종료</button>
+            </div>
+        </header>
+
+        <!-- 현재 위치 및 퀘스트 배너 -->
+        <div class="info-banner">
+            <div class="location-tag">
+                <span class="location-label">현재 위치:</span>
+                <span id="location-name" class="location-value">🏡 3D 평화로운 마을</span>
+            </div>
+            <div class="quest-tag">
+                <span class="quest-label">📜 진행 중인 퀘스트:</span>
+                <span id="quest-description">대장간 건물 안으로 들어가 대장장이를 만나보세요!</span>
+            </div>
+        </div>
+
+        <!-- 3D 1인칭 뷰포트 영역 -->
+        <main class="canvas-wrapper">
+            <div id="webgl-container"></div>
+
+            <!-- 1인칭 조준점 -->
+            <div class="crosshair">+</div>
+
+            <!-- 1. 시작 화면 오버레이 -->
+            <div id="start-overlay" class="overlay active">
+                <div class="start-content">
+                    <h2 class="title-text">⚒️ 대장간이 있는 3D 마을 ⚒️</h2>
+                    <p class="subtitle-text">마을의 3D 대장간 건물 내부로 입장하여 대장장이를 만드세요!</p>
+
+                    <div class="controls-guide-box">
+                        <h3>🎮 대장간 건물 입장 및 조작법</h3>
+                        <ul>
+                            <li><strong>방향키(▲▼◀▶) / W,A,S,D:</strong> 상하좌우 3D 1인칭 자유 이동</li>
+                            <li><strong>⚒️ 대장간 건물 들어가기:</strong> 마을의 대장간 문 앞으로 다가가 스페이스바를 누르면 3D 대장간 내부로 들어갑니다!</li>
+                            <li><strong>스페이스바(Space):</strong> 칼 휘두르기 (사거리 6.5) & 대장장이/NPC 대화</li>
+                            <li><strong>🚪 마을로 나가기:</strong> 대장간 내부 출구 문에서 스페이스바를 누르면 마을로 돌아옵니다.</li>
+                        </ul>
+                    </div>
+
+                    <button id="btn-start-game" class="main-start-btn">▶ 3D RPG 시작하기</button>
+                </div>
+            </div>
+
+            <!-- 2. NPC 대화 모달 -->
+            <div id="dialogue-modal" class="overlay hidden">
+                <div class="dialogue-box">
+                    <div class="npc-header">
+                        <span id="npc-avatar">🧔</span>
+                        <div class="npc-info">
+                            <h3 id="npc-name">대장장이 철수</h3>
+                            <span id="npc-role" class="npc-role-tag">3D 대장간 장인</span>
+                        </div>
+                    </div>
+                    <p id="dialogue-text">어서오게 용사여! 이곳은 뜨거운 불꽃이 타오르는 대장간이라네.</p>
+                    <div class="dialogue-actions">
+                        <button id="btn-accept-quest" class="dialogue-btn accent-btn">퀘스트 수락하기</button>
+                        <button id="btn-close-dialogue" class="dialogue-btn">닫기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 결과창 모달 -->
+            <div id="result-overlay" class="overlay hidden">
+                <div class="result-box">
+                    <h2 id="result-title" class="result-title-text">🏆 1인칭 3D 모험 결과창 🏆</h2>
+                    
+                    <div class="stats-summary-grid">
+                        <div class="summary-card">
+                            <span class="summary-icon">🎖️</span>
+                            <span class="summary-label">최종 레벨</span>
+                            <span id="result-level" class="summary-value">Lv.1</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="summary-icon">👾</span>
+                            <span class="summary-label">처치한 몬스터</span>
+                            <span id="result-monsters" class="summary-value">0마리</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="summary-icon">📜</span>
+                            <span class="summary-label">성공한 퀘스트</span>
+                            <span id="result-quests" class="summary-value">0개</span>
+                        </div>
+                        <div class="summary-card full-width-card">
+                            <span class="summary-icon">🔥</span>
+                            <span class="summary-label">도달한 몬스터 최고 강화 단계</span>
+                            <span id="result-wave" class="summary-value highlight-orange">Wave 1</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-restart-game" class="main-start-btn">🔄 다시 시작하기</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 터치 조작 컨트롤러 -->
+        <footer class="controls-container">
+            <div class="move-btns-grid">
+                <button id="btn-up" class="ctrl-btn dpad-up">▲ 전진</button>
+                <div class="dpad-middle">
+                    <button id="btn-left" class="ctrl-btn dpad-left">◀ 좌</button>
+                    <button id="btn-down" class="ctrl-btn dpad-down">▼ 후진</button>
+                    <button id="btn-right" class="ctrl-btn dpad-right">우 ▶</button>
+                </div>
+            </div>
+            <button id="btn-attack" class="ctrl-btn attack-btn">⚔️ 1인칭 칼 베기 (Space)</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

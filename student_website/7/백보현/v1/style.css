@@ -1,0 +1,256 @@
+/* 기본 스타일 및 폰트 설정 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+    background: radial-gradient(circle at center, #141b2d 0%, #070913 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    overflow-x: hidden;
+}
+
+/* 게임 전체 컨테이너 */
+.game-container {
+    width: 100%;
+    max-width: 840px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 게임 타이틀 및 스코어보드 */
+.game-header {
+    width: 100%;
+    text-align: center;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #00f3ff;
+    text-shadow: 0 0 12px rgba(0, 243, 255, 0.7), 0 0 25px rgba(0, 243, 255, 0.4);
+    margin-bottom: 12px;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(20, 27, 45, 0.7);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 12px;
+    padding: 10px 15px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+}
+
+.score-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-card .label {
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+.score-card .value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff007f;
+    text-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+}
+
+/* 캔버스 및 모달 감싸는 영역 */
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(0, 243, 255, 0.4);
+    background-color: #080a14;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 모달 레이어 (시작, 게임 오버, 승리) */
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 9, 19, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: rgba(20, 27, 45, 0.95);
+    border: 2px solid #00f3ff;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    max-width: 90%;
+    width: 420px;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content.danger {
+    border-color: #ff007f;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
+}
+
+.modal-content.danger h2 {
+    color: #ff007f;
+    text-shadow: 0 0 10px rgba(255, 0, 127, 0.7);
+}
+
+.modal-content.success {
+    border-color: #ffe600;
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.4);
+}
+
+.modal-content.success h2 {
+    color: #ffe600;
+    text-shadow: 0 0 10px rgba(255, 230, 0, 0.7);
+}
+
+.modal-content h2 {
+    font-size: 1.8rem;
+    color: #00f3ff;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+}
+
+.modal-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #cbd5e0;
+}
+
+.final-score-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* 네온 글로우 버튼 */
+.glow-btn {
+    background: linear-gradient(135deg, #00f3ff, #7928ca);
+    border: none;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: inherit;
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+    transition: all 0.2s ease;
+    min-height: 48px;
+}
+
+.glow-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+}
+
+.glow-btn:active {
+    transform: translateY(1px);
+}
+
+/* 터치 / 모바일 조작 버튼 */
+.mobile-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+}
+
+.touch-btn {
+    flex: 1;
+    min-height: 52px;
+    background: rgba(20, 27, 45, 0.8);
+    border: 2px solid #00f3ff;
+    color: #00f3ff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: inherit;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.touch-btn:active {
+    background: rgba(0, 243, 255, 0.3);
+    transform: scale(0.97);
+}
+
+/* 하단 안내 문구 */
+.game-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #a0aec0;
+}
+
+.game-footer span {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #00f3ff;
+}
+
+/* 모바일 전용 미디어 쿼리 */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 1.4rem;
+    }
+    
+    .score-card .value {
+        font-size: 1.1rem;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.4rem;
+    }
+}
