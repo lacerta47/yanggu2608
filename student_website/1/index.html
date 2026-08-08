@@ -33,7 +33,7 @@
         .container {
             max-width: 900px; width: 90%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1.25rem; margin-bottom: 8vh;
         }
         .ver-card {
@@ -41,8 +41,9 @@
             background: var(--card-bg);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,.3);
-            border-radius: 22px; aspect-ratio: 1/1; min-height: 110px;
-            display: flex; align-items: center; justify-content: center;
+            border-radius: 22px; aspect-ratio: 1/1; min-height: 120px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px; padding: 10px; text-align: center;
             text-decoration: none; color: var(--text-color);
             transition: all .35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 8px 32px 0 rgba(31,38,135,.05);
@@ -57,11 +58,17 @@
             .ver-card:hover .ver-num { color: var(--accent-color); }
         }
         .ver-card:active { transform: scale(0.97); }
-        .ver-num { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; transition: color .3s ease; }
+        .ver-game { font-size: clamp(.72rem, 2.4vw, .88rem); font-weight: 700; color: #556b82; line-height: 1.2; }
+        .ver-num { font-size: clamp(1.25rem, 3.6vw, 1.7rem); font-weight: 800; transition: color .3s ease; line-height: 1.1; }
+        /* 연습(블록깨기) 카드 - 따뜻한 톤으로 구분 */
+        .ver-card.practice { background: rgba(255, 236, 210, 0.55); border-color: rgba(255, 200, 140, 0.5); }
+        .ver-card.practice .ver-game { color: #b26a00; }
+        .ver-card.practice .ver-num { font-size: clamp(.95rem, 3vw, 1.2rem); color: #d17c00; }
+        @media (hover: hover) { .ver-card.practice:hover .ver-num { color: #b26a00; } }
         .badge {
             position: absolute; top: 10px; right: 10px;
             background: var(--accent-color); color: #fff;
-            font-size: .65rem; font-weight: 700; letter-spacing: .5px;
+            font-size: .62rem; font-weight: 700; letter-spacing: .5px;
             padding: 3px 8px; border-radius: 999px;
             box-shadow: 0 2px 8px rgba(236,64,122,.4);
         }
@@ -76,7 +83,7 @@
         .back:hover { background: rgba(255,255,255,.85); transform: translateY(-2px); }
         footer { margin-top: auto; padding: 3rem 2rem; color: #7f8c8d; font-size: .9rem; font-weight: 500; text-align: center; }
         @media (max-width: 480px) {
-            .container { grid-template-columns: repeat(3, 1fr); gap: .9rem; }
+            .container { grid-template-columns: repeat(2, 1fr); gap: .9rem; }
             .ver-card { border-radius: 18px; }
         }
     </style>
@@ -88,44 +95,57 @@
     </header>
 
     <main class="container">
-        <a class="ver-card" href="./김윤하/v1/index.html">
-            <span class="ver-num">v1</span>
+        <a class="ver-card practice" href="./김윤하/v1/index.html">
+            <span class="ver-game">연습</span>
+            <span class="ver-num">(블록깨기)</span>
         </a>
         <a class="ver-card" href="./김윤하/v2/index.html">
-            <span class="ver-num">v2</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전1</span>
         </a>
         <a class="ver-card" href="./김윤하/v3/index.html">
-            <span class="ver-num">v3</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전2</span>
         </a>
         <a class="ver-card" href="./김윤하/v4/index.html">
-            <span class="ver-num">v4</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전3</span>
         </a>
         <a class="ver-card" href="./김윤하/v5/index.html">
-            <span class="ver-num">v5</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전4</span>
         </a>
         <a class="ver-card" href="./김윤하/v6/index.html">
-            <span class="ver-num">v6</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전5</span>
         </a>
         <a class="ver-card" href="./김윤하/v7/index.html">
-            <span class="ver-num">v7</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전6</span>
         </a>
         <a class="ver-card" href="./김윤하/v8/index.html">
-            <span class="ver-num">v8</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전7</span>
         </a>
         <a class="ver-card" href="./김윤하/v9/index.html">
-            <span class="ver-num">v9</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전8</span>
         </a>
         <a class="ver-card" href="./김윤하/v10/index.html">
-            <span class="ver-num">v10</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전9</span>
         </a>
         <a class="ver-card" href="./김윤하/v11/index.html">
-            <span class="ver-num">v11</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전10</span>
         </a>
         <a class="ver-card" href="./김윤하/v12/index.html">
-            <span class="ver-num">v12</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전11</span>
         </a>
         <a class="ver-card" href="./김윤하/v13/index.html">
-            <span class="ver-num">v13</span><span class="badge">최신</span>
+            <span class="ver-game">고양이 달리기 게임</span>
+            <span class="ver-num">버전12</span><span class="badge">최신</span>
         </a>
     </main>
 
