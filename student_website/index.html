@@ -135,7 +135,8 @@
                 box-shadow: 0 20px 40px rgba(236, 64, 122, 0.15);
                 border: 1px solid rgba(255, 255, 255, 0.6);
             }
-            .button-card:hover .card-num {
+            .button-card:hover .card-num,
+            .button-card:hover .card-title {
                 color: var(--accent-color);
                 text-shadow: 0 0 15px rgba(236, 64, 122, 0.3);
             }
@@ -161,6 +162,25 @@
             color: rgba(0, 0, 0, 0.4);
             text-transform: uppercase;
             letter-spacing: 2px;
+        }
+
+        /* 게임명 + 제작자 3단 카드 */
+        .card-title {
+            font-size: clamp(1.3rem, 4.5vw, 1.75rem);
+            font-weight: 800;
+            color: var(--text-color);
+            line-height: 1.25;
+            text-align: center;
+            padding: 0 12px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .card-by {
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            font-weight: 700;
+            color: #556b82;
+            margin-top: 2px;
         }
 
         footer {
@@ -199,16 +219,19 @@
 
     <main class="container">
         <div class="button-card" onclick="goTo(1)">
-            <span class="card-num">김윤하</span>
-            <span class="card-label">Project</span>
+            <span class="card-title">고양이 달리기 게임</span>
+            <span class="card-label">Project by</span>
+            <span class="card-by">김윤하</span>
         </div>
         <div class="button-card" onclick="goTo(2)">
-            <span class="card-num">김태하</span>
-            <span class="card-label">Project</span>
+            <span class="card-title">우주 공룡 달리기</span>
+            <span class="card-label">Project by</span>
+            <span class="card-by">김태하</span>
         </div>
         <div class="button-card" onclick="goTo(3)">
-            <span class="card-num">한윤상</span>
-            <span class="card-label">Project</span>
+            <span class="card-title">백룸</span>
+            <span class="card-label">Project by</span>
+            <span class="card-by">한윤상</span>
         </div>
         <div class="button-card" onclick="goTo(4)">
             <span class="card-num">4</span>
